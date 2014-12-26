@@ -4,7 +4,7 @@ class Interval
 
   attr_reader :offset, :quality
 
-  QUALITIES = [:perfect, :major, :minor, :augmented, :diminished]
+  QUALITIES = [:perfect, :major, :minor, :augmented, :diminished, :double_augmented, :double_diminished]
 
   def initialize(offset, quality=nil, down=false)
     @offset = offset.to_i
@@ -80,6 +80,26 @@ class Interval
           when 5 then 7
           when 6 then 9
         end
+      when :double_augmented
+        case diatonic_offset
+          when 0 then 2
+          when 1 then 4
+          when 2 then 6
+          when 3 then 7
+          when 4 then 9
+          when 5 then 11
+          when 6 then 13
+        end
+      when :double_diminished
+        case diatonic_offset
+          when 0 then -2
+          when 1 then -1
+          when 2 then 1
+          when 3 then 3
+          when 4 then 5
+          when 5 then 6
+          when 6 then 8
+        end
     end
 
     raise "Unhandled case" if result.nil?
@@ -137,6 +157,14 @@ class Interval
 
   def diminished?
     quality == :diminished
+  end
+
+  def double_augmented?
+    quality == :double_augmented
+  end
+
+  def double_diminished?
+    quality == :double_diminished
   end
 
   def to_s
@@ -201,6 +229,8 @@ class Interval
     def minor(i); one_based(i, :minor); end
     def augmented(i); one_based(i, :augmented); end
     def diminished(i); one_based(i, :diminished); end
+    def double_augmented(i); one_based(i, :double_augmented); end
+    def double_diminished(i); one_based(i, :double_diminished); end
 
     def tritone(n=1)
       if n.even?

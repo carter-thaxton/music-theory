@@ -61,16 +61,6 @@ class TestInterval < Test::Unit::TestCase
     assert_equal -14, Interval.major(-9).semitones
   end
 
-  def test_diminished
-    assert_equal 0, Interval.diminished(2).semitones
-    assert_equal 2, Interval.diminished(3).semitones
-    assert_equal 4, Interval.diminished(4).semitones
-    assert_equal 6, Interval.diminished(5).semitones
-    assert_equal 7, Interval.diminished(6).semitones
-    assert_equal 9, Interval.diminished(7).semitones
-    assert_equal 11, Interval.diminished(8).semitones
-  end
-
   def test_augmented
     assert_equal 3, Interval.augmented(2).semitones
     assert_equal 5, Interval.augmented(3).semitones
@@ -81,14 +71,52 @@ class TestInterval < Test::Unit::TestCase
     assert_equal 13, Interval.augmented(8).semitones
   end
 
+  def test_diminished
+    assert_equal 0, Interval.diminished(2).semitones
+    assert_equal 2, Interval.diminished(3).semitones
+    assert_equal 4, Interval.diminished(4).semitones
+    assert_equal 6, Interval.diminished(5).semitones
+    assert_equal 7, Interval.diminished(6).semitones
+    assert_equal 9, Interval.diminished(7).semitones
+    assert_equal 11, Interval.diminished(8).semitones
+  end
+
+  def test_double_augmented
+    assert_equal 4, Interval.double_augmented(2).semitones
+    assert_equal 6, Interval.double_augmented(3).semitones
+    assert_equal 7, Interval.double_augmented(4).semitones
+    assert_equal 9, Interval.double_augmented(5).semitones
+    assert_equal 11, Interval.double_augmented(6).semitones
+    assert_equal 13, Interval.double_augmented(7).semitones
+    assert_equal 14, Interval.double_augmented(8).semitones
+  end
+
+  def test_double_diminished
+    assert_equal -1, Interval.double_diminished(2).semitones
+    assert_equal 1, Interval.double_diminished(3).semitones
+    assert_equal 3, Interval.double_diminished(4).semitones
+    assert_equal 5, Interval.double_diminished(5).semitones
+    assert_equal 6, Interval.double_diminished(6).semitones
+    assert_equal 8, Interval.double_diminished(7).semitones
+    assert_equal 10, Interval.double_diminished(8).semitones
+    assert_equal 11, Interval.double_diminished(9).semitones
+  end
+
   def test_special_unisons
     assert_equal 1, Interval.augmented(1).semitones
     assert_equal -1, Interval.diminished(1).semitones
     assert_equal -1, Interval.augmented(-1).semitones
     assert_equal 1, Interval.diminished(-1).semitones
 
+    assert_equal 2, Interval.double_augmented(1).semitones
+    assert_equal -2, Interval.double_diminished(1).semitones
+    assert_equal -2, Interval.double_augmented(-1).semitones
+    assert_equal 2, Interval.double_diminished(-1).semitones
+
     assert_equal Interval.diminished(-1), Interval.diminished(-1)
     assert_not_equal Interval.diminished(-1), Interval.diminished(1)
+    assert_equal Interval.double_diminished(-1), Interval.double_diminished(-1)
+    assert_not_equal Interval.double_diminished(-1), Interval.double_diminished(1)
   end
 
   def test_tritones
