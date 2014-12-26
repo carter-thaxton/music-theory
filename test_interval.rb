@@ -19,4 +19,20 @@ class TestInterval < Test::Unit::TestCase
     assert_equal("down octave", Interval.octave(-1).to_s)
     assert_equal("down 2 octaves", Interval.octave(-2).to_s)
   end
+
+  def test_helpers
+    assert Interval.major(3).major?
+    assert !Interval.major(3).minor?
+    assert Interval.diminished(3).diminished?
+    assert Interval.octave(3).octave?
+    assert !Interval.unison.octave?
+    assert Interval.unison.octave_or_unison?
+    assert Interval.octave.octave_or_unison?
+  end
+
+  def test_validations
+    assert_raises(Interval::InvalidIntervalError) { Interval.major(5) }
+    assert_raises(Interval::InvalidIntervalError) { Interval.perfect(3) }
+    assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
+  end
 end

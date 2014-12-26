@@ -1,5 +1,7 @@
 
 class Interval
+  class InvalidIntervalError < ArgumentError; end
+
   attr_reader :offset, :type
 
   TYPES = [:perfect, :major, :minor, :augmented, :diminished]
@@ -8,7 +10,7 @@ class Interval
     @offset = offset.to_i
 
     if type
-      raise "invalid type: #{type}" unless TYPES.include?(type)
+      raise InvalidIntervalError, "invalid type: #{type}" unless TYPES.include?(type)
       @type = type
 
       case type
@@ -18,16 +20,66 @@ class Interval
         valid_offsets = [0, 3, 4]
       end
 
-      raise "invalid interval: #{to_s}" if valid_offsets and !valid_offsets.include?(diatonic_offset)
+      raise InvalidIntervalError, "invalid interval: #{to_s}" if valid_offsets and !valid_offsets.include?(diatonic_offset)
     end
   end
 
   def ==(interval)
     return false unless interval.offset == self.offset
-    if interval.type && self.type
+    if interval.specific? && self.specific?
       return false unless interval.type == self.type
     end
     true
+  end
+
+  def generic?
+    type.nil?
+  end
+
+  def specific?
+    !generic?
+  end
+
+  def up?
+    offset > 0
+  end
+
+  def down?
+    offset < 0
+  end
+
+  def unison?
+    offset == 0
+  end
+
+  def unison_or_octave?
+    diatonic_offset == 0
+  end
+
+  alias octave_or_unison? unison_or_octave?
+
+  def octave?
+    unison_or_octave? and not unison?
+  end
+
+  def perfect?
+    type == :perfect
+  end
+
+  def major?
+    type == :major
+  end
+
+  def minor?
+    type == :minor
+  end
+
+  def augmented?
+    type == :augmented
+  end
+
+  def diminished?
+    type == :diminished
   end
 
   def to_s
