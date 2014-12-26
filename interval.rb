@@ -201,6 +201,16 @@ class Interval
     def minor(i); one_based(i, :minor); end
     def augmented(i); one_based(i, :augmented); end
     def diminished(i); one_based(i, :diminished); end
+
+    def tritone(n=1)
+      if n.even?
+        octave(n / 2)
+      else
+        s = n < 0 ? -1 : 1
+        i = s * ((n.abs / 2) * 7 + 3)
+        zero_based(i, :augmented)
+      end
+    end
   end
 
 end

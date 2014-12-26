@@ -47,7 +47,7 @@ class TestInterval < Test::Unit::TestCase
     assert_equal 3, Interval.minor(3).semitones
     assert_equal 4, Interval.major(3).semitones
     assert_equal 5, Interval.perfect(4).semitones
-    assert_equal 6, Interval.augmented(4).semitones
+    assert_equal 6, Interval.tritone.semitones
     assert_equal 7, Interval.perfect(5).semitones
     assert_equal 8, Interval.minor(6).semitones
     assert_equal 9, Interval.major(6).semitones
@@ -66,6 +66,14 @@ class TestInterval < Test::Unit::TestCase
     assert_equal -1, Interval.diminished(1).semitones
     assert_equal -1, Interval.augmented(-1).semitones
     assert_equal 1, Interval.diminished(-1).semitones
+  end
+
+  def test_tritones
+    assert_equal 6, Interval.tritone.semitones
+    assert_equal 0, Interval.tritone(0).semitones
+    assert_equal 12, Interval.tritone(2).semitones
+    assert_equal Interval.tritone(2), Interval.octave
+    assert_equal Interval.tritone(-4), Interval.octave(-2)
   end
 
 end
