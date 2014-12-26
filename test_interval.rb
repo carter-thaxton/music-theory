@@ -22,6 +22,17 @@ class TestInterval < Test::Unit::TestCase
     assert_equal("double-diminished octave", Interval.double_diminished(8).to_s)
   end
 
+  def test_interval_shorthand
+    assert_equal("M3", Interval.major(3).shorthand)
+    assert_equal("M2", Interval.major(2).shorthand)
+    assert_equal("P1", Interval.unison.shorthand)
+    assert_equal("P8", Interval.octave.shorthand)
+    assert_equal("-P8", Interval.octave(-1).shorthand)
+    assert_equal("-P15", Interval.octave(-2).shorthand)
+    assert_equal("d8", Interval.diminished(8).shorthand)
+    assert_equal("dd8", Interval.double_diminished(8).shorthand)
+  end
+
   def test_helpers
     assert Interval.major(3).major?
     assert !Interval.major(3).minor?

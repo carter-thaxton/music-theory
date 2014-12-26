@@ -170,6 +170,21 @@ class Interval
     "#{dir_s}#{quality_s}#{ord_s}"
   end
 
+  def shorthand
+    quality_s = case quality
+      when :perfect then 'P'
+      when :major then 'M'
+      when :minor then 'm'
+      when :augmented then 'A'
+      when :diminished then 'd'
+      when :double_augmented then 'AA'
+      when :double_diminished then 'dd'
+    end
+
+    s = number < 0 ? '-' : ''
+    "#{s}#{quality_s}#{number.abs}"
+  end
+
   def scale_number
     (number.abs - 1) % 7 + 1
   end
