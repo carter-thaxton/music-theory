@@ -2,22 +2,22 @@
 class Interval
   class InvalidIntervalError < ArgumentError; end
 
-  attr_reader :offset, :type
+  attr_reader :offset, :quality
 
-  TYPES = [:perfect, :major, :minor, :augmented, :diminished]
+  QUALITIES = [:perfect, :major, :minor, :augmented, :diminished]
 
-  def initialize(offset, type=nil, down=false)
+  def initialize(offset, quality=nil, down=false)
     @offset = offset.to_i
 
     # Use explicit down boolean to handle direction of diminished/augmented unisons
     raise InvalidIntervalError, "explicit down interval conflicts with non-zero offset" if down && @offset > 0
     @down = down || @offset < 0
 
-    if type
-      raise InvalidIntervalError, "invalid type: #{type}" unless TYPES.include?(type)
-      @type = type
+    if quality
+      raise InvalidIntervalError, "invalid quality: #{quality}" unless QUALITIES.include?(quality)
+      @quality = quality
 
-      case type
+      case quality
       when :major, :minor
         valid_offsets = [1, 2, 5, 6]
       when :perfect
@@ -31,7 +31,7 @@ class Interval
   def ==(interval)
     return false unless interval.offset == self.offset && interval.down? == self.down?
     if interval.specific? && self.specific?
-      return false unless interval.type == self.type
+      return false unless interval.quality == self.quality
     end
     true
   end
@@ -39,7 +39,7 @@ class Interval
   def semitones
     raise InvalidIntervalError, "Cannot determine number of semitones for a generic interval" if generic?
 
-    result = case type
+    result = case quality
       when :perfect
         case diatonic_offset
           when 0 then 0
@@ -90,7 +90,7 @@ class Interval
   end
 
   def generic?
-    type.nil?
+    quality.nil?
   end
 
   def specific?
@@ -120,29 +120,29 @@ class Interval
   end
 
   def perfect?
-    type == :perfect
+    quality == :perfect
   end
 
   def major?
-    type == :major
+    quality == :major
   end
 
   def minor?
-    type == :minor
+    quality == :minor
   end
 
   def augmented?
-    type == :augmented
+    quality == :augmented
   end
 
   def diminished?
-    type == :diminished
+    quality == :diminished
   end
 
   def to_s
     dir_s = "down " if offset < 0
-    type_s = "#{type} " if type && diatonic_offset != 0
-    "#{dir_s}#{type_s}#{ord_s}"
+    quality_s = "#{quality} " if quality && diatonic_offset != 0
+    "#{dir_s}#{quality_s}#{ord_s}"
   end
 
   def diatonic_offset
@@ -181,17 +181,17 @@ class Interval
   end
 
   class << self
-    def zero_based(offset, type=nil)
-      Interval.new(offset, type)
+    def zero_based(offset, quality=nil)
+      Interval.new(offset, quality)
     end
 
-    def one_based(offset, type=nil)
+    def one_based(offset, quality=nil)
       o = offset.to_i
       raise "offset must be a non-zero integer" if o == 0
       s = o < 0 ? -1 : 1
 
       # Explicitly handle diminished/augmented unisons with an extra boolean parameter
-      Interval.new(o - s, type, o < 0)
+      Interval.new(o - s, quality, o < 0)
     end
 
     def unison; zero_based(0, :perfect); end
@@ -216,5 +216,5 @@ class Interval
 end
 
 class Fixnum
-  def to_interval(type=nil); Interval.zero_based(self, type); end
+  def to_interval(quality=nil); Interval.zero_based(self, quality); end
 end
