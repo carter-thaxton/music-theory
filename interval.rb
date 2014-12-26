@@ -10,13 +10,15 @@ class Interval
     if type
       raise "invalid type: #{type}" unless TYPES.include?(type)
       @type = type
-    end
 
-    case type
-    when :major, :minor
-      raise "invalid interval: #{to_s}" unless [1, 2, 5, 6].include?(diatonic_offset)
-    when :perfect
-      raise "invalid interval: #{to_s}" unless [0, 3, 4].include?(diatonic_offset)
+      case type
+      when :major, :minor
+        valid_offsets = [1, 2, 5, 6]
+      when :perfect
+        valid_offsets = [0, 3, 4]
+      end
+
+      raise "invalid interval: #{to_s}" if valid_offsets and !valid_offsets.include?(diatonic_offset)
     end
   end
 
