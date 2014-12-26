@@ -18,6 +18,8 @@ class TestInterval < Test::Unit::TestCase
     assert_equal("octave", Interval.octave.to_s)
     assert_equal("down octave", Interval.octave(-1).to_s)
     assert_equal("down 2 octaves", Interval.octave(-2).to_s)
+    assert_equal("diminished octave", Interval.diminished(8).to_s)
+    assert_equal("double-diminished octave", Interval.double_diminished(8).to_s)
   end
 
   def test_helpers
