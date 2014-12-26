@@ -6,8 +6,12 @@ class Interval
 
   TYPES = [:perfect, :major, :minor, :augmented, :diminished]
 
-  def initialize(offset, type=nil)
+  def initialize(offset, type=nil, down=false)
     @offset = offset.to_i
+
+    # Use explicit down boolean to handle direction of diminished/augmented unisons
+    raise InvalidIntervalError, "explicit down interval conflicts with non-zero offset" if down && @offset > 0
+    @down = down || @offset < 0
 
     if type
       raise InvalidIntervalError, "invalid type: #{type}" unless TYPES.include?(type)
@@ -32,6 +36,59 @@ class Interval
     true
   end
 
+  def semitones
+    raise InvalidIntervalError, "Cannot determine number of semitones for a generic interval" if generic?
+
+    result = case type
+      when :perfect
+        case diatonic_offset
+          when 0 then 0
+          when 3 then 5
+          when 4 then 7
+        end
+      when :major
+        case diatonic_offset
+          when 1 then 2
+          when 2 then 4
+          when 5 then 9
+          when 6 then 11
+        end
+      when :minor
+        case diatonic_offset
+          when 1 then 1
+          when 2 then 3
+          when 5 then 8
+          when 6 then 10
+        end
+      when :augmented
+        case diatonic_offset
+          when 0 then 1
+          when 1 then 3
+          when 2 then 5
+          when 3 then 6
+          when 4 then 8
+          when 5 then 10
+          when 6 then 12
+        end
+      when :diminished
+        case diatonic_offset
+          when 0 then -1
+          when 1 then 1
+          when 2 then 2
+          when 3 then 4
+          when 4 then 6
+          when 5 then 8
+          when 6 then 9
+        end
+    end
+
+    raise "Unhandled case" if result.nil?
+
+    result = -result if down?
+    result += octave_offset * 12
+    result
+  end
+
   def generic?
     type.nil?
   end
@@ -45,7 +102,7 @@ class Interval
   end
 
   def down?
-    offset < 0
+    @down
   end
 
   def unison?
@@ -84,12 +141,17 @@ class Interval
 
   def to_s
     dir_s = "down " if offset < 0
-    type_s = "#{type} " if type and diatonic_offset != 0
+    type_s = "#{type} " if type && diatonic_offset != 0
     "#{dir_s}#{type_s}#{ord_s}"
   end
 
   def diatonic_offset
     offset.abs % 7
+  end
+
+  def octave_offset
+    s = offset < 0 ? -1 : 1
+    (offset.abs / 7) * s
   end
 
   def inspect
@@ -127,7 +189,9 @@ class Interval
       o = offset.to_i
       raise "offset must be a non-zero integer" if o == 0
       s = o < 0 ? -1 : 1
-      Interval.new(o - s, type)
+
+      # Explicitly handle diminished/augmented unisons with an extra boolean parameter
+      Interval.new(o - s, type, o < 0)
     end
 
     def unison; zero_based(0, :perfect); end

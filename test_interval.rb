@@ -35,4 +35,37 @@ class TestInterval < Test::Unit::TestCase
     assert_raises(Interval::InvalidIntervalError) { Interval.perfect(3) }
     assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
   end
+
+  def test_semitones
+    assert_equal 0, Interval.unison.semitones
+
+    assert_equal 12, Interval.octave.semitones
+    assert_equal -12, Interval.octave(-1).semitones
+
+    assert_equal 1, Interval.minor(2).semitones
+    assert_equal 2, Interval.major(2).semitones
+    assert_equal 3, Interval.minor(3).semitones
+    assert_equal 4, Interval.major(3).semitones
+    assert_equal 5, Interval.perfect(4).semitones
+    assert_equal 6, Interval.augmented(4).semitones
+    assert_equal 7, Interval.perfect(5).semitones
+    assert_equal 8, Interval.minor(6).semitones
+    assert_equal 9, Interval.major(6).semitones
+    assert_equal 10, Interval.minor(7).semitones
+    assert_equal 11, Interval.major(7).semitones
+
+    assert_equal 13, Interval.minor(9).semitones
+    assert_equal 14, Interval.major(9).semitones
+
+    assert_equal -13, Interval.minor(-9).semitones
+    assert_equal -14, Interval.major(-9).semitones
+  end
+
+  def test_special_unisons
+    assert_equal 1, Interval.augmented(1).semitones
+    assert_equal -1, Interval.diminished(1).semitones
+    assert_equal -1, Interval.augmented(-1).semitones
+    assert_equal 1, Interval.diminished(-1).semitones
+  end
+
 end
