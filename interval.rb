@@ -169,7 +169,7 @@ class Interval
 
   def to_s
     dir_s = "down " if offset < 0
-    quality_s = "#{quality} " if quality && diatonic_offset != 0
+    quality_s = "#{quality} " if specific? and not (perfect? and unison_or_octave?)
     "#{dir_s}#{quality_s}#{ord_s}"
   end
 
