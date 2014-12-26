@@ -66,6 +66,9 @@ class TestInterval < Test::Unit::TestCase
     assert_equal -1, Interval.diminished(1).semitones
     assert_equal -1, Interval.augmented(-1).semitones
     assert_equal 1, Interval.diminished(-1).semitones
+
+    assert_equal Interval.diminished(-1), Interval.diminished(-1)
+    assert_not_equal Interval.diminished(-1), Interval.diminished(1)
   end
 
   def test_tritones

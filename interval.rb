@@ -29,7 +29,7 @@ class Interval
   end
 
   def ==(interval)
-    return false unless interval.offset == self.offset
+    return false unless interval.offset == self.offset && interval.down? == self.down?
     if interval.specific? && self.specific?
       return false unless interval.type == self.type
     end
