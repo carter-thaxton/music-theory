@@ -22,6 +22,14 @@ class Interval
     end
   end
 
+  def ==(interval)
+    return false unless interval.offset == self.offset
+    if interval.type && self.type
+      return false unless interval.type == self.type
+    end
+    true
+  end
+
   def to_s
     dir_s = "down " if offset < 0
     type_s = "#{type} " if type and diatonic_offset != 0
