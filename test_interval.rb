@@ -47,7 +47,7 @@ class TestInterval < Test::Unit::TestCase
     assert_equal 3, Interval.minor(3).semitones
     assert_equal 4, Interval.major(3).semitones
     assert_equal 5, Interval.perfect(4).semitones
-    assert_equal 6, Interval.tritone.semitones
+    assert_equal 6, Interval.augmented(4).semitones
     assert_equal 7, Interval.perfect(5).semitones
     assert_equal 8, Interval.minor(6).semitones
     assert_equal 9, Interval.major(6).semitones
@@ -59,6 +59,26 @@ class TestInterval < Test::Unit::TestCase
 
     assert_equal -13, Interval.minor(-9).semitones
     assert_equal -14, Interval.major(-9).semitones
+  end
+
+  def test_diminished
+    assert_equal 0, Interval.diminished(2).semitones
+    assert_equal 2, Interval.diminished(3).semitones
+    assert_equal 4, Interval.diminished(4).semitones
+    assert_equal 6, Interval.diminished(5).semitones
+    assert_equal 7, Interval.diminished(6).semitones
+    assert_equal 9, Interval.diminished(7).semitones
+    assert_equal 11, Interval.diminished(8).semitones
+  end
+
+  def test_augmented
+    assert_equal 3, Interval.augmented(2).semitones
+    assert_equal 5, Interval.augmented(3).semitones
+    assert_equal 6, Interval.augmented(4).semitones
+    assert_equal 8, Interval.augmented(5).semitones
+    assert_equal 10, Interval.augmented(6).semitones
+    assert_equal 12, Interval.augmented(7).semitones
+    assert_equal 13, Interval.augmented(8).semitones
   end
 
   def test_special_unisons

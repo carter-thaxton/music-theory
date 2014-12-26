@@ -73,11 +73,11 @@ class Interval
       when :diminished
         case diatonic_offset
           when 0 then -1
-          when 1 then 1
+          when 1 then 0
           when 2 then 2
           when 3 then 4
           when 4 then 6
-          when 5 then 8
+          when 5 then 7
           when 6 then 9
         end
     end
