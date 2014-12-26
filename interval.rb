@@ -2,16 +2,13 @@
 class Interval
   class InvalidIntervalError < ArgumentError; end
 
-  attr_reader :offset, :quality
+  attr_reader :number, :quality
 
   QUALITIES = [:perfect, :major, :minor, :augmented, :diminished, :double_augmented, :double_diminished]
 
-  def initialize(offset, quality=nil, down=false)
-    @offset = offset.to_i
-
-    # Use explicit down boolean to handle direction of diminished/augmented unisons
-    raise InvalidIntervalError, "explicit down interval conflicts with non-zero offset" if down && @offset > 0
-    @down = down || @offset < 0
+  def initialize(number, quality=nil)
+    @number = number.to_i
+    raise InvalidIntervalError, "number must be a non-zero integer" if @number == 0
 
     if quality
       raise InvalidIntervalError, "invalid quality: #{quality}" unless QUALITIES.include?(quality)
@@ -19,17 +16,17 @@ class Interval
 
       case quality
       when :major, :minor
-        valid_offsets = [1, 2, 5, 6]
+        valid_numbers = [2, 3, 6, 7]
       when :perfect
-        valid_offsets = [0, 3, 4]
+        valid_numbers = [1, 4, 5]
       end
 
-      raise InvalidIntervalError, "invalid interval: #{to_s}" if valid_offsets and !valid_offsets.include?(diatonic_offset)
+      raise InvalidIntervalError, "invalid interval: #{to_s}" if valid_numbers and !valid_numbers.include?(scale_number)
     end
   end
 
   def ==(interval)
-    return false unless interval.offset == self.offset && interval.down? == self.down?
+    return false unless interval.number == self.number
     if interval.specific? && self.specific?
       return false unless interval.quality == self.quality
     end
@@ -41,64 +38,64 @@ class Interval
 
     result = case quality
       when :perfect
-        case diatonic_offset
-          when 0 then 0
-          when 3 then 5
-          when 4 then 7
+        case scale_number
+          when 1 then 0
+          when 4 then 5
+          when 5 then 7
         end
       when :major
-        case diatonic_offset
-          when 1 then 2
-          when 2 then 4
-          when 5 then 9
-          when 6 then 11
-        end
-      when :minor
-        case diatonic_offset
-          when 1 then 1
-          when 2 then 3
-          when 5 then 8
-          when 6 then 10
-        end
-      when :augmented
-        case diatonic_offset
-          when 0 then 1
-          when 1 then 3
-          when 2 then 5
-          when 3 then 6
-          when 4 then 8
-          when 5 then 10
-          when 6 then 12
-        end
-      when :diminished
-        case diatonic_offset
-          when 0 then -1
-          when 1 then 0
+        case scale_number
           when 2 then 2
           when 3 then 4
-          when 4 then 6
-          when 5 then 7
           when 6 then 9
+          when 7 then 11
         end
-      when :double_augmented
-        case diatonic_offset
-          when 0 then 2
-          when 1 then 4
-          when 2 then 6
-          when 3 then 7
-          when 4 then 9
-          when 5 then 11
-          when 6 then 13
-        end
-      when :double_diminished
-        case diatonic_offset
-          when 0 then -2
-          when 1 then -1
+      when :minor
+        case scale_number
           when 2 then 1
           when 3 then 3
-          when 4 then 5
-          when 5 then 6
           when 6 then 8
+          when 7 then 10
+        end
+      when :augmented
+        case scale_number
+          when 1 then 1
+          when 2 then 3
+          when 3 then 5
+          when 4 then 6
+          when 5 then 8
+          when 6 then 10
+          when 7 then 12
+        end
+      when :diminished
+        case scale_number
+          when 1 then -1
+          when 2 then 0
+          when 3 then 2
+          when 4 then 4
+          when 5 then 6
+          when 6 then 7
+          when 7 then 9
+        end
+      when :double_augmented
+        case scale_number
+          when 1 then 2
+          when 2 then 4
+          when 3 then 6
+          when 4 then 7
+          when 5 then 9
+          when 6 then 11
+          when 7 then 13
+        end
+      when :double_diminished
+        case scale_number
+          when 1 then -2
+          when 2 then -1
+          when 3 then 1
+          when 4 then 3
+          when 5 then 5
+          when 6 then 6
+          when 7 then 8
         end
     end
 
@@ -117,20 +114,20 @@ class Interval
     !generic?
   end
 
-  def up?
-    offset > 0
+  def down?
+    number < 0
   end
 
-  def down?
-    @down
+  def up?
+    !down?
   end
 
   def unison?
-    offset == 0
+    number == 1 || number == -1
   end
 
   def unison_or_octave?
-    diatonic_offset == 0
+    scale_number == 1
   end
 
   alias octave_or_unison? unison_or_octave?
@@ -168,18 +165,18 @@ class Interval
   end
 
   def to_s
-    dir_s = "down " if offset < 0
+    dir_s = "down " if down?
     quality_s = "#{quality.to_s.gsub('_', '-')} " if specific? and not (perfect? and unison_or_octave?)
     "#{dir_s}#{quality_s}#{ord_s}"
   end
 
-  def diatonic_offset
-    offset.abs % 7
+  def scale_number
+    (number.abs - 1) % 7 + 1
   end
 
   def octave_offset
-    s = offset < 0 ? -1 : 1
-    (offset.abs / 7) * s
+    s = down? ? -1 : 1
+    ((number.abs - 1) / 7) * s
   end
 
   def inspect
@@ -193,33 +190,29 @@ class Interval
   private
 
   def ord_s
-    i = offset.abs
+    i = number.abs
     case i
-    when 0 then "unison"
-    when 1 then "2nd"
-    when 2 then "3rd"
+    when 1 then "unison"
+    when 2 then "2nd"
+    when 3 then "3rd"
     else
-      if i % 7 == 0
-        n = i / 7
+      if (i - 1) % 7 == 0
+        n = (i - 1) / 7
         if n == 1 then "octave" else "#{n} octaves" end
       else
-        "#{i+1}th"
+        "#{i}th"
       end
     end
   end
 
   class << self
-    def zero_based(offset, quality=nil)
-      Interval.new(offset, quality)
+    def one_based(number, quality=nil)
+      Interval.new(number, quality)
     end
 
-    def one_based(offset, quality=nil)
-      o = offset.to_i
-      raise "offset must be a non-zero integer" if o == 0
-      s = o < 0 ? -1 : 1
-
-      # Explicitly handle diminished/augmented unisons with an extra boolean parameter
-      Interval.new(o - s, quality, o < 0)
+    def zero_based(offset, quality=nil)
+      offset += (offset < 0 ? -1 : 1)
+      Interval.new(offset, quality)
     end
 
     def unison; zero_based(0, :perfect); end
