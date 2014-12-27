@@ -2,6 +2,7 @@ require 'test/unit'
 require 'music-theory'
 
 class TestInterval < Test::Unit::TestCase
+  include MusicTheory
 
   def test_fixnum
     assert_equal(Interval.unison, 0.to_interval)
