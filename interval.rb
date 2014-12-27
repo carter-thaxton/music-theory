@@ -2,11 +2,11 @@
 class Interval
   class InvalidIntervalError < ArgumentError; end
 
-  attr_reader :number, :quality
+  attr_reader :number, :quality, :quality_count
 
-  QUALITIES = [:perfect, :major, :minor, :augmented, :diminished, :double_augmented, :double_diminished]
+  QUALITIES = [:perfect, :major, :minor, :augmented, :diminished]
 
-  def initialize(number, quality=nil)
+  def initialize(number, quality=nil, quality_count=nil)
     @number = number.to_i
     raise InvalidIntervalError, "number must be a non-zero integer" if @number == 0
 
@@ -21,14 +21,19 @@ class Interval
         valid_numbers = [1, 4, 5]
       end
 
-      raise InvalidIntervalError, "invalid interval: #{to_s}" if valid_numbers and !valid_numbers.include?(scale_number)
+      raise InvalidIntervalError, "invalid interval: #{to_s}" if valid_numbers and !valid_numbers.include?(simple_number)
+
+      if quality == :diminished || quality == :augmented
+        @quality_count = quality_count || 1
+        raise InvalidIntervalError, "invalid quality_count: #{quality_count} for #{quality}" unless @quality_count > 0
+      end
     end
   end
 
   def ==(interval)
     return false unless interval.number == self.number
     if interval.specific? && self.specific?
-      return false unless interval.quality == self.quality
+      return false unless interval.quality == self.quality && interval.quality_count == self.quality_count
     end
     true
   end
@@ -38,64 +43,44 @@ class Interval
 
     result = case quality
       when :perfect
-        case scale_number
+        case simple_number
           when 1 then 0
           when 4 then 5
           when 5 then 7
         end
       when :major
-        case scale_number
+        case simple_number
           when 2 then 2
           when 3 then 4
           when 6 then 9
           when 7 then 11
         end
       when :minor
-        case scale_number
+        case simple_number
           when 2 then 1
           when 3 then 3
           when 6 then 8
           when 7 then 10
         end
       when :augmented
-        case scale_number
-          when 1 then 1
-          when 2 then 3
-          when 3 then 5
-          when 4 then 6
-          when 5 then 8
-          when 6 then 10
-          when 7 then 12
+        case simple_number
+          when 1 then 0 + quality_count
+          when 2 then 2 + quality_count
+          when 3 then 4 + quality_count
+          when 4 then 5 + quality_count
+          when 5 then 7 + quality_count
+          when 6 then 9 + quality_count
+          when 7 then 11 + quality_count
         end
       when :diminished
-        case scale_number
-          when 1 then -1
-          when 2 then 0
-          when 3 then 2
-          when 4 then 4
-          when 5 then 6
-          when 6 then 7
-          when 7 then 9
-        end
-      when :double_augmented
-        case scale_number
-          when 1 then 2
-          when 2 then 4
-          when 3 then 6
-          when 4 then 7
-          when 5 then 9
-          when 6 then 11
-          when 7 then 13
-        end
-      when :double_diminished
-        case scale_number
-          when 1 then -2
-          when 2 then -1
-          when 3 then 1
-          when 4 then 3
-          when 5 then 5
-          when 6 then 6
-          when 7 then 8
+        case simple_number
+          when 1 then 0 - quality_count
+          when 2 then 1 - quality_count
+          when 3 then 3 - quality_count
+          when 4 then 5 - quality_count
+          when 5 then 7 - quality_count
+          when 6 then 8 - quality_count
+          when 7 then 10 - quality_count
         end
     end
 
@@ -114,6 +99,14 @@ class Interval
     !generic?
   end
 
+  def simple?
+    number.abs <= 7
+  end
+
+  def compound?
+    !simple?
+  end
+
   def down?
     number < 0
   end
@@ -127,7 +120,7 @@ class Interval
   end
 
   def unison_or_octave?
-    scale_number == 1
+    simple_number == 1
   end
 
   alias octave_or_unison? unison_or_octave?
@@ -156,17 +149,18 @@ class Interval
     quality == :diminished
   end
 
-  def double_augmented?
-    quality == :double_augmented
-  end
-
-  def double_diminished?
-    quality == :double_diminished
-  end
-
   def to_s
     dir_s = "down " if down?
-    quality_s = "#{quality.to_s.gsub('_', '-')} " if specific? and not (perfect? and unison_or_octave?)
+    if specific? and not (perfect? and unison_or_octave?)
+      prefix = case quality_count
+      when nil, 0, 1 then ''
+      when 2 then 'double-'
+      when 3 then 'triple-'
+      else
+        "#{quality_count}-"
+      end
+      quality_s = "#{prefix}#{quality} "
+    end
     "#{dir_s}#{quality_s}#{ord_s}"
   end
 
@@ -175,17 +169,15 @@ class Interval
       when :perfect then 'P'
       when :major then 'M'
       when :minor then 'm'
-      when :augmented then 'A'
-      when :diminished then 'd'
-      when :double_augmented then 'AA'
-      when :double_diminished then 'dd'
+      when :augmented then 'A' * quality_count
+      when :diminished then 'd' * quality_count
     end
 
     s = number < 0 ? '-' : ''
     "#{s}#{quality_s}#{number.abs}"
   end
 
-  def scale_number
+  def simple_number
     (number.abs - 1) % 7 + 1
   end
 
@@ -221,13 +213,13 @@ class Interval
   end
 
   class << self
-    def one_based(number, quality=nil)
-      Interval.new(number, quality)
+    def one_based(number, quality=nil, quality_count=nil)
+      Interval.new(number, quality, quality_count)
     end
 
-    def zero_based(offset, quality=nil)
+    def zero_based(offset, quality=nil, quality_count=nil)
       offset += (offset < 0 ? -1 : 1)
-      Interval.new(offset, quality)
+      Interval.new(offset, quality, quality_count)
     end
 
     def unison; zero_based(0, :perfect); end
@@ -235,10 +227,10 @@ class Interval
     def perfect(i); one_based(i, :perfect); end
     def major(i); one_based(i, :major); end
     def minor(i); one_based(i, :minor); end
-    def augmented(i); one_based(i, :augmented); end
-    def diminished(i); one_based(i, :diminished); end
-    def double_augmented(i); one_based(i, :double_augmented); end
-    def double_diminished(i); one_based(i, :double_diminished); end
+    def augmented(i, a=1); one_based(i, :augmented, a); end
+    def diminished(i, d=1); one_based(i, :diminished, d); end
+    def double_augmented(i); one_based(i, :augmented, 2); end
+    def double_diminished(i); one_based(i, :diminished, 2); end
 
     def tritone(n=1)
       if n.even?
