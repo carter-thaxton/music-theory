@@ -278,11 +278,15 @@ module MusicTheory
     end
 
     def +(interval)
-      interval = interval.to_interval
+      interval = Interval.zero_based(interval) if interval.is_a? Fixnum
 
-      new_number = self.number + interval.number - 1
+      i = interval.number + (interval.down? ? 1 : -1)
+      j = self.number + (self.down? ? 1 : -1)
+      n = i + j
+      o = n < 0 || n == 0 && down? ? -1 : 1
+      new_number = n + o
+
       if self.generic? or interval.generic?
-        new_number = 1 if new_number == -1  # avoid generic down unisons when adding
         return Interval.new(new_number)
       else
         raise "Cannot handle specific intervals yet"
@@ -336,7 +340,4 @@ module MusicTheory
 
   end
 
-  class ::Fixnum
-    def to_interval(quality=nil); Interval.zero_based(self, quality); end
-  end
 end

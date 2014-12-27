@@ -26,13 +26,6 @@ class TestInterval < Test::Unit::TestCase
     assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
   end
 
-  def test_fixnum
-    assert_equal(Interval.unison, 0.to_interval)
-    assert_equal(Interval.major(2), 1.to_interval)
-    assert_equal(Interval.octave, 7.to_interval)
-    assert_equal(Interval.octave(-1), -7.to_interval)
-  end
-
   def test_interval_strings
     assert_equal("major 3rd", Interval.major(3).to_s)
     assert_equal("major 2nd", Interval.major(2).to_s)
@@ -216,6 +209,10 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.octave, Interval.new(5) + Interval.new(4)
     assert_equal Interval.new(5), Interval.new(4) + 1
     assert_equal Interval.new(1), Interval.new(1) + 0
+    assert_equal Interval.new(-1), Interval.new(-1) + 0
+    assert_equal Interval.new(-1), Interval.new(-3) + Interval.new(3)
+    assert_equal Interval.new(-2), Interval.new(-4) + Interval.new(3)
+    assert_equal Interval.new(2), Interval.new(-4) + Interval.new(5)
   end
 
   def x_test_specific_interval_addition
