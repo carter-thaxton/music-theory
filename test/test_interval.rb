@@ -146,4 +146,22 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.tritone(-4), Interval.octave(-2)
   end
 
+  def test_augment_and_diminish
+    assert_equal Interval.major(3), Interval.minor(3).augment
+    assert_equal Interval.augmented(4), Interval.perfect(4).augment
+    assert_equal Interval.diminished(5), Interval.perfect(5).diminish
+    assert_equal Interval.unison, Interval.unison.augment(4).diminish(4)
+    assert_equal Interval.minor(3), Interval.major(3).augment(3).diminish(4)
+  end
+
+  def test_generic_interval_addition
+    assert_equal Interval.new(5), Interval.new(3) + Interval.new(3)
+    assert_equal Interval.new(1), Interval.new(3) + Interval.new(-3)
+    assert_equal Interval.octave, Interval.new(5) + Interval.new(4)
+  end
+
+  def x_test_specific_interval_addition
+    assert_equal Interval.augmented(5), Interval.major(3) + Interval.major(3)
+  end
+
 end

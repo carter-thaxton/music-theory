@@ -176,6 +176,89 @@ module MusicTheory
       self
     end
 
+    def augment(n=1)
+      if n == 0
+        self
+      elsif n < 0
+        diminish(-n)
+      elsif n > 1
+        result = self
+        n.times do
+          result = result.augment
+        end
+        result
+      else
+        case quality
+        when :perfect, :major
+          Interval.new(number, :augmented, 1)
+        when :minor
+          Interval.new(number, :major)
+        when :diminished
+          q = quality_count - 1
+          if q == 0
+            if [1,4,5].include? simple_number
+              Interval.new(number, :perfect)
+            else
+              Interval.new(number, :minor)
+            end
+          else
+            Interval.new(number, :diminished, q)
+          end
+        when :augmented
+          Interval.new(number, :augmented, quality_count + 1)
+        end
+      end
+    end
+
+    def diminish(n=1)
+      if n == 0
+        self
+      elsif n < 0
+        augment(-n)
+      elsif n > 1
+        result = self
+        n.times do
+          result = result.diminish
+        end
+        result
+      else
+        case quality
+        when :perfect, :minor
+          Interval.new(number, :diminished, 1)
+        when :major
+          Interval.new(number, :minor)
+        when :diminished
+          Interval.new(number, :diminished, quality_count + 1)
+        when :augmented
+          q = quality_count - 1
+          if q == 0
+            if [1,4,5].include? simple_number
+              Interval.new(number, :perfect)
+            else
+              Interval.new(number, :major)
+            end
+          else
+            Interval.new(number, :augmented, q)
+          end
+        end
+      end
+    end
+
+    alias augmented augment
+    alias diminished diminish
+
+    def +(interval)
+      interval = interval.to_interval
+
+      new_number = self.number + interval.number - 1
+      if self.generic? or interval.generic?
+        new_number = 1 if new_number == -1  # avoid generic down unisons when adding
+        return Interval.new(new_number)
+      else
+        raise "Cannot handle specific intervals yet"
+      end
+    end
+
     private
 
     def ord_s
