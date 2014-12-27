@@ -7,4 +7,12 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
+task :console do
+  require 'irb'
+  require 'music-theory'
+  include MusicTheory
+  ARGV.clear
+  IRB.start
+end
+
 task :default => :test
