@@ -4,11 +4,33 @@ require 'music-theory'
 class TestInterval < Test::Unit::TestCase
   include MusicTheory
 
+  def test_generic
+    assert_equal 2, Interval.new(2).number
+    assert Interval.new(2).generic?
+    assert_equal Interval.new(2), Interval.major(2)
+  end
+
+  def test_helpers
+    assert Interval.major(3).major?
+    assert !Interval.major(3).minor?
+    assert Interval.diminished(3).diminished?
+    assert Interval.octave(3).octave?
+    assert !Interval.unison.octave?
+    assert Interval.unison.octave_or_unison?
+    assert Interval.octave.octave_or_unison?
+  end
+
+  def test_validations
+    assert_raises(Interval::InvalidIntervalError) { Interval.major(5) }
+    assert_raises(Interval::InvalidIntervalError) { Interval.perfect(3) }
+    assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
+  end
+
   def test_fixnum
     assert_equal(Interval.unison, 0.to_interval)
-    assert_equal(Interval.one_based(2), 1.to_interval)
-    assert_equal("octave", 7.to_interval.to_s)
-    assert_equal("down octave", -7.to_interval.to_s)
+    assert_equal(Interval.major(2), 1.to_interval)
+    assert_equal(Interval.octave, 7.to_interval)
+    assert_equal(Interval.octave(-1), -7.to_interval)
   end
 
   def test_interval_strings
@@ -31,22 +53,6 @@ class TestInterval < Test::Unit::TestCase
     assert_equal("-P15", Interval.octave(-2).shorthand)
     assert_equal("d8", Interval.diminished(8).shorthand)
     assert_equal("dd8", Interval.double_diminished(8).shorthand)
-  end
-
-  def test_helpers
-    assert Interval.major(3).major?
-    assert !Interval.major(3).minor?
-    assert Interval.diminished(3).diminished?
-    assert Interval.octave(3).octave?
-    assert !Interval.unison.octave?
-    assert Interval.unison.octave_or_unison?
-    assert Interval.octave.octave_or_unison?
-  end
-
-  def test_validations
-    assert_raises(Interval::InvalidIntervalError) { Interval.major(5) }
-    assert_raises(Interval::InvalidIntervalError) { Interval.perfect(3) }
-    assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
   end
 
   def test_semitones

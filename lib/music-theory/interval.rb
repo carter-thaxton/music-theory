@@ -195,24 +195,20 @@ module MusicTheory
     end
 
     class << self
-      def one_based(number, quality=nil, quality_count=nil)
-        Interval.new(number, quality, quality_count)
-      end
-
       def zero_based(offset, quality=nil, quality_count=nil)
         offset += (offset < 0 ? -1 : 1)
-        Interval.new(offset, quality, quality_count)
+        new(offset, quality, quality_count)
       end
 
-      def unison; zero_based(0, :perfect); end
+      def unison; new(1, :perfect); end
       def octave(n=1); zero_based(7*n, :perfect); end
-      def perfect(i); one_based(i, :perfect); end
-      def major(i); one_based(i, :major); end
-      def minor(i); one_based(i, :minor); end
-      def augmented(i, a=1); one_based(i, :augmented, a); end
-      def diminished(i, d=1); one_based(i, :diminished, d); end
-      def double_augmented(i); one_based(i, :augmented, 2); end
-      def double_diminished(i); one_based(i, :diminished, 2); end
+      def perfect(i); new(i, :perfect); end
+      def major(i); new(i, :major); end
+      def minor(i); new(i, :minor); end
+      def augmented(i, a=1); new(i, :augmented, a); end
+      def diminished(i, d=1); new(i, :diminished, d); end
+      def double_augmented(i); new(i, :augmented, 2); end
+      def double_diminished(i); new(i, :diminished, 2); end
 
       def tritone(n=1)
         if n.even?
