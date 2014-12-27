@@ -16,12 +16,10 @@ module MusicTheory
 
         case quality
         when :major, :minor
-          valid_numbers = [2, 3, 6, 7]
+          raise InvalidIntervalError, "invalid interval: #{to_s}" unless major_minor_number?
         when :perfect
-          valid_numbers = [1, 4, 5]
+          raise InvalidIntervalError, "invalid interval: #{to_s}" unless perfect_number?
         end
-
-        raise InvalidIntervalError, "invalid interval: #{to_s}" if valid_numbers and !valid_numbers.include?(simple_number)
 
         if quality == :diminished || quality == :augmented
           @quality_count = quality_count || 1
@@ -131,6 +129,14 @@ module MusicTheory
       quality == :diminished
     end
 
+    def perfect_number?(n=simple_number)
+      [1,4,5].include? n
+    end
+
+    def major_minor_number?(n=simple_number)
+      [2,3,6,7].include? n
+    end
+
     def to_s
       dir_s = "down " if down?
       if specific? and not (perfect? and unison_or_octave?)
@@ -196,7 +202,7 @@ module MusicTheory
         when :diminished
           q = quality_count - 1
           if q == 0
-            if [1,4,5].include? simple_number
+            if perfect_number?
               Interval.new(number, :perfect)
             else
               Interval.new(number, :minor)
@@ -232,7 +238,7 @@ module MusicTheory
         when :augmented
           q = quality_count - 1
           if q == 0
-            if [1,4,5].include? simple_number
+            if perfect_number?
               Interval.new(number, :perfect)
             else
               Interval.new(number, :major)
