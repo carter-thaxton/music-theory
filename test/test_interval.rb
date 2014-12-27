@@ -1,6 +1,5 @@
 require 'test/unit'
-require './interval'
-require './note'
+require 'music-theory'
 
 class TestInterval < Test::Unit::TestCase
 
