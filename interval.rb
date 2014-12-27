@@ -26,6 +26,8 @@ class Interval
       if quality == :diminished || quality == :augmented
         @quality_count = quality_count || 1
         raise InvalidIntervalError, "invalid quality_count: #{quality_count} for #{quality}" unless @quality_count > 0
+      else
+        @quality_count = 0
       end
     end
   end
@@ -42,27 +44,7 @@ class Interval
     raise InvalidIntervalError, "Cannot determine number of semitones for a generic interval" if generic?
 
     result = case quality
-      when :perfect
-        case simple_number
-          when 1 then 0
-          when 4 then 5
-          when 5 then 7
-        end
-      when :major
-        case simple_number
-          when 2 then 2
-          when 3 then 4
-          when 6 then 9
-          when 7 then 11
-        end
-      when :minor
-        case simple_number
-          when 2 then 1
-          when 3 then 3
-          when 6 then 8
-          when 7 then 10
-        end
-      when :augmented
+      when :perfect, :major, :augmented
         case simple_number
           when 1 then 0 + quality_count
           when 2 then 2 + quality_count
@@ -72,7 +54,7 @@ class Interval
           when 6 then 9 + quality_count
           when 7 then 11 + quality_count
         end
-      when :diminished
+      when :minor, :diminished
         case simple_number
           when 1 then 0 - quality_count
           when 2 then 1 - quality_count
@@ -153,7 +135,7 @@ class Interval
     dir_s = "down " if down?
     if specific? and not (perfect? and unison_or_octave?)
       prefix = case quality_count
-      when nil, 0, 1 then ''
+      when 0, 1 then ''
       when 2 then 'double-'
       when 3 then 'triple-'
       else
