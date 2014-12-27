@@ -141,7 +141,7 @@ module MusicTheory
       dir_s = "down " if down?
       if specific? and not (perfect? and unison_or_octave?)
         prefix = case quality_count
-        when 0, 1 then ''
+        when nil, 0, 1 then ''
         when 2 then 'double-'
         when 3 then 'triple-'
         else
