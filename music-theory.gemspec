@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Carter Thaxton"]
   spec.email         = ["carter.thaxton@gmail.com"]
   spec.summary       = %q{Work with music theory concepts in ruby}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.description   = %q{Handles notes, intervals, scales, chords, in a complete manner.}
   spec.homepage      = "https://github.com/carter-thaxton/music-theory"
   spec.license       = "MIT"
 
