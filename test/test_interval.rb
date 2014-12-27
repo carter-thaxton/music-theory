@@ -154,10 +154,68 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.minor(3), Interval.major(3).augment(3).diminish(4)
   end
 
+  def test_generic_inverse
+    assert_equal Interval.new(8), Interval.new(1).inverse
+    assert_equal Interval.new(7), Interval.new(2).inverse
+    assert_equal Interval.new(6), Interval.new(3).inverse
+    assert_equal Interval.new(5), Interval.new(4).inverse
+    assert_equal Interval.new(4), Interval.new(5).inverse
+    assert_equal Interval.new(3), Interval.new(6).inverse
+    assert_equal Interval.new(2), Interval.new(7).inverse
+    assert_equal Interval.new(1), Interval.new(8).inverse
+  end
+
+  def test_generic_compound_and_negative_inverse
+    assert_equal Interval.new(-8), Interval.new(-1).inverse
+    assert_equal Interval.new(-7), Interval.new(-2).inverse
+    assert_equal Interval.new(-6), Interval.new(-3).inverse
+    assert_equal Interval.new(-5), Interval.new(-4).inverse
+    assert_equal Interval.new(-4), Interval.new(-5).inverse
+    assert_equal Interval.new(-3), Interval.new(-6).inverse
+    assert_equal Interval.new(-2), Interval.new(-7).inverse
+    assert_equal Interval.new(-1), Interval.new(-8).inverse
+
+    assert_equal Interval.new(-2), Interval.new(9).inverse
+    assert_equal Interval.new(-3), Interval.new(10).inverse
+    assert_equal Interval.new(2), Interval.new(-9).inverse
+    assert_equal Interval.new(3), Interval.new(-10).inverse
+  end
+
+  def test_specific_inverse
+    assert_equal Interval.octave, Interval.unison.inverse
+    assert_equal Interval.major(7), Interval.minor(2).inverse
+    assert_equal Interval.minor(7), Interval.major(2).inverse
+    assert_equal Interval.major(6), Interval.minor(3).inverse
+    assert_equal Interval.minor(6), Interval.major(3).inverse
+    assert_equal Interval.perfect(5), Interval.perfect(4).inverse
+    assert_equal Interval.diminished(5), Interval.augmented(4).inverse
+    assert_equal Interval.augmented(4), Interval.diminished(5).inverse
+    assert_equal Interval.perfect(4), Interval.perfect(5).inverse
+    assert_equal Interval.major(3), Interval.minor(6).inverse
+    assert_equal Interval.minor(3), Interval.major(6).inverse
+    assert_equal Interval.major(2), Interval.minor(7).inverse
+    assert_equal Interval.minor(2), Interval.major(7).inverse
+    assert_equal Interval.unison, Interval.octave.inverse
+  end
+
+  def test_specific_compound_and_negative_inverse
+    assert_equal Interval.octave(-1), Interval.perfect(-1).inverse
+    assert_equal Interval.perfect(-1), Interval.octave(-1).inverse
+
+    assert_equal Interval.major(-2), Interval.major(9).inverse
+    assert_equal Interval.minor(-2), Interval.minor(9).inverse
+
+    assert_equal Interval.perfect(-4), Interval.perfect(11).inverse
+    assert_equal Interval.augmented(-4), Interval.augmented(11).inverse
+    assert_equal Interval.diminished(-5), Interval.diminished(12).inverse
+  end
+
   def test_generic_interval_addition
     assert_equal Interval.new(5), Interval.new(3) + Interval.new(3)
     assert_equal Interval.new(1), Interval.new(3) + Interval.new(-3)
     assert_equal Interval.octave, Interval.new(5) + Interval.new(4)
+    assert_equal Interval.new(5), Interval.new(4) + 1
+    assert_equal Interval.new(1), Interval.new(1) + 0
   end
 
   def x_test_specific_interval_addition
