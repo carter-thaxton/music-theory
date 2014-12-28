@@ -169,6 +169,10 @@ module MusicTheory
       (number.abs - 1) % 7 + 1
     end
 
+    def offset
+      down? ? number + 1 : number - 1
+    end
+
     def octave_offset
       s = down? ? -1 : 1
       ((number.abs - 1) / 7) * s
@@ -302,9 +306,7 @@ module MusicTheory
     def +(interval)
       interval = Interval.zero_based(interval) if interval.is_a? Fixnum
 
-      i = interval.number + (interval.down? ? 1 : -1)
-      j = self.number + (self.down? ? 1 : -1)
-      n = i + j
+      n = interval.offset + self.offset
       o = n < 0 || n == 0 && self.down? ? -1 : 1
       new_number = n + o
 
@@ -336,8 +338,8 @@ module MusicTheory
 
     class << self
       def zero_based(offset, quality=nil, quality_count=nil)
-        offset += (offset < 0 ? -1 : 1)
-        new(offset, quality, quality_count)
+        number = offset + (offset < 0 ? -1 : 1)
+        new(number, quality, quality_count)
       end
 
       def unison; new(1, :perfect); end

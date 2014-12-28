@@ -8,6 +8,8 @@ class TestInterval < Test::Unit::TestCase
     assert_equal 2, Interval.new(2).number
     assert Interval.new(2).generic?
     assert_equal Interval.new(2), Interval.major(2)
+    assert_equal 1, Interval.new(2).offset
+    assert_equal 0, Interval.unison.offset
   end
 
   def test_helpers
