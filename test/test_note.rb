@@ -8,17 +8,29 @@ class TestNote < Test::Unit::TestCase
     c = Note.C
     assert_equal 0, c.diatonic_index
     assert_equal 0, c.accidentals
-    assert_equal 4, c.octave
 
     fs = Note.Fs
     assert_equal 3, fs.diatonic_index
     assert_equal 1, fs.accidentals
-    assert_equal 4, fs.octave
 
     bb = Note.Bb
     assert_equal 6, bb.diatonic_index
     assert_equal -1, bb.accidentals
-    assert_equal 4, bb.octave
+  end
+
+  def test_octave
+    assert_nil Note.C.octave
+    assert_equal 4, Note.C(4).octave
+  end
+
+  def test_equality
+    assert_not_equal Note.C, Note.Cs
+    assert_equal Note.C(4), Note.C(4)
+    assert_not_equal Note.C(4), Note.C(5)
+    assert_equal Note.C, Note.C(4)
+    assert_equal Note.C(4), Note.C
+    assert_equal Note.C(5), Note.C(4) + Interval.octave
+    assert_not_equal Note.C(5), Note.C(4) + Interval.octave(2)
   end
 
   def test_chromatic_index
@@ -40,7 +52,7 @@ class TestNote < Test::Unit::TestCase
     assert_equal Note.D, Note.C + Interval.major(2)
     assert_equal Note.Db, Note.C + Interval.minor(2)
     assert_equal Note.Fs, Note.E + Interval.major(2)
-    assert_equal Note.E(5), Note.A + Interval.perfect(5)
+    assert_equal Note.E, Note.A + Interval.perfect(5)
   end
 
 end

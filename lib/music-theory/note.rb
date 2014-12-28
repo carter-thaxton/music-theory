@@ -2,7 +2,7 @@ module MusicTheory
   class Note
     attr_reader :diatonic_index, :accidentals, :octave
 
-    def initialize(diatonic_index, accidentals=0, octave=4)
+    def initialize(diatonic_index, accidentals=0, octave=nil)
       @diatonic_index = diatonic_index
       @accidentals = accidentals
       @octave = octave
@@ -22,7 +22,7 @@ module MusicTheory
 
     def to_s(opts = {})
       result = "#{diatonic_s}#{accidental_s}"
-      result += "#{octave}" if opts[:octave]
+      result += "#{octave}" if octave
       result
     end
 
@@ -52,14 +52,12 @@ module MusicTheory
       basis + accidentals
     end
 
-    def chromatic_offset
-      chromatic_index + octave * 12
-    end
-
     def ==(interval)
-      return interval.diatonic_index == self.diatonic_index &&
-        interval.accidentals == self.accidentals &&
-        interval.octave == self.octave
+      return false unless interval.diatonic_index == self.diatonic_index && interval.accidentals == self.accidentals
+      if interval.octave && self.octave
+        return false unless interval.octave == self.octave
+      end
+      true
     end
 
     def +(interval)
@@ -67,10 +65,18 @@ module MusicTheory
 
       idx = (diatonic_index + interval.offset) % 7
       oct = (diatonic_index + interval.offset) / 7
-      result = Note.new(idx, accidentals, octave + oct)
+      result = Note.new(idx, accidentals, octave ? octave + oct : nil)
 
       if interval.specific?
-        acc_offset = (chromatic_offset - result.chromatic_offset) + interval.semitones
+        if octave
+          i = chromatic_index + octave * 12
+          j = result.chromatic_index + result.octave * 12
+        else
+          i = chromatic_index
+          j = result.chromatic_index + oct * 12
+        end
+
+        acc_offset = (i - j) + interval.semitones
         result = result.sharp(acc_offset)
       end
 
@@ -82,33 +88,33 @@ module MusicTheory
     end
 
     class << self
-      def C (octave=4); Note.new(0,  0, octave) end
-      def Cb(octave=4); Note.new(0, -1, octave) end
-      def Cs(octave=4); Note.new(0, +1, octave) end
+      def C (octave=nil); Note.new(0,  0, octave) end
+      def Cb(octave=nil); Note.new(0, -1, octave) end
+      def Cs(octave=nil); Note.new(0, +1, octave) end
 
-      def D (octave=4); Note.new(1,  0, octave) end
-      def Db(octave=4); Note.new(1, -1, octave) end
-      def Ds(octave=4); Note.new(1, +1, octave) end
+      def D (octave=nil); Note.new(1,  0, octave) end
+      def Db(octave=nil); Note.new(1, -1, octave) end
+      def Ds(octave=nil); Note.new(1, +1, octave) end
 
-      def E (octave=4); Note.new(2,  0, octave) end
-      def Eb(octave=4); Note.new(2, -1, octave) end
-      def Es(octave=4); Note.new(2, +1, octave) end
+      def E (octave=nil); Note.new(2,  0, octave) end
+      def Eb(octave=nil); Note.new(2, -1, octave) end
+      def Es(octave=nil); Note.new(2, +1, octave) end
 
-      def F (octave=4); Note.new(3,  0, octave) end
-      def Fb(octave=4); Note.new(3, -1, octave) end
-      def Fs(octave=4); Note.new(3, +1, octave) end
+      def F (octave=nil); Note.new(3,  0, octave) end
+      def Fb(octave=nil); Note.new(3, -1, octave) end
+      def Fs(octave=nil); Note.new(3, +1, octave) end
 
-      def G (octave=4); Note.new(4,  0, octave) end
-      def Gb(octave=4); Note.new(4, -1, octave) end
-      def Gs(octave=4); Note.new(4, +1, octave) end
+      def G (octave=nil); Note.new(4,  0, octave) end
+      def Gb(octave=nil); Note.new(4, -1, octave) end
+      def Gs(octave=nil); Note.new(4, +1, octave) end
 
-      def A (octave=4); Note.new(5,  0, octave) end
-      def Ab(octave=4); Note.new(5, -1, octave) end
-      def As(octave=4); Note.new(5, +1, octave) end
+      def A (octave=nil); Note.new(5,  0, octave) end
+      def Ab(octave=nil); Note.new(5, -1, octave) end
+      def As(octave=nil); Note.new(5, +1, octave) end
 
-      def B (octave=4); Note.new(6,  0, octave) end
-      def Bb(octave=4); Note.new(6, -1, octave) end
-      def Bs(octave=4); Note.new(6, +1, octave) end
+      def B (octave=nil); Note.new(6,  0, octave) end
+      def Bb(octave=nil); Note.new(6, -1, octave) end
+      def Bs(octave=nil); Note.new(6, +1, octave) end
     end
 
   end
