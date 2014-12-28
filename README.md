@@ -20,4 +20,21 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+Note.Gs + Interval.perfect(5)
+ => D#
+
+Note.Gs(5) - Interval.perfect(5)
+ => C#5
+
+Note.Gs(5) - Interval.augmented(6)
+ => Bb4
+
+Note.Gs - Interval.augmented(6)
+ => Bb
+
+Note.F.sharp.sharp - Interval.diminished(2)
+ => E###
+
+Note.F.sharp.sharp + Interval.diminished(2)
+ => G
