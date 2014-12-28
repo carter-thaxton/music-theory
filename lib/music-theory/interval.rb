@@ -277,6 +277,18 @@ module MusicTheory
       end
     end
 
+    def +@
+      self
+    end
+
+    def -@
+      Interval.new(-number, quality, quality_count)
+    end
+
+    def -(interval)
+      self + -interval
+    end
+
     def +(interval)
       interval = Interval.zero_based(interval) if interval.is_a? Fixnum
 
