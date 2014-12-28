@@ -38,8 +38,9 @@ class TestNote < Test::Unit::TestCase
     assert_equal Note.D, Note.C + 1
     assert_equal Note.C, Note.C + Interval.unison
     assert_equal Note.D, Note.C + Interval.major(2)
-#    assert_equal Note.Db, Note.C + Interval.minor(2)
-#    assert_equal Note.Fs, Note.E + Interval.major(2)
+    assert_equal Note.Db, Note.C + Interval.minor(2)
+    assert_equal Note.Fs, Note.E + Interval.major(2)
+    assert_equal Note.E(5), Note.A + Interval.perfect(5)
   end
 
 end

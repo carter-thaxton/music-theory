@@ -52,6 +52,10 @@ module MusicTheory
       basis + accidentals
     end
 
+    def chromatic_offset
+      chromatic_index + octave * 12
+    end
+
     def ==(interval)
       return interval.diatonic_index == self.diatonic_index &&
         interval.accidentals == self.accidentals &&
@@ -61,16 +65,16 @@ module MusicTheory
     def +(interval)
       interval = Interval.zero_based(interval) if interval.is_a? Fixnum
 
-      if interval.specific?
-        # TODO: add actual semitones here and determine accidentals
-        acc = accidentals
-      else
-        acc = accidentals
-      end
-
       idx = (diatonic_index + interval.offset) % 7
       oct = (diatonic_index + interval.offset) / 7
-      Note.new(idx, acc, octave + oct)
+      result = Note.new(idx, accidentals, octave + oct)
+
+      if interval.specific?
+        acc_offset = (chromatic_offset - result.chromatic_offset) + interval.semitones
+        result = result.sharp(acc_offset)
+      end
+
+      result
     end
 
     def -(n)
