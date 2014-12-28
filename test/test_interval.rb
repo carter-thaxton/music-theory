@@ -233,12 +233,14 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.new(2), Interval.new(-4) - Interval.new(-5)
   end
 
-  def test_specific_interval_addition
+  def test_specific_interval_addition_and_subtraction
     assert_equal Interval.perfect(5), Interval.major(3) + Interval.minor(3)
     assert_equal Interval.augmented(5), Interval.major(3) + Interval.major(3)
     assert_equal Interval.augmented(7), Interval.tritone + Interval.tritone
     assert_equal Interval.unison, Interval.octave - Interval.octave
     assert_equal Interval.unison.down, Interval.octave.down - Interval.octave.down
+    assert_equal Interval.augmented(1, 2), Interval.minor(6) - Interval.diminished(6, 2)
+    assert_equal Interval.augmented(8, 3), Interval.minor(-6) - Interval.augmented(-13, 2)
   end
 
 end
