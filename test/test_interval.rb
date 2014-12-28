@@ -203,6 +203,14 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.diminished(-5), Interval.diminished(12).inverse
   end
 
+  def test_abs
+    assert_equal Interval.octave, Interval.octave(-1).abs
+    assert_equal Interval.diminished(5), Interval.diminished(-5).abs
+    assert_equal Interval.diminished(5), Interval.diminished(5).abs
+    assert_equal Interval.unison, Interval.perfect(-1).abs
+    assert_equal Interval.unison, Interval.perfect(1).abs
+  end
+
   def test_generic_interval_addition_and_subtraction
     assert_equal Interval.new(5), Interval.new(3) + Interval.new(3)
     assert_equal Interval.new(1), Interval.new(3) + Interval.new(-3)

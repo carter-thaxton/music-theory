@@ -277,6 +277,10 @@ module MusicTheory
       end
     end
 
+    def abs
+      down? ? -self : self
+    end
+
     def +@
       self
     end
