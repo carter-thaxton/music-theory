@@ -14,10 +14,17 @@ class TestInterval < Test::Unit::TestCase
     assert Interval.major(3).major?
     assert !Interval.major(3).minor?
     assert Interval.diminished(3).diminished?
+    assert Interval.augmented(5).augmented?
+    assert !Interval.augmented(5).diminished?
     assert Interval.octave(3).octave?
     assert !Interval.unison.octave?
     assert Interval.unison.octave_or_unison?
     assert Interval.octave.octave_or_unison?
+    assert Interval.octave.up?
+    assert !Interval.octave.down?
+    assert Interval.unison.up?
+    assert !Interval.unison.down?
+    assert Interval.octave.down.down?
   end
 
   def test_validations
