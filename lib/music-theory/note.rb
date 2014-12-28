@@ -39,11 +39,25 @@ module MusicTheory
       sharp(-n)
     end
 
-    def +(n)
-      n = n.to_interval
-      idx = (diatonic_index + n.diatonic_offset) % 7
-      oct = (diatonic_index + n.diatonic_offset) / 7
-      Note.new(idx, accidentals, octave + oct)
+    def ==(interval)
+      return interval.diatonic_index == self.diatonic_index &&
+        interval.accidentals == self.accidentals &&
+        interval.octave == self.octave
+    end
+
+    def +(interval)
+      interval = Interval.zero_based(interval) if interval.is_a? Fixnum
+
+      if interval.specific?
+        # TODO: add actual semitones here and determine accidentals
+        acc = accidentals
+      else
+        acc = accidentals
+      end
+
+      idx = (diatonic_index + interval.offset) % 7
+      oct = (diatonic_index + interval.offset) / 7
+      Note.new(idx, acc, octave + oct)
     end
 
     def -(n)
