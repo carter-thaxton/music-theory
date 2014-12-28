@@ -68,16 +68,8 @@ module MusicTheory
       result = Note.new(idx, accidentals, octave ? octave + oct : nil)
 
       if interval.specific?
-        if octave
-          i = chromatic_index + octave * 12
-          j = result.chromatic_index + result.octave * 12
-        else
-          i = chromatic_index
-          j = result.chromatic_index + oct * 12
-        end
-
-        acc_offset = (i - j) + interval.semitones
-        result = result.sharp(acc_offset)
+        accidental_offset = chromatic_index - (result.chromatic_index + oct * 12) + interval.semitones
+        result = result.sharp(accidental_offset)
       end
 
       result
