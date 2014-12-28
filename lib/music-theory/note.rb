@@ -39,6 +39,19 @@ module MusicTheory
       sharp(-n)
     end
 
+    def chromatic_index
+      basis = case diatonic_index
+        when 0 then 0
+        when 1 then 2
+        when 2 then 4
+        when 3 then 5
+        when 4 then 7
+        when 5 then 9
+        when 6 then 11
+      end
+      basis + accidentals
+    end
+
     def ==(interval)
       return interval.diatonic_index == self.diatonic_index &&
         interval.accidentals == self.accidentals &&

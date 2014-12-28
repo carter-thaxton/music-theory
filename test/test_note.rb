@@ -21,6 +21,18 @@ class TestNote < Test::Unit::TestCase
     assert_equal 4, bb.octave
   end
 
+  def test_chromatic_index
+    assert_equal 0, Note.C.chromatic_index
+    assert_equal 1, Note.Cs.chromatic_index
+    assert_equal 1, Note.Db.chromatic_index
+    assert_equal 1, Note.C.sharp.chromatic_index
+    assert_equal 2, Note.C.sharp(2).chromatic_index
+    assert_equal -1, Note.C.flat.chromatic_index
+    assert_equal 11, Note.B.chromatic_index
+    assert_equal 12, Note.B.sharp.chromatic_index
+    assert_equal 13, Note.B.sharp(2).chromatic_index
+  end
+
   def test_interval_addition
     assert_equal Note.C, Note.C + 0
     assert_equal Note.D, Note.C + 1
