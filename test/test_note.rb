@@ -45,7 +45,7 @@ class TestNote < Test::Unit::TestCase
     assert_equal 13, Note.B.sharp(2).chromatic_index
   end
 
-  def test_interval_addition
+  def test_interval_addition_and_subtraction
     assert_equal Note.C, Note.C + 0
     assert_equal Note.D, Note.C + 1
     assert_equal Note.C, Note.C + Interval.unison
@@ -53,6 +53,10 @@ class TestNote < Test::Unit::TestCase
     assert_equal Note.Db, Note.C + Interval.minor(2)
     assert_equal Note.Fs, Note.E + Interval.major(2)
     assert_equal Note.E, Note.A + Interval.perfect(5)
+    assert_equal Note.Cb, Note.B.sharp(56) + Interval.diminished(2, 57)
+    assert_equal Note.G, Note.D - Interval.perfect(5)
+    assert_equal Note.Gs, Note.D - Interval.diminished(5)
+    assert_equal Note.Gs, Note.D + Interval.diminished(-5)
   end
 
 end
