@@ -30,6 +30,7 @@ class TestInterval < Test::Unit::TestCase
   def test_validations
     assert_raises(Interval::InvalidIntervalError) { Interval.major(5) }
     assert_raises(Interval::InvalidIntervalError) { Interval.perfect(3) }
+    assert_raises(Interval::InvalidIntervalError) { Interval.new(0) }
     assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
   end
 
