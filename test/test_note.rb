@@ -18,6 +18,13 @@ class TestNote < Test::Unit::TestCase
     assert_equal -1, bb.accidentals
   end
 
+  def test_parse
+    assert_equal Note.A, Note.parse("A")
+    assert_equal Note.Bb, Note.parse("Bb")
+    assert_equal Note.Gs(5), Note.parse("G#5")
+    assert_equal Note.B(2).sharp(3), Note.parse("B###2")
+  end
+
   def test_octave
     assert_nil Note.C.octave
     assert_equal 4, Note.C(4).octave

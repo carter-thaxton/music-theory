@@ -9,7 +9,7 @@ module MusicTheory
     end
 
     def diatonic_s
-      ("A".ord + (diatonic_index + 2) % 7).chr
+      ('A'.ord + (diatonic_index + 2) % 7).chr
     end
 
     def accidental_s
@@ -115,6 +115,19 @@ module MusicTheory
       def B (octave=nil); Note.new(6,  0, octave) end
       def Bb(octave=nil); Note.new(6, -1, octave) end
       def Bs(octave=nil); Note.new(6, +1, octave) end
+
+      def parse(str)
+        regex = /\A\s*([a-gA-G])\s*([s#]*)\s*([b]*)\s*(\d+)?\s*\Z/
+        m = regex.match str
+        raise ArgumentError, "Cannot parse #{str} as a Note" unless m
+
+        diatonic_index = ((m[1].upcase.ord - 'A'.ord) - 2) % 7
+        sharps = m[2] ? m[2].length : 0
+        flats = m[3] ? m[3].length : 0
+        octave = m[4].to_i if m[4]
+
+        new(diatonic_index, sharps - flats, octave)
+      end
     end
 
   end
