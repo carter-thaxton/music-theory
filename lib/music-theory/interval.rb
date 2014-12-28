@@ -305,13 +305,14 @@ module MusicTheory
       i = interval.number + (interval.down? ? 1 : -1)
       j = self.number + (self.down? ? 1 : -1)
       n = i + j
-      o = n < 0 || n == 0 && down? ? -1 : 1
+      o = n < 0 || n == 0 && self.down? ? -1 : 1
       new_number = n + o
 
       if self.generic? or interval.generic?
-        return Interval.new(new_number)
+        Interval.new(new_number)
       else
-        raise "Cannot handle specific intervals yet"
+        s = interval.semitones + self.semitones
+        Interval.with_semitones(new_number, s)
       end
     end
 
@@ -357,6 +358,50 @@ module MusicTheory
           i = s * ((n.abs / 2) * 7 + 3)
           zero_based(i, :augmented)
         end
+      end
+
+      def with_semitones(interval, semitones)
+        interval = new(interval) if interval.is_a? Fixnum
+
+        basis = case interval.simple_number
+          when 1 then 0
+          when 2 then 2
+          when 3 then 4
+          when 4 then 5
+          when 5 then 7
+          when 6 then 9
+          when 7 then 11
+        end
+
+        s = semitones - interval.octave_offset * 12
+        offset = s - basis
+        offset = -offset if interval.down?
+
+        if interval.perfect_number?
+          if offset < 0
+            quality = :diminished
+            quality_count = -offset
+          elsif offset == 0
+            quality = :perfect
+          else
+            quality = :augmented
+            quality_count = offset
+          end
+        else
+          if offset < -1
+            quality = :diminished
+            quality_count = -offset - 1
+          elsif offset == -1
+            quality = :minor
+          elsif offset == 0
+            quality = :major
+          else
+            quality = :augmented
+            quality_count = offset
+          end
+        end
+
+        new(interval.number, quality, quality_count)
       end
     end
 
