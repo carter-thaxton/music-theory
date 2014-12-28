@@ -277,9 +277,15 @@ module MusicTheory
       end
     end
 
-    def abs
+    def up
       down? ? -self : self
     end
+
+    def down
+      down? ? self : -self
+    end
+
+    alias abs up
 
     def +@
       self
