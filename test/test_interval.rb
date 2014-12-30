@@ -58,6 +58,9 @@ class TestInterval < Test::Unit::TestCase
     assert_equal("down 2 octaves", Interval.octave(-2).to_s)
     assert_equal("diminished octave", Interval.diminished(8).to_s)
     assert_equal("double-diminished octave", Interval.double_diminished(8).to_s)
+    assert_equal("perfect 11th", Interval.perfect(11).to_s)
+    assert_equal("major 21st", Interval.major(21).to_s)
+    assert_equal("major 23rd", Interval.major(23).to_s)
   end
 
   def test_interval_shorthand

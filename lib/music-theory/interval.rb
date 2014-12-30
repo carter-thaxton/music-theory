@@ -314,6 +314,14 @@ module MusicTheory
         if (i - 1) % 7 == 0
           n = (i - 1) / 7
           if n == 1 then "octave" else "#{n} octaves" end
+        elsif i > 20
+          case i % 10
+          when 1 then "#{i}st"
+          when 2 then "#{i}st"
+          when 3 then "#{i}rd"
+          else
+            "#{i}th"
+          end
         else
           "#{i}th"
         end
