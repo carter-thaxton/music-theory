@@ -64,6 +64,8 @@ class TestNote < Test::Unit::TestCase
     assert_equal Note.G, Note.D - Interval.perfect(5)
     assert_equal Note.Gs, Note.D - Interval.diminished(5)
     assert_equal Note.Gs, Note.D + Interval.diminished(-5)
+    assert_equal Note.Gs, -Interval.diminished(5) + Note.D
+    assert_equal Note.Gs, Interval.diminished(-5) + Note.D
   end
 
   def test_subtract_notes

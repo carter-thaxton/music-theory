@@ -296,6 +296,8 @@ module MusicTheory
     end
 
     def +(interval)
+      return interval + self if interval.is_a? Note
+
       interval = Interval.zero_based(interval) if interval.is_a? Fixnum
 
       n = interval.offset + self.offset
