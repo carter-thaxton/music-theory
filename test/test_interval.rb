@@ -5,11 +5,11 @@ class TestInterval < Test::Unit::TestCase
   include MusicTheory
 
   def test_generic
-    assert_equal 2, Interval.new(2).number
-    assert Interval.new(2).generic?
-    assert_equal Interval.new(2), Interval.major(2)
-    assert_equal 1, Interval.new(2).offset
-    assert_equal 0, Interval.unison.offset
+    assert_equal 2, Interval.generic(2).number
+    assert Interval.generic(2).generic?
+    assert_equal Interval.generic(2), Interval.major(2)
+    assert_equal 1, Interval.generic(2).offset
+    assert_equal 0, Interval.generic(1).offset
   end
 
   def test_helpers

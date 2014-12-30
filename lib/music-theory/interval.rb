@@ -326,6 +326,7 @@ module MusicTheory
         new(number, quality, quality_count)
       end
 
+      def generic(i); new(i); end
       def unison; new(1, :perfect); end
       def octave(n=1); zero_based(7*n, :perfect); end
       def perfect(i); new(i, :perfect); end
