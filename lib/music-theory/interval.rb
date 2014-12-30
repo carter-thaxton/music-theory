@@ -376,8 +376,8 @@ module MusicTheory
         end
 
         s = semitones - interval.octave_offset * 12
+        s = -s if interval.down?
         offset = s - basis
-        offset = -offset if interval.down?
 
         if interval.perfect_number?
           if offset < 0
