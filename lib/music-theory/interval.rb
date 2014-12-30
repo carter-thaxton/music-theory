@@ -428,17 +428,6 @@ module MusicTheory
         new(number, quality, quality_count)
       end
 
-      def measure(note1, note2)
-        if note1.octave && note2.octave
-          oct = note2.octave - note1.octave
-        else
-          oct = note2.diatonic_index < note1.diatonic_index ? 1 : 0
-        end
-        c_idx = oct * 12 + note2.chromatic_index - note1.chromatic_index
-        d_idx = oct * 7 + note2.diatonic_index - note1.diatonic_index
-        Interval.with_semitones(Interval.zero_based(d_idx), c_idx)
-      end
-
     end
   end
 end

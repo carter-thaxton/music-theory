@@ -77,10 +77,21 @@ module MusicTheory
 
     def -(n)
       if n.is_a? Note
-        Interval.measure(n, self)
+        n.measure_to self
       else
         self + -n
       end
+    end
+
+    def measure_to(note)
+      if note.octave && self.octave
+        oct = note.octave - self.octave
+      else
+        oct = note.diatonic_index < self.diatonic_index ? 1 : 0
+      end
+      c_idx = oct * 12 + note.chromatic_index - self.chromatic_index
+      d_idx = oct * 7 + note.diatonic_index - self.diatonic_index
+      Interval.with_semitones(Interval.zero_based(d_idx), c_idx)
     end
 
     class << self

@@ -72,9 +72,17 @@ class TestNote < Test::Unit::TestCase
     assert_equal Interval.perfect(4), Note.C - Note.G
     assert_equal Interval.perfect(5), Note.G(4) - Note.C(4)
     assert_equal Interval.perfect(-5), Note.C(4) - Note.G(4)
+    assert_equal Interval.perfect(12), Note.G(5) - Note.C(4)
     assert_equal Interval.diminished(5), Note.F - Note.B
     assert_equal Interval.augmented(4), Note.B - Note.F
     assert_equal Interval.augmented(5, 2), Note.Gs - Note.Cb
+  end
+
+  def test_measure_to
+    assert_equal Interval.unison, Note.C.measure_to(Note.C)
+    assert_equal Interval.perfect(5), Note.C.measure_to(Note.G)
+    assert_equal Interval.octave, Note.C(4).measure_to(Note.C(5))
+    assert_equal Interval.octave(-1), Note.C(5).measure_to(Note.C(4))
   end
 
 end
