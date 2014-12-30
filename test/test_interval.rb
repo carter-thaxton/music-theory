@@ -12,6 +12,19 @@ class TestInterval < Test::Unit::TestCase
     assert_equal 0, Interval.generic(1).offset
   end
 
+  def test_parse
+    assert_equal Interval.perfect(5), Interval.parse("P5")
+    assert_equal Interval.minor(3), Interval.parse("m3")
+    assert_equal Interval.major(3), Interval.parse("M3")
+    assert_equal Interval.unison, Interval.parse("P1")
+    assert_equal Interval.octave, Interval.parse("P8")
+    assert_equal Interval.unison, Interval.parse("U1") # alternative syntax
+    assert_equal Interval.augmented(4), Interval.parse("A4")
+    assert_equal Interval.augmented(4, 2), Interval.parse("AA4")
+    assert_equal Interval.diminished(5), Interval.parse("d5")
+    assert_equal Interval.diminished(5, 2), Interval.parse("dd5")
+  end
+
   def test_helpers
     assert Interval.major(3).major?
     assert !Interval.major(3).minor?

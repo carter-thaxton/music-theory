@@ -390,6 +390,26 @@ module MusicTheory
 
         new(interval.number, quality, quality_count)
       end
+
+      def parse(str)
+        regex = /\A\s*([pPuUmMAd]+)?\s*(\d+)\s*\Z/
+        m = regex.match str
+        raise ArgumentError, "Cannot parse #{str} as an Interval" unless m
+
+        if m[1]
+          quality = case m[1][0]
+            when 'p', 'P', 'u', 'U' then :perfect
+            when 'm' then :minor
+            when 'M' then :major
+            when 'A' then :augmented
+            when 'd' then :diminished
+          end
+          quality_count = m[1].length
+        end
+        number = m[2].to_i
+
+        new(number, quality, quality_count)
+      end
     end
 
   end
