@@ -76,7 +76,11 @@ module MusicTheory
     end
 
     def -(n)
-      self + -n
+      if n.is_a? Note
+        Interval.measure(n, self)
+      else
+        self + -n
+      end
     end
 
     class << self

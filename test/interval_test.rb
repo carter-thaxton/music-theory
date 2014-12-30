@@ -280,4 +280,16 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.major(2), Interval.major(23).simple
   end
 
+  def test_measure
+    assert_equal Interval.unison, Interval.measure(Note.C, Note.C)
+    assert_equal Interval.perfect(5), Interval.measure(Note.C, Note.G)
+    assert_equal Interval.perfect(4), Interval.measure(Note.G, Note.C)
+    assert_equal Interval.perfect(5), Interval.measure(Note.C(4), Note.G(4))
+    assert_equal Interval.perfect(-5), Interval.measure(Note.G(4), Note.C(4))
+    assert_equal Interval.perfect(12), Interval.measure(Note.C(4), Note.G(5))
+    assert_equal Interval.perfect(5), Interval.measure(Note.C(4), Note.G)
+    assert_equal Interval.octave, Interval.measure(Note.C(4), Note.C(4) + Interval.octave)
+    assert_equal Interval.octave(-1), Interval.measure(Note.C(4), Note.C(4) - Interval.octave)
+  end
+
 end
