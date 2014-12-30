@@ -258,26 +258,10 @@ module MusicTheory
     alias diminished diminish
 
     def inverse
-      pivot = down? ? -8 : 8
-      n = pivot - number
-      o = n < 0 || n == 0 && down? ? -1 : 1
-      new_number = n + o
-
-      if generic?
-        Interval.new(new_number)
+      if down?
+        -Interval.octave - self
       else
-        new_quality = if simple?
-          case quality
-            when :perfect then :perfect
-            when :major then :minor
-            when :minor then :major
-            when :augmented then :diminished
-            when :diminished then :augmented
-          end
-        else
-          quality
-        end
-        Interval.new(new_number, new_quality, quality_count)
+        Interval.octave - self
       end
     end
 
