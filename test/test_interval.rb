@@ -272,4 +272,12 @@ class TestInterval < Test::Unit::TestCase
     assert_equal Interval.augmented(8, 3), Interval.minor(-6) - Interval.augmented(-13, 2)
   end
 
+  def test_simple
+    assert_equal Interval.perfect(5), Interval.perfect(5).simple
+    assert_equal Interval.perfect(5), Interval.perfect(12).simple
+    assert_equal Interval.major(2), Interval.major(9).simple
+    assert_equal Interval.major(-2), Interval.major(-9).simple
+    assert_equal Interval.major(2), Interval.major(23).simple
+  end
+
 end

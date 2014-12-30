@@ -43,7 +43,7 @@ module MusicTheory
 
       result = case quality
         when :perfect, :major, :augmented
-          case simple_number
+          case abs_simple_number
             when 1 then 0 + quality_count
             when 2 then 2 + quality_count
             when 3 then 4 + quality_count
@@ -53,7 +53,7 @@ module MusicTheory
             when 7 then 11 + quality_count
           end
         when :minor, :diminished
-          case simple_number
+          case abs_simple_number
             when 1 then 0 - quality_count
             when 2 then 1 - quality_count
             when 3 then 3 - quality_count
@@ -100,7 +100,7 @@ module MusicTheory
     end
 
     def unison_or_octave?
-      simple_number == 1
+      abs_simple_number == 1
     end
 
     alias octave_or_unison? unison_or_octave?
@@ -129,12 +129,12 @@ module MusicTheory
       quality == :diminished
     end
 
-    def perfect_number?(n=simple_number)
-      [1,4,5].include? n
+    def perfect_number?
+      [1,4,5].include? abs_simple_number
     end
 
-    def major_minor_number?(n=simple_number)
-      [2,3,6,7].include? n
+    def major_minor_number?
+      [2,3,6,7].include? abs_simple_number
     end
 
     def to_s
@@ -165,7 +165,15 @@ module MusicTheory
       "#{s}#{quality_s}#{number.abs}"
     end
 
+    def simple
+      Interval.new(simple_number, quality, quality_count)
+    end
+
     def simple_number
+      down? ? -abs_simple_number : abs_simple_number
+    end
+
+    def abs_simple_number
       (number.abs - 1) % 7 + 1
     end
 
@@ -358,7 +366,7 @@ module MusicTheory
       def with_semitones(interval, semitones)
         interval = new(interval) if interval.is_a? Fixnum
 
-        basis = case interval.simple_number
+        basis = case interval.abs_simple_number
           when 1 then 0
           when 2 then 2
           when 3 then 4
