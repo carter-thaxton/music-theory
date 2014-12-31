@@ -294,4 +294,13 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.major(2), Interval.major(23).simple
   end
 
+  def test_modulo_octave
+    assert_equal Interval.unison, Interval.octave(-1).modulo_octave
+    assert_equal Interval.perfect(5), Interval.perfect(5).modulo_octave
+    assert_equal Interval.perfect(5), Interval.perfect(12).modulo_octave
+    assert_equal Interval.major(2), Interval.major(9).modulo_octave
+    assert_equal Interval.minor(7), Interval.major(-9).modulo_octave
+    assert_equal Interval.major(2), Interval.major(23).modulo_octave
+  end
+
 end

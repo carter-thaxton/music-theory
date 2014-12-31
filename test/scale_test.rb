@@ -35,4 +35,10 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal Note.Cs, s[2]
   end
 
+  def test_rotate
+    assert_equal "1 2 b3 4 5 6 b7", Scale.major.rotate(1).intervals_s
+    assert_equal "1 2 3 4 5 6 7", Scale.major.rotate(7).intervals_s
+    assert_equal "1 2 3 4 5 6 7", Scale.major.rotate(14).intervals_s
+  end
+
 end

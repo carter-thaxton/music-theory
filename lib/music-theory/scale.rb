@@ -9,6 +9,10 @@ module MusicTheory
       @root = root
     end
 
+    def with_name(name)
+      Scale.new(intervals, name, root)
+    end
+
     def with_root(root)
       Scale.new(intervals, name, root)
     end
@@ -59,6 +63,12 @@ module MusicTheory
       else
         intervals.map(&:scale_shorthand).join(' ')
       end
+    end
+
+    def rotate(n=1)
+      basis = interval(n)
+      new_intervals = intervals.rotate(n).map{|i| (i - basis).modulo_octave}
+      Scale.new(new_intervals, name, root)
     end
 
     class << self

@@ -194,6 +194,15 @@ module MusicTheory
       (number.abs - 1) % 7 + 1
     end
 
+    def modulo_octave
+      result = simple
+      if result.down?
+        result = result.inverse unless result.unison?
+        result = result.abs
+      end
+      result
+    end
+
     def offset
       down? ? number + 1 : number - 1
     end
@@ -284,9 +293,9 @@ module MusicTheory
 
     def inverse
       if down?
-        -Interval.octave - self
+        Interval.octave(-1) - self
       else
-        Interval.octave - self
+        Interval.octave(+1) - self
       end
     end
 
