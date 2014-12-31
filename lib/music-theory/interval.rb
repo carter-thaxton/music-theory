@@ -409,23 +409,36 @@ module MusicTheory
         new(interval.number, quality, quality_count)
       end
 
-      def parse(str)
-        regex = /\A\s*([+\-]?)\s*([pPuUmMAd]+)?\s*(\d+)\s*\Z/
+      def parse(str, generic_as_major=false)
+        regex = /\A\s*([+\-]?)([pPuUmMAdsb#]+)?(\d+)\s*\Z/
         m = regex.match str
         raise ArgumentError, "Cannot parse #{str} as an Interval" unless m
 
+        number = m[3].to_i
+        number = -number if m[1] == '-'
+
+        perfect_number = [1,4,5].include?((number.abs - 1) % 7 + 1)
+
         if m[2]
+          quality_count = m[2].length
           quality = case m[2][0]
             when 'p', 'P', 'u', 'U' then :perfect
             when 'm' then :minor
             when 'M' then :major
-            when 'A' then :augmented
+            when 'A', 's', '#' then :augmented
             when 'd' then :diminished
+            when 'b'
+              if perfect_number
+                quality_count = 1
+                :diminished
+              else
+                :minor
+              end
           end
-          quality_count = m[2].length
+        elsif generic_as_major
+          quality = perfect_number ? :perfect : :major
+          quality_count = 0
         end
-        number = m[3].to_i
-        number = -number if m[1] == '-'
 
         new(number, quality, quality_count)
       end

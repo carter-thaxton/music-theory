@@ -26,6 +26,20 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.diminished(5), Interval.parse("d5")
     assert_equal Interval.diminished(5, 2), Interval.parse("dd5")
     assert_equal Interval.diminished(-5, 2), Interval.parse("-dd5")
+
+    assert_equal Interval.generic(3), Interval.parse("3")
+    assert_equal Interval.generic(-3), Interval.parse("-3")
+    assert_equal Interval.generic(4), Interval.parse("4")
+    assert_equal Interval.major(3), Interval.parse("3", true)
+    assert_equal Interval.perfect(4), Interval.parse("4", true)
+
+    assert Interval.parse("4").generic?
+    assert Interval.parse("4", true).perfect?
+    assert !Interval.parse("4").perfect?
+
+    assert_equal Interval.minor(3), Interval.parse("b3")
+    assert_equal Interval.diminished(4), Interval.parse("b4")
+    assert_equal Interval.augmented(4), Interval.parse("#4")
   end
 
   def test_helpers
