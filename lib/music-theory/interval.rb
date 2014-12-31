@@ -165,6 +165,23 @@ module MusicTheory
       "#{s}#{quality_s}#{number.abs}"
     end
 
+    def scale_shorthand
+      quality_s = case quality
+        when :perfect, :major then ''
+        when :minor then 'b'
+        when :augmented then '#' * quality_count
+        when :diminished
+          if perfect_number?
+            'b' * quality_count
+          else
+            'b' * (quality_count + 1)
+          end
+      end
+
+      s = number < 0 ? '-' : ''
+      "#{s}#{quality_s}#{number.abs}"
+    end
+
     def simple
       Interval.new(simple_number, quality, quality_count)
     end

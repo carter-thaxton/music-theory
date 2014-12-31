@@ -28,4 +28,11 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal Interval.minor(7), s[6]
   end
 
+  def test_with_roots
+    s = Scale.major.with_root(Note.A)
+    assert_equal Note.A, s[0]
+    assert_equal Note.B, s[1]
+    assert_equal Note.Cs, s[2]
+  end
+
 end
