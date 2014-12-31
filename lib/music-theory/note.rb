@@ -124,7 +124,7 @@ module MusicTheory
       def Bs(octave=nil); Note.new(6, +1, octave) end
 
       def parse(str)
-        regex = /\A\s*([a-gA-G])\s*([s#]*)\s*([b]*)\s*(\d+)?\s*\Z/
+        regex = /\A\s*([a-gA-G])\s*([s#]*)([b]*)\s*(\d+)?\s*\Z/
         m = regex.match str
         raise ArgumentError, "Cannot parse #{str} as a Note" unless m
 
