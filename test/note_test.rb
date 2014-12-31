@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'music-theory'
 
-class TestNote < Test::Unit::TestCase
+class NoteTest < Test::Unit::TestCase
   include MusicTheory
 
   def test_basics

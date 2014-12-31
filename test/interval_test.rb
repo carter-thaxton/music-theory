@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'music-theory'
 
-class TestInterval < Test::Unit::TestCase
+class IntervalTest < Test::Unit::TestCase
   include MusicTheory
 
   def test_generic
