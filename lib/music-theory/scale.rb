@@ -22,6 +22,12 @@ module MusicTheory
     end
 
     def interval(i)
+      raise ArgumentError, "interval must be non-zero" if i == 0
+      i += i < 0 ? 1 : -1
+      zero_based_interval(i)
+    end
+
+    def zero_based_interval(i)
       d = i % length
       o = i / length
       result = intervals[d]
@@ -35,9 +41,9 @@ module MusicTheory
 
     def [](i)
       if root
-        root + interval(i)
+        root + zero_based_interval(i)
       else
-        interval(i)
+        zero_based_interval(i)
       end
     end
 
@@ -66,7 +72,7 @@ module MusicTheory
     end
 
     def rotate(n=1, new_name=nil)
-      basis = interval(n)
+      basis = zero_based_interval(n)
       new_intervals = intervals.rotate(n).map{|i| (i - basis).modulo_octave}
       Scale.new(new_intervals, new_name || name, root)
     end
@@ -87,18 +93,6 @@ module MusicTheory
 
       def harmonic_minor(root=nil)
         Scale.parse("1 2 b3 4 5 b6 7", "harmonic minor", root)
-      end
-
-      def alt(root=nil)
-        Scale.parse("1 b2 #2 3 b5 b6 b7", "alt", root)
-      end
-
-      def major_pentatonic(root=nil)
-        Scale.parse("1 2 3 5 6", "major pentatonic", root)
-      end
-
-      def minor_pentatonic(root=nil)
-        Scale.parse("1 b3 4 5 b7", "minor pentatonic", root)
       end
 
       def dorian(root=nil)
@@ -127,6 +121,21 @@ module MusicTheory
         Scale.major(root).rotate(-1, 'locrian')
       end
 
+      def alt(root=nil)
+        Scale.parse("1 b2 #2 3 b5 b6 b7", "alt", root)
+      end
+
+      def major_pentatonic(root=nil)
+        Scale.parse("1 2 3 5 6", "major pentatonic", root)
+      end
+
+      def minor_pentatonic(root=nil)
+        Scale.parse("1 b3 4 5 b7", "minor pentatonic", root)
+      end
+
+      def diminished(root=nil)
+        Scale.parse("1 2 b3 4 b5 b6 bb7 7", "diminished", root)
+      end
     end
 
   end

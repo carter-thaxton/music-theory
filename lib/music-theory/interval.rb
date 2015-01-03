@@ -455,10 +455,12 @@ module MusicTheory
             when 'd' then :diminished
             when 'b'
               if perfect_number
-                quality_count = 1
                 :diminished
-              else
+              elsif quality_count == 1
                 :minor
+              else
+                quality_count -= 1
+                :diminished
               end
           end
         elsif generic_as_major

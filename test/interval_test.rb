@@ -38,6 +38,7 @@ class IntervalTest < Test::Unit::TestCase
     assert !Interval.parse("4").perfect?
 
     assert_equal Interval.minor(3), Interval.parse("b3")
+    assert_equal Interval.diminished(3), Interval.parse("bb3")
     assert_equal Interval.diminished(4), Interval.parse("b4")
     assert_equal Interval.augmented(4), Interval.parse("#4")
   end
