@@ -65,10 +65,10 @@ module MusicTheory
       end
     end
 
-    def rotate(n=1)
+    def rotate(n=1, new_name=nil)
       basis = interval(n)
       new_intervals = intervals.rotate(n).map{|i| (i - basis).modulo_octave}
-      Scale.new(new_intervals, name, root)
+      Scale.new(new_intervals, new_name || name, root)
     end
 
     class << self
@@ -100,6 +100,33 @@ module MusicTheory
       def minor_pentatonic(root=nil)
         Scale.parse("1 b3 4 5 b7", "minor pentatonic", root)
       end
+
+      def dorian(root=nil)
+        Scale.major(root).rotate(1, 'dorian')
+      end
+
+      def phrygian(root=nil)
+        Scale.major(root).rotate(2, 'phrygian')
+      end
+
+      def lydian(root=nil)
+        Scale.major(root).rotate(3, 'lydian')
+      end
+
+      def mixolydian(root=nil)
+        Scale.major(root).rotate(4, 'mixolydian')
+      end
+
+      def dorian(root=nil)
+        Scale.major(root).rotate(1, 'dorian')
+      end
+
+      alias aeolian natural_minor
+
+      def locrian(root=nil)
+        Scale.major(root).rotate(-1, 'locrian')
+      end
+
     end
 
   end
