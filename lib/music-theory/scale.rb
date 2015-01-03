@@ -22,10 +22,26 @@ module MusicTheory
     end
 
     def interval(i)
-      raise ArgumentError, "interval must be non-zero" if i == 0
-      i += i < 0 ? 1 : -1
-      zero_based_interval(i)
+      if i.respond_to? :each
+        i.map{|j| interval(j)}
+      else
+        raise ArgumentError, "interval must be non-zero" if i == 0
+        i += i < 0 ? 1 : -1
+        zero_based_interval(i)
+      end
     end
+
+    def note(i)
+      raise ArgumentError, "Cannot get note for scale without a root" unless root
+
+      if i.respond_to? :each
+        i.map{|j| interval(j) + root}
+      else
+        interval(i) + root
+      end
+    end
+
+    alias notes note
 
     def zero_based_interval(i)
       d = i % length
@@ -75,6 +91,27 @@ module MusicTheory
       basis = zero_based_interval(n)
       new_intervals = intervals.rotate(n).map{|i| (i - basis).modulo_octave}
       Scale.new(new_intervals, new_name || name, root)
+    end
+
+    def transpose(interval)
+      raise ArgumentError, "Cannot transpose scale unless unless it has a root" unless root
+      Scale.new(intervals, name, root + interval)
+    end
+
+    def +(interval)
+      transpose(interval)
+    end
+
+    def -(interval)
+      self + -interval
+    end
+
+    def ==(scale)
+      return false unless scale.intervals == self.intervals
+      if self.root && scale.root
+        return false unless self.root == scale.root
+      end
+      true
     end
 
     class << self

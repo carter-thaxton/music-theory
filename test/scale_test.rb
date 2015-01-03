@@ -28,6 +28,13 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal Interval.minor(7), s[6]
   end
 
+  def test_interval
+    assert_equal Interval.unison, Scale.major.interval(1)
+    assert_equal Interval.major(2), Scale.major.interval(2)
+    assert_equal Interval.major(9), Scale.major.interval(9)
+    assert_equal [Interval.unison, Interval.major(3), Interval.perfect(5)], Scale.major.interval([1, 3, 5])
+  end
+
   def test_with_roots
     s = Scale.major.with_root(Note.A)
     assert_equal Note.A, s[0]
@@ -39,6 +46,12 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal "1 2 b3 4 5 6 b7", Scale.major.rotate(1).intervals_s
     assert_equal "1 2 3 4 5 6 7", Scale.major.rotate(7).intervals_s
     assert_equal "1 2 3 4 5 6 7", Scale.major.rotate(14).intervals_s
+  end
+
+  def test_transpose
+    assert_equal Note.A.major, Note.C.major.transpose(Interval.minor(-3))
+    assert_equal Note.A.major, Note.C.major - Interval.minor(3)
+    assert_raises { Scale.major + Interval.major(3) }
   end
 
 end

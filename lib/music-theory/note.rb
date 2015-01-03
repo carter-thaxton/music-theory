@@ -94,6 +94,10 @@ module MusicTheory
       Interval.with_semitones(Interval.zero_based(d_idx), c_idx)
     end
 
+    def major
+      Scale.major(self)
+    end
+
     class << self
       def C (octave=nil); Note.new(0,  0, octave) end
       def Cb(octave=nil); Note.new(0, -1, octave) end
