@@ -90,7 +90,7 @@ module MusicTheory
     def rotate(n=1, new_name=nil)
       basis = zero_based_interval(n)
       new_intervals = intervals.rotate(n).map{|i| (i - basis).modulo_octave}
-      Scale.new(new_intervals, new_name || name, root)
+      Scale.new(new_intervals, new_name, root)
     end
 
     def transpose(interval)
