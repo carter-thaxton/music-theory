@@ -151,7 +151,7 @@ module MusicTheory
       end
 
       def melodic_minor(root=nil)
-        Scale.parse("1 2 b3 4 5 6 7")
+        Scale.parse("1 2 b3 4 5 6 7", root)
       end
 
       def dorian(root=nil)
