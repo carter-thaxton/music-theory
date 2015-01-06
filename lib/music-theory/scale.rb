@@ -210,11 +210,11 @@ module MusicTheory
       end
 
       def whole_half_diminished(root=nil)
-        Scale.parse("1 2 b3 4 b5 #5 6 7", root)
+        Scale.parse("1 2 b3 4 b5 b6 bb7 7", root)
       end
 
       def half_whole_diminished(root=nil)
-        Scale.parse("1 b2 b3 b4 #4 5 6 b7", root)
+        Scale.parse("1 b2 #2 3 #4 5 6 b7", root)
       end
 
       alias diminished whole_half_diminished
