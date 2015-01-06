@@ -64,15 +64,7 @@ module MusicTheory
     end
 
     def to_s
-      if root && name
-        "#{root} #{name}"
-      elsif name
-        name
-      elsif root
-        "#{name} [#{intervals_s}]"
-      else
-        "[#{intervals_s}]"
-      end
+      [root, name, "[#{intervals_s}]"].compact.join(' ')
     end
 
     def inspect
