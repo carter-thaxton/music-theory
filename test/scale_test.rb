@@ -65,4 +65,12 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal [0, 2, 4, 5, 7, 9, 11], Scale.major.semitones
   end
 
+  def test_compare_scales_using_semitones
+    alt = Scale.alt
+    mm_alt = Scale.melodic_minor.rotate(-1)
+    assert_not_equal alt.intervals, mm_alt.intervals
+    assert_equal alt, mm_alt
+    assert_equal alt.semitones, mm_alt.semitones
+  end
+
 end
