@@ -50,6 +50,10 @@ module MusicTheory
       intervals.length
     end
 
+    def semitones
+      intervals.map(&:semitones)
+    end
+
     def [](i)
       if root
         root + zero_based_interval(i)
@@ -103,7 +107,7 @@ module MusicTheory
     end
 
     def ==(scale)
-      return false unless scale.intervals == self.intervals
+      return false unless scale.semitones == self.semitones
       if self.root && scale.root
         return false unless self.root == scale.root
       end
@@ -115,7 +119,7 @@ module MusicTheory
         :major, :minor, :harmonic_minor, :melodic_minor,
         :dorian, :phrygian, :lydian, :mixolydian, :locrian,
         :dorian_b2, :lydian_augmented, :lydian_dominant, :mixolydian_b6, :locrian_2, :alt,
-        :major_pentatonic, :minor_pentatonic, :diminished,
+        :major_pentatonic, :minor_pentatonic, :whole_half_diminished, :half_whole_diminished,
       ]
 
       def parse(str, root=nil)
@@ -135,12 +139,12 @@ module MusicTheory
         Scale.parse("1 2 3 4 5 6 7", root)
       end
 
-      def minor(root=nil)
+      def natural_minor(root=nil)
         Scale.parse("1 2 b3 4 5 b6 b7", root)
       end
 
-      alias natural_minor minor
-      alias aeolian minor
+      alias minor natural_minor
+      alias aeolian natural_minor
 
       def harmonic_minor(root=nil)
         Scale.parse("1 2 b3 4 5 b6 7", root)
@@ -191,15 +195,11 @@ module MusicTheory
       end
 
       def alt(root=nil)
-        Scale.melodic_minor(root).rotate(6)
+        # Same as melodic_minor.rotate(6), but uses enharmonic spellings #2 and 3, instead of b3 and b4
+        Scale.parse("1 b2 #2 3 b5 b6 b7", root)
       end
 
       alias altered alt
-
-      def alt_with_third(root=nil)
-        # Same as alt scale, but uses enharmonic spellings #2 and 3, instead of b3 and b4
-        Scale.parse("1 b2 #2 3 b5 b6 b7", root)
-      end
 
       def major_pentatonic(root=nil)
         Scale.parse("1 2 3 5 6", root)
@@ -209,9 +209,15 @@ module MusicTheory
         Scale.parse("1 b3 4 5 b7", root)
       end
 
-      def diminished(root=nil)
-        Scale.parse("1 2 b3 4 b5 b6 bb7 7", root)
+      def whole_half_diminished(root=nil)
+        Scale.parse("1 2 b3 4 b5 #5 6 7", root)
       end
+
+      def half_whole_diminished(root=nil)
+        Scale.parse("1 b2 b3 b4 #4 5 6 b7", root)
+      end
+
+      alias diminished whole_half_diminished
     end
 
   end

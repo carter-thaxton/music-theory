@@ -54,4 +54,15 @@ class ScaleTest < Test::Unit::TestCase
     assert_raises { Scale.major + Interval.major(3) }
   end
 
+  def test_name
+    assert_equal :major, Scale.parse("1 2 3 4 5 6 7").name
+    assert_equal :dorian, Scale.parse("1 2 b3 4 5 6 b7").name
+    assert_equal :alt, Scale.parse("1 b2 b3 b4 b5 b6 b7").name
+    assert_nil Scale.parse("1 2 3 b4 5 6 7").name
+  end
+
+  def test_semitones
+    assert_equal [0, 2, 4, 5, 7, 9, 11], Scale.major.semitones
+  end
+
 end
