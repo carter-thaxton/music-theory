@@ -107,6 +107,7 @@ module MusicTheory
     end
 
     def ==(scale)
+      return false unless scale.is_a? Scale
       return false unless scale.semitones == self.semitones
       if self.root && scale.root
         return false unless self.root == scale.root

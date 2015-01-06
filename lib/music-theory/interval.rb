@@ -31,6 +31,7 @@ module MusicTheory
     end
 
     def ==(interval)
+      return false unless interval.is_a? Interval
       return false unless interval.number == self.number
       if interval.specific? && self.specific?
         return false unless interval.quality == self.quality && interval.quality_count == self.quality_count

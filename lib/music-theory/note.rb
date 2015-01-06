@@ -52,10 +52,11 @@ module MusicTheory
       basis + accidentals
     end
 
-    def ==(interval)
-      return false unless interval.diatonic_index == self.diatonic_index && interval.accidentals == self.accidentals
-      if interval.octave && self.octave
-        return false unless interval.octave == self.octave
+    def ==(note)
+      return false unless note.is_a? Note
+      return false unless note.diatonic_index == self.diatonic_index && note.accidentals == self.accidentals
+      if note.octave && self.octave
+        return false unless note.octave == self.octave
       end
       true
     end
