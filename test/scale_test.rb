@@ -58,6 +58,7 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal :major, Scale.parse("1 2 3 4 5 6 7").name
     assert_equal :dorian, Scale.parse("1 2 b3 4 5 6 b7").name
     assert_equal :alt, Scale.parse("1 b2 b3 b4 b5 b6 b7").name
+    assert_equal :whole_tone, Scale.parse("1 2 3 #4 #5 #6").name
     assert_nil Scale.parse("1 2 3 b4 5 6 7").name
   end
 
