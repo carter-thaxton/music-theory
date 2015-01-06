@@ -1,24 +1,19 @@
 module MusicTheory
   class Scale
 
-    attr_reader :name, :intervals, :root
+    attr_reader :intervals, :root
 
-    def initialize(intervals, name, root=nil)
+    def initialize(intervals, root=nil)
       @intervals = intervals
-      @name = name
       @root = root
     end
 
-    def with_name(name)
-      Scale.new(intervals, name, root)
-    end
-
     def with_root(root)
-      Scale.new(intervals, name, root)
+      Scale.new(intervals, root)
     end
 
     def without_root
-      Scale.new(intervals, name)
+      Scale.new(intervals)
     end
 
     def interval(i)
@@ -64,30 +59,39 @@ module MusicTheory
     end
 
     def to_s
-      [root, name, "[#{intervals_s}]"].compact.join(' ')
+      if root
+        [root, name, "[#{notes_s}]"].compact.join(' ')
+      else
+        [name, "[#{intervals_s}]"].compact.join(' ')
+      end
     end
 
     def inspect
       to_s
     end
 
-    def intervals_s
-      if root
-        intervals.map{|i| (root + i).to_s}.join(' ')
-      else
-        intervals.map(&:scale_shorthand).join(' ')
-      end
+    def notes_s
+      raise ArgumentError, "Cannot get notes_s unless it has a root" unless root
+      intervals.map{|i| (root + i).to_s}.join(' ')
     end
 
-    def rotate(n=1, new_name=nil)
+    def intervals_s
+      intervals.map(&:scale_shorthand).join(' ')
+    end
+
+    def name
+      Scale.common_name(self)
+    end
+
+    def rotate(n=1)
       basis = zero_based_interval(n)
       new_intervals = intervals.rotate(n).map{|i| (i - basis).modulo_octave}
-      Scale.new(new_intervals, new_name, root)
+      Scale.new(new_intervals, root)
     end
 
     def transpose(interval)
       raise ArgumentError, "Cannot transpose scale unless unless it has a root" unless root
-      Scale.new(intervals, name, root + interval)
+      Scale.new(intervals, root + interval)
     end
 
     def +(interval)
@@ -107,63 +111,106 @@ module MusicTheory
     end
 
     class << self
-      def parse(str, name=nil, root=nil)
+      COMMON_SCALES = [
+        :major, :minor, :harmonic_minor, :melodic_minor,
+        :dorian, :phrygian, :lydian, :mixolydian, :locrian,
+        :dorian_b2, :lydian_augmented, :lydian_dominant, :mixolydian_b6, :locrian_2, :alt,
+        :major_pentatonic, :minor_pentatonic, :diminished,
+      ]
+
+      def parse(str, root=nil)
         intervals = str.split.map {|i| Interval.parse(i, true) }
-        new(intervals, name, root)
+        new(intervals, root)
+      end
+
+      def common_name(scale)
+        COMMON_SCALES.each do |name|
+          common_scale = self.send(name)
+          return name if common_scale == scale
+        end
+        nil
       end
 
       def major(root=nil)
-        Scale.parse("1 2 3 4 5 6 7", "major", root)
+        Scale.parse("1 2 3 4 5 6 7", root)
       end
 
-      def natural_minor(root=nil)
-        Scale.parse("1 2 b3 4 5 b6 b7", "natural minor", root)
+      def minor(root=nil)
+        Scale.parse("1 2 b3 4 5 b6 b7", root)
       end
+
+      alias natural_minor minor
+      alias aeolian minor
 
       def harmonic_minor(root=nil)
-        Scale.parse("1 2 b3 4 5 b6 7", "harmonic minor", root)
+        Scale.parse("1 2 b3 4 5 b6 7", root)
+      end
+
+      def melodic_minor(root=nil)
+        Scale.parse("1 2 b3 4 5 6 7")
       end
 
       def dorian(root=nil)
-        Scale.major(root).rotate(1, 'dorian')
+        Scale.major(root).rotate(1)
       end
 
       def phrygian(root=nil)
-        Scale.major(root).rotate(2, 'phrygian')
+        Scale.major(root).rotate(2)
       end
 
       def lydian(root=nil)
-        Scale.major(root).rotate(3, 'lydian')
+        Scale.major(root).rotate(3)
       end
 
       def mixolydian(root=nil)
-        Scale.major(root).rotate(4, 'mixolydian')
+        Scale.major(root).rotate(4)
       end
-
-      def dorian(root=nil)
-        Scale.major(root).rotate(1, 'dorian')
-      end
-
-      alias aeolian natural_minor
 
       def locrian(root=nil)
-        Scale.major(root).rotate(-1, 'locrian')
+        Scale.major(root).rotate(6)
+      end
+
+      def dorian_b2(root=nil)
+        Scale.melodic_minor(root).rotate(1)
+      end
+
+      def lydian_augmented(root=nil)
+        Scale.melodic_minor(root).rotate(2)
+      end
+
+      def lydian_dominant(root=nil)
+        Scale.melodic_minor(root).rotate(3)
+      end
+
+      def mixolydian_b6(root=nil)
+        Scale.melodic_minor(root).rotate(4)
+      end
+
+      def locrian_2(root=nil)
+        Scale.melodic_minor(root).rotate(5)
       end
 
       def alt(root=nil)
-        Scale.parse("1 b2 #2 3 b5 b6 b7", "alt", root)
+        Scale.melodic_minor(root).rotate(6)
+      end
+
+      alias altered alt
+
+      def alt_with_third(root=nil)
+        # Same as alt scale, but uses enharmonic spellings #2 and 3, instead of b3 and b4
+        Scale.parse("1 b2 #2 3 b5 b6 b7", root)
       end
 
       def major_pentatonic(root=nil)
-        Scale.parse("1 2 3 5 6", "major pentatonic", root)
+        Scale.parse("1 2 3 5 6", root)
       end
 
       def minor_pentatonic(root=nil)
-        Scale.parse("1 b3 4 5 b7", "minor pentatonic", root)
+        Scale.parse("1 b3 4 5 b7", root)
       end
 
       def diminished(root=nil)
-        Scale.parse("1 2 b3 4 b5 b6 bb7 7", "diminished", root)
+        Scale.parse("1 2 b3 4 b5 b6 bb7 7", root)
       end
     end
 
