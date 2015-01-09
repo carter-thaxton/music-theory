@@ -33,7 +33,13 @@ module MusicTheory
 
     class << self
       def parse(str)
-        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], Note.C)
+        m = /\A\s*([a-gA-G][sb#]*)?(.*)\s*\Z/.match(str)
+        raise ArgumentError, "Cannot parse #{str.inspect} as a chord" unless m
+        root = m[1] && Note.parse(m[1])
+        c_str = m[2]
+
+
+        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], root)
       end
     end
   end

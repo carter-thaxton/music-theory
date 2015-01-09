@@ -12,6 +12,15 @@ class ChordTest < Test::Unit::TestCase
     assert_equal :major, c.quality
   end
 
+  def test_parse_no_root
+    c = Chord.parse('')
+    assert_nil c.root
+    assert_equal 3, c.length
+    assert_equal :major, c.quality
+    assert_raises { c.notes }
+    assert_equal [Interval.unison, Interval.major(3), Interval.perfect(5)], c.intervals
+  end
+
   # def test_minor
   #   cm = Chord.parse('Cm')
   #   assert_equal Note.C, cm.root
