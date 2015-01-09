@@ -33,13 +33,41 @@ module MusicTheory
 
     class << self
       def parse(str)
-        m = /\A\s*([a-gA-G][sb#]*)?(.*)\s*\Z/.match(str)
+        regex = /\A
+          \s*                                             # ignore leading whitespace
+          (?:
+            ([a-gA-G][sb#]*)|                             # root of chord, e.g. Ab
+            ([sb#]?[ivIV]+)                               # or roman numeral of chord, e.g. bVII
+          )?
+          (M|maj|Maj|m|min|\-|\+|aug|0|ø|o|º|dim)?        # quality, e.g. maj
+          (\d+)?                                          # number, e.g. 7
+          ((?:(?:s|\#|b|add|sus|Add|Sus)\d+|alt)*)        # modifiers, e.g. #5b9
+          \s*
+        \Z/x
+
+        m = regex.match(str)
         raise ArgumentError, "Cannot parse #{str.inspect} as a chord" unless m
-        root = m[1] && Note.parse(m[1])
-        c_str = m[2]
+        root_note = m[1] && Note.parse(m[1])
+        root_interval = m[2]
+        quality = m[3]
+        number = m[4] && m[4].to_i
+        modifiers = m[5].scan(/(?:s|\#|b|add|sus|Add|Sus)\d+|alt/)
 
+        # handle 69 as a special case
+        if number == 69
+          number = nil
+          modifiers << 'add6'
+          modifiers << 'add9'
+        end
 
-        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], root)
+        d = { root_note: root_note, root_interval: root_interval, quality: quality, number: number, modifiers: modifiers }
+        puts d
+
+        if root_interval
+          root_interval = Interval.unison
+        end
+
+        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], root_note || root_interval)
       end
     end
   end
