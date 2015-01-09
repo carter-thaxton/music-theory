@@ -437,41 +437,119 @@ module MusicTheory
       end
 
       def parse(str, generic_as_major=false)
-        regex = /\A\s*([+\-]?)([pPuUmMAdsb#]+)?(\d+)\s*\Z/
+        regex = /\A\s*(?:
+          (([+\-]?)([pPuUmMAdsb#]+)?(\d+))|
+          (([bs#]+)?([ivIV]+))
+        )\s*\Z/x
         m = regex.match str
         raise ArgumentError, "Cannot parse #{str} as an Interval" unless m
 
-        number = m[3].to_i
-        number = -number if m[1] == '-'
+        if m[1]
+          # interval like P5
+          quality_s = m[3]
+          number = m[4].to_i
+          number = -number if m[2] == '-'
 
-        perfect_number = [1,4,5].include?((number.abs - 1) % 7 + 1)
+          perfect_number = [1,4,5].include?((number.abs - 1) % 7 + 1)
 
-        if m[2]
-          quality_count = m[2].length
-          quality = case m[2][0]
-            when 'p', 'P', 'u', 'U' then :perfect
-            when 'm' then :minor
-            when 'M' then :major
-            when 'A', 's', '#' then :augmented
-            when 'd' then :diminished
-            when 'b'
-              if perfect_number
-                :diminished
-              elsif quality_count == 1
-                :minor
-              else
-                quality_count -= 1
-                :diminished
-              end
+          if quality_s
+            quality_count = quality_s.length
+            quality = case quality_s[0]
+              when 'p', 'P', 'u', 'U' then :perfect
+              when 'm' then :minor
+              when 'M' then :major
+              when 'A', 's', '#' then :augmented
+              when 'd' then :diminished
+              when 'b'
+                if perfect_number
+                  :diminished
+                elsif quality_count == 1
+                  :minor
+                else
+                  quality_count -= 1
+                  :diminished
+                end
+            end
+          elsif generic_as_major
+            quality = perfect_number ? :perfect : :major
+            quality_count = 0
           end
-        elsif generic_as_major
-          quality = perfect_number ? :perfect : :major
-          quality_count = 0
+
+        else
+          # roman numeral like bVII
+          accidental = m[6]
+          roman_numeral = m[7]
+
+          case roman_numeral
+          when 'I', 'i'
+            number = 1
+            quality = :perfect
+          when 'ii', 'II'
+            number = 2
+            quality = :major
+          when 'iii'
+            number = 3
+            quality = :major
+          when 'III'
+            number = 3
+            quality = :minor
+          when 'iv', 'IV'
+            number = 4
+            quality = :perfect
+          when 'v', 'V'
+            number = 5
+            quality = :perfect
+          when 'vi'
+            number = 6
+            quality = :major
+          when 'VI'
+            number = 6
+            quality = :minor
+          when 'vii'
+            number = 7
+            quality = :major
+          when 'VII'
+            number = 7
+            quality = :minor
+          else
+            raise ArgumentError, "Cannot parse #{str} as an Interval"
+          end
+
+          if accidental
+            case accidental[0]
+            when 's', '#'
+              case quality
+              when :major, :perfect
+                quality = :augmented
+                quality_count = accidental.length
+              when :minor
+                if accidental.length == 1
+                  quality = :major
+                else
+                  quality = :augmented
+                  quality_count = accidental.length - 1
+                end
+              end
+            when 'b'
+              case quality
+              when :major
+                if accidental.length == 1
+                  quality = :minor
+                else
+                  quality = :diminished
+                  quality_count = accidental.length - 1
+                end
+              when :minor, :perfect
+                quality = :diminished
+                quality_count = accidental.length
+              end
+            end
+          end
         end
 
         new(number, quality, quality_count)
       end
-
     end
+
   end
 end

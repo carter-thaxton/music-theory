@@ -37,7 +37,7 @@ module MusicTheory
           \s*                                             # ignore leading whitespace
           (?:
             ([a-gA-G][sb#]*)|                             # root of chord, e.g. Ab
-            ([sb#]?[ivIV]+)                               # or roman numeral of chord, e.g. bVII
+            ([sb#]*[ivIV]+)                               # or roman numeral of chord, e.g. bVII
           )?
           (M|maj|Maj|m|min|\-|\+|aug|0|ø|o|º|dim)?        # quality, e.g. maj
           (\d+)?                                          # number, e.g. 7
@@ -48,7 +48,7 @@ module MusicTheory
         m = regex.match(str)
         raise ArgumentError, "Cannot parse #{str.inspect} as a chord" unless m
         root_note = m[1] && Note.parse(m[1])
-        root_interval = m[2]
+        root_interval = m[2] && Interval.parse(m[2])
         quality = m[3]
         number = m[4] && m[4].to_i
         modifiers = m[5].scan(/(?:s|\#|b|add|sus|Add|Sus)\d+|alt/)
@@ -60,12 +60,10 @@ module MusicTheory
           modifiers << 'add9'
         end
 
-        d = { root_note: root_note, root_interval: root_interval, quality: quality, number: number, modifiers: modifiers }
-        puts d
+        root_interval_minor = root_interval && m[2].downcase == m[2]
 
-        if root_interval
-          root_interval = Interval.unison
-        end
+        d = { root_note: root_note, root_interval: root_interval, quality: quality, number: number, modifiers: modifiers, root_interval_minor: root_interval_minor }
+        puts d
 
         Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], root_note || root_interval)
       end

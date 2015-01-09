@@ -43,6 +43,39 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.augmented(4), Interval.parse("#4")
   end
 
+  def test_parse_roman_numeral
+    assert_equal Interval.unison, Interval.parse("I")
+    assert_equal Interval.major(2), Interval.parse("ii")
+    assert_equal Interval.major(3), Interval.parse("iii")
+    assert_equal Interval.perfect(4), Interval.parse("IV")
+    assert_equal Interval.perfect(5), Interval.parse("V")
+    assert_equal Interval.major(6), Interval.parse("vi")
+    assert_equal Interval.major(7), Interval.parse("vii")
+
+    assert_equal Interval.unison, Interval.parse("i")
+    assert_equal Interval.major(2), Interval.parse("II")
+    assert_equal Interval.minor(3), Interval.parse("III")
+    assert_equal Interval.perfect(4), Interval.parse("iv")
+    assert_equal Interval.perfect(5), Interval.parse("v")
+    assert_equal Interval.minor(6), Interval.parse("VI")
+    assert_equal Interval.minor(7), Interval.parse("VII")
+
+    assert_equal Interval.minor(2), Interval.parse("bII")
+    assert_equal Interval.augmented(3), Interval.parse("#iii")
+    assert_equal Interval.major(3), Interval.parse("#III")
+    assert_equal Interval.minor(3), Interval.parse("biii")
+    assert_equal Interval.diminished(3), Interval.parse("bIII")
+    assert_equal Interval.diminished(4), Interval.parse("bIV")
+    assert_equal Interval.minor(6), Interval.parse("bvi")
+    assert_equal Interval.diminished(6), Interval.parse("bVI")
+    assert_equal Interval.major(6), Interval.parse("#VI")
+    assert_equal Interval.augmented(6), Interval.parse("#vi")
+    assert_equal Interval.diminished(7), Interval.parse("bVII")
+    assert_equal Interval.minor(7), Interval.parse("bvii")
+
+    assert_equal Interval.diminished(7), Interval.parse("bbvii")
+  end
+
   def test_helpers
     assert Interval.major(3).major?
     assert !Interval.major(3).minor?
