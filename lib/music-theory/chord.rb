@@ -49,9 +49,11 @@ module MusicTheory
         raise ArgumentError, "Cannot parse #{str.inspect} as a chord" unless m
         root_note = m[1] && Note.parse(m[1])
         root_interval = m[2] && Interval.parse(m[2])
-        quality = m[3]
+        quality_s = m[3]
         number = m[4] && m[4].to_i
         modifiers = m[5].scan(/(?:s|\#|b|add|sus|Add|Sus)\d+|alt/)
+
+        root_interval_minor = root_interval && m[2].downcase == m[2]
 
         # handle 69 as a special case
         if number == 69
@@ -60,7 +62,21 @@ module MusicTheory
           modifiers << 'add9'
         end
 
-        root_interval_minor = root_interval && m[2].downcase == m[2]
+        quality = :major
+        quality = :minor if root_interval_minor
+
+        case quality_s
+        when 'M', 'maj', 'Maj'
+          quality = :major
+        when 'm', '-'
+          quality = :minor
+        when 'aug', '+'
+          quality = :augmented
+        when 'ø', 'Ø'
+          quality = :half_diminished
+        when 'dim', 'o', 'º'
+          quality = :diminished
+        end
 
         d = { root_note: root_note, root_interval: root_interval, quality: quality, number: number, modifiers: modifiers, root_interval_minor: root_interval_minor }
         puts d
