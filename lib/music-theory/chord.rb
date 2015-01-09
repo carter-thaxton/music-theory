@@ -34,14 +34,14 @@ module MusicTheory
     class << self
       def parse(str)
         regex = /\A
-          \s*                                             # ignore leading whitespace
+          \s*                                                 # ignore leading whitespace
           (?:
-            ([a-gA-G][sb#]*)|                             # root of chord, e.g. Ab
-            ([sb#]*[ivIV]+)                               # or roman numeral of chord, e.g. bVII
+            ([a-gA-G][sb#]*)|                                 # root of chord, e.g. Ab
+            ([sb#]*[ivIV]+)                                   # or roman numeral of chord, e.g. bVII
           )?
-          (M|maj|Maj|m|min|\-|\+|aug|0|ø|o|º|dim)?        # quality, e.g. maj
-          (\d+)?                                          # number, e.g. 7
-          ((?:(?:s|\#|b|add|sus|Add|Sus)\d+|alt)*)        # modifiers, e.g. #5b9
+          (M|maj|Maj|m|min|\-|\+|aug|0|ø|o|º|dim)?            # quality, e.g. maj
+          (\d+)?                                              # number, e.g. 7
+          ((?:(?:s|\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*)*)  # modifiers, e.g. #5b9
           \s*
         \Z/x
 
@@ -51,7 +51,7 @@ module MusicTheory
         root_interval = m[2] && Interval.parse(m[2])
         quality_s = m[3]
         number = m[4] && m[4].to_i
-        modifiers = m[5].scan(/(?:s|\#|b|add|sus|Add|Sus)\d+|alt/)
+        modifiers = m[5].scan(/(?:s|\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*/)
 
         root_interval_minor = root_interval && m[2].downcase == m[2]
 
