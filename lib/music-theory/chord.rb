@@ -69,7 +69,7 @@ module MusicTheory
         when 'aug', '+'
           quality = :augmented
           seventh = 'b7'
-        when 'ø', 'Ø'
+        when 'ø', 'Ø', '0'
           quality = :half_diminished
           seventh = 'b7'
         when 'dim', 'o', 'º'
