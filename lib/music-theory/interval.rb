@@ -437,6 +437,8 @@ module MusicTheory
       end
 
       def parse(str, generic_as_major=false)
+        str = str.to_s
+
         regex = /\A\s*(?:
           (([+\-]?)([pPuUmMAdsb#]+)?(\d+))|
           (([bs#]+)?([ivIV]+))
