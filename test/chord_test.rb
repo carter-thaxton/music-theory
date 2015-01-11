@@ -27,8 +27,15 @@ class ChordTest < Test::Unit::TestCase
     assert_equal :minor, Chord.minor.quality
     assert_equal :augmented, Chord.augmented.quality
     assert_equal :diminished, Chord.diminished.quality
+  end
 
-    assert_equal :major, Chord.dominant.quality
+  def test_helpers
+    assert Chord.major.major?
+    assert !Chord.major.minor?
+    assert !Chord.major.diminished?
+    assert !Chord.augmented.diminished?
+    assert Chord.augmented.augmented?
+    assert Chord.dominant.major?
     assert Chord.dominant.dominant?
   end
 
@@ -67,6 +74,20 @@ class ChordTest < Test::Unit::TestCase
     c = Chord.parse('C∆')
     assert_equal Note.C, c.root
     assert_equal Chord.major(Note.C).add(7), c
+  end
+
+  def test_parse_interval_root
+    c = Chord.parse('V7')
+    assert_equal Interval.perfect(5), c.root
+    assert c.dominant?
+
+    c = Chord.parse('iv')
+    assert_equal Interval.perfect(4), c.root
+    assert c.minor?
+
+    c = Chord.parse('bII7')
+    assert_equal Interval.minor(2), c.root
+    assert c.dominant?
   end
 
 end

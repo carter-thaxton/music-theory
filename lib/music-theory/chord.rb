@@ -31,6 +31,26 @@ module MusicTheory
       !!interval(7)
     end
 
+    def major?
+      quality == :major
+    end
+
+    def minor?
+      quality == :minor
+    end
+
+    def augmented?
+      quality == :augmented
+    end
+
+    def diminished?
+      quality == :diminished
+    end
+
+    def dominant?
+      major? && interval(7) == Interval.minor(7)
+    end
+
     def quality
       third = interval(3)
       fourth = interval(4)
@@ -50,10 +70,6 @@ module MusicTheory
         return :augmented if fifth.augmented?
         return :diminished if fifth.diminished?
       end
-    end
-
-    def dominant?
-      quality == :major && interval(7) == Interval.minor(7)
     end
 
     def alter(n)
