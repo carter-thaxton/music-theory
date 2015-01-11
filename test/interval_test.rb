@@ -337,4 +337,64 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.major(2), Interval.major(23).modulo_octave
   end
 
+  def test_roman_numeral
+    assert_equal "I", Interval.unison.roman_numeral
+    assert_equal "I", Interval.unison.roman_numeral(:major)
+    assert_equal "i", Interval.unison.roman_numeral(:minor)
+    assert_raises { Interval.unison.roman_numeral(:junk) }
+
+    assert_equal "ii", Interval.major(2).roman_numeral
+    assert_equal "II", Interval.major(2).roman_numeral(:major)
+    assert_equal "ii", Interval.major(2).roman_numeral(:minor)
+    assert_equal "bII", Interval.minor(2).roman_numeral
+    assert_equal "bII", Interval.minor(2).roman_numeral(:major)
+    assert_equal "bii", Interval.minor(2).roman_numeral(:minor)
+
+    assert_equal "iii", Interval.major(3).roman_numeral
+    assert_equal "#III", Interval.major(3).roman_numeral(:major)
+    assert_equal "iii", Interval.major(3).roman_numeral(:minor)
+    assert_equal "III", Interval.minor(3).roman_numeral
+    assert_equal "III", Interval.minor(3).roman_numeral(:major)
+    assert_equal "biii", Interval.minor(3).roman_numeral(:minor)
+
+    assert_equal "IV", Interval.perfect(4).roman_numeral
+    assert_equal "IV", Interval.perfect(4).roman_numeral(:major)
+    assert_equal "iv", Interval.perfect(4).roman_numeral(:minor)
+    assert_equal "bIV", Interval.diminished(4).roman_numeral
+    assert_equal "bIV", Interval.diminished(4).roman_numeral(:major)
+    assert_equal "biv", Interval.diminished(4).roman_numeral(:minor)
+    assert_equal "#IV", Interval.augmented(4).roman_numeral
+    assert_equal "#IV", Interval.augmented(4).roman_numeral(:major)
+    assert_equal "#iv", Interval.augmented(4).roman_numeral(:minor)
+
+    assert_equal "V", Interval.perfect(5).roman_numeral
+    assert_equal "V", Interval.perfect(5).roman_numeral(:major)
+    assert_equal "v", Interval.perfect(5).roman_numeral(:minor)
+    assert_equal "bV", Interval.diminished(5).roman_numeral
+    assert_equal "bV", Interval.diminished(5).roman_numeral(:major)
+    assert_equal "bv", Interval.diminished(5).roman_numeral(:minor)
+    assert_equal "#V", Interval.augmented(5).roman_numeral
+    assert_equal "#V", Interval.augmented(5).roman_numeral(:major)
+    assert_equal "#v", Interval.augmented(5).roman_numeral(:minor)
+
+    assert_equal "vi", Interval.major(6).roman_numeral
+    assert_equal "#VI", Interval.major(6).roman_numeral(:major)
+    assert_equal "vi", Interval.major(6).roman_numeral(:minor)
+    assert_equal "VI", Interval.minor(6).roman_numeral
+    assert_equal "VI", Interval.minor(6).roman_numeral(:major)
+    assert_equal "bvi", Interval.minor(6).roman_numeral(:minor)
+
+    assert_equal "vii", Interval.major(7).roman_numeral
+    assert_equal "#VII", Interval.major(7).roman_numeral(:major)
+    assert_equal "vii", Interval.major(7).roman_numeral(:minor)
+    assert_equal "VII", Interval.minor(7).roman_numeral
+    assert_equal "VII", Interval.minor(7).roman_numeral(:major)
+    assert_equal "bvii", Interval.minor(7).roman_numeral(:minor)
+
+    assert_equal "I", Interval.octave.roman_numeral
+    assert_equal "ii", Interval.major(9).roman_numeral
+    assert_equal "vii", Interval.minor(-2).roman_numeral
+    assert_equal "VII", Interval.major(-2).roman_numeral
+  end
+
 end

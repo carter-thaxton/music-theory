@@ -179,8 +179,53 @@ module MusicTheory
           end
       end
 
-      s = number < 0 ? '-' : ''
-      "#{s}#{quality_s}#{number.abs}"
+      prefix = '-' if down?
+      "#{prefix}#{quality_s}#{number.abs}"
+    end
+
+    def roman_numeral(chord_quality=nil)
+      return modulo_octave.roman_numeral(chord_quality) if compound? or down?
+
+      numeral = case number
+        when 1 then 'I'
+        when 2 then 'II'
+        when 3 then 'III'
+        when 4 then 'IV'
+        when 5 then 'V'
+        when 6 then 'VI'
+        when 7 then 'VII'
+      end
+
+      minor_chord = case chord_quality
+        when :major then false
+        when :minor then true
+        when :default, nil then not (perfect_number? || minor? || diminished?)
+        else
+          raise ArgumentError, "Invalid chord_quality: #{chord_quality}"
+      end
+
+      numeral = numeral.downcase if minor_chord
+
+      if specific?
+        basis = case number
+          when 1 then 0
+          when 2 then 2
+          when 3 then minor_chord ? 4 : 3
+          when 4 then 5
+          when 5 then 7
+          when 6 then minor_chord ? 9 : 8
+          when 7 then minor_chord ? 11 : 10
+        end
+
+        accidentals = modulo_octave.semitones - basis
+        if accidentals < 0
+          accidentals_s = 'b' * -accidentals
+        else
+          accidentals_s = '#' * accidentals
+        end
+      end
+
+      "#{accidentals_s}#{numeral}"
     end
 
     def simple
