@@ -220,6 +220,10 @@ module MusicTheory
       end
     end
 
+    def intervals_s
+      intervals.map(&:scale_shorthand).join(' ')
+    end
+
     class << self
 
       def major(root=nil)
@@ -255,7 +259,7 @@ module MusicTheory
           )?
           (M|maj|Maj|∆|m|min|\-|\+|aug|0|ø|o|º|dim)?          # quality, e.g. maj
           (\d+)?                                              # extension, e.g. 7
-          ((?:(?:s|\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*)*)  # modifiers, e.g. b5sus4
+          ((?:(?:\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*)*)    # modifiers, e.g. b5sus4
           \s*
         \Z/x
 
@@ -266,7 +270,7 @@ module MusicTheory
         root_interval_minor = root_interval && m[2].downcase == m[2]
         quality_s = m[3]
         extension = m[4] && m[4].to_i
-        modifiers = m[5].scan(/(?:s|\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*/)
+        modifiers = m[5].scan(/(?:\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*/)
 
         quality = :major
         seventh = 'b7'
@@ -330,7 +334,7 @@ module MusicTheory
           number = m[2] && m[2].to_i
 
           case type
-          when /\A[s#+]\Z/
+          when /\A\#+\Z/
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
             result = result.sharp(number, type.length)
           when /\Ab+\Z/
