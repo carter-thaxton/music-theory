@@ -217,10 +217,6 @@ module MusicTheory
       to_s
     end
 
-    def to_interval
-      self
-    end
-
     def augment(n=1)
       if n == 0
         self

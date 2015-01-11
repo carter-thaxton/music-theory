@@ -18,6 +18,8 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.major(Note.C), Chord.major(Note.C)
     assert_not_equal Chord.major(Note.C), Chord.major(Note.D)
     assert_not_equal Chord.major, Chord.minor
+    assert_equal Chord.dominant, Chord.major.add('b7')
+    assert_equal Chord.dominant.flat(9), Chord.major.add('b7').add('b9')
   end
 
   def test_quality
@@ -25,6 +27,7 @@ class ChordTest < Test::Unit::TestCase
     assert_equal :minor, Chord.minor.quality
     assert_equal :augmented, Chord.augmented.quality
     assert_equal :diminished, Chord.diminished.quality
+    assert_equal :dominant, Chord.dominant.quality
   end
 
   def test_alterations

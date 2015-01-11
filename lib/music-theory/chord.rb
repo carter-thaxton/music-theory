@@ -4,7 +4,7 @@ module MusicTheory
     attr_reader :intervals, :root
 
     def initialize(intervals, root=nil)
-      @intervals = intervals
+      @intervals = intervals.compact.sort_by &:number
       @root = root
     end
 
@@ -27,16 +27,27 @@ module MusicTheory
       i && (root + i)
     end
 
+    def seventh?
+      !!interval(7)
+    end
+
     def quality
       third = interval(3)
       fourth = interval(4)
       fifth = interval(5)
+      seventh = interval(7)
 
       if third && fifth
-        return :major if third.major? && fifth.perfect?
-        return :minor if third.minor? && fifth.perfect?
         return :augmented if third.major? && fifth.augmented?
         return :diminished if third.minor? && fifth.diminished?
+        if seventh
+          return :major if third.major? && fifth.perfect? && seventh.major?
+          return :minor if third.minor? && fifth.perfect? && seventh.minor?
+          return :dominant if third.major? && fifth.perfect? && seventh.minor?
+        else
+          return :major if third.major? && fifth.perfect?
+          return :minor if third.minor? && fifth.perfect?
+        end
       elsif third
         return :major if third.major?
         return :minor if third.minor?
@@ -53,13 +64,34 @@ module MusicTheory
       if existing_interval
         new_interval = yield existing_interval
       else
-        new_interval = yield Interval.new(n)
+        new_interval = yield Interval.parse(n, true)
       end
 
       new_intervals = intervals.clone
       new_intervals.delete(existing_interval) if existing_interval
       new_intervals << new_interval
-      new_intervals = new_intervals.sort_by &:number
+
+      Chord.new(new_intervals, root)
+    end
+
+    def no(n)
+      new_intervals = intervals.clone
+
+      if n.is_a? Interval
+        new_intervals.delete_if {|i| i == n}
+      else
+        existing_interval = interval(n)
+        new_intervals.delete(existing_interval) if existing_interval
+      end
+
+      Chord.new(new_intervals, root)
+    end
+
+    def add(interval)
+      interval = Interval.parse(interval, true) unless interval.is_a? Interval
+
+      new_intervals = intervals.clone
+      new_intervals << interval
 
       Chord.new(new_intervals, root)
     end
@@ -97,6 +129,10 @@ module MusicTheory
 
       def diminished(root=nil)
         Chord.new([Interval.unison, Interval.minor(3), Interval.diminished(5)], root)
+      end
+
+      def dominant(root=nil)
+        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5), Interval.minor(7)], root)
       end
 
       def parse(str)
