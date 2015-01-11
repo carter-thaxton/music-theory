@@ -216,12 +216,10 @@ module MusicTheory
         modifiers_s = 'alt'
       end
 
-      result = "#{root_s}#{quality_s}#{extension_s}#{modifiers_s}"
-
-      if result.empty?
-        result = 'major'
-      end
-
+      result = "#{quality_s}#{extension_s}#{modifiers_s}"
+      result = "M#{result}" if /\A[b#]/.match(result)
+      result = "#{root}#{result}"
+      result = "maj" if result.empty?
       result
     end
 

@@ -92,7 +92,7 @@ class ChordTest < Test::Unit::TestCase
   end
 
   def test_to_s
-    assert_equal 'major', Chord.parse('').to_s
+    assert_equal 'maj', Chord.parse('').to_s
     assert_equal 'C', Chord.parse('C').to_s
     assert_equal 'Cm', Chord.parse('Cm').to_s
     assert_equal 'Cm7b5', Chord.parse('Cm7b5').to_s
