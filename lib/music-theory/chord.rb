@@ -217,10 +217,9 @@ module MusicTheory
       end
 
       result = "#{quality_s}#{extension_s}#{modifiers_s}"
-      result = "M#{result}" if /\A[b#]/.match(result)
-      result = "#{root}#{result}"
+      result = "maj#{result}" if /\A[b#]/.match(result)
       result = "maj" if result.empty?
-      result
+      "#{root}#{result}"
     end
 
     def inspect
