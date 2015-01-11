@@ -91,6 +91,16 @@ class ChordTest < Test::Unit::TestCase
     assert c.dominant?
   end
 
+  def test_sixth_chords
+    c = Chord.parse('C6')
+    assert_equal '1 3 5 6', c.intervals_s
+    assert_equal 'C6', c.to_s
+
+    c = Chord.parse('C69')
+    assert_equal '1 3 5 6 9', c.intervals_s
+    assert_equal 'C6add9', c.to_s
+  end
+
   def test_alt
     c = Chord.parse('alt')
     assert_equal '1 3 b5 b7 b9 #9 b13', c.intervals_s
@@ -101,6 +111,14 @@ class ChordTest < Test::Unit::TestCase
     assert_equal '1 2 5', Chord.parse('sus2').intervals_s
     assert_equal '1 4 5', Chord.parse('sus4').intervals_s
     assert_equal '1 4 5', Chord.parse('sus').intervals_s
+  end
+
+  def test_augmented
+    assert_equal '1 3 #5', Chord.parse('+').intervals_s
+    assert_equal '+', Chord.parse('+').to_s
+    assert_equal '+6', Chord.parse('+6').to_s
+    assert_equal '7#5', Chord.parse('+7').to_s
+    assert_equal '7#5', Chord.parse('7#5').to_s
   end
 
   def test_to_s

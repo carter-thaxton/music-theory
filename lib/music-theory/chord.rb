@@ -81,9 +81,11 @@ module MusicTheory
     end
 
     def highest_extension
-      [13, 11, 9, 7].each do |i|
-        int = interval(i)
-        return i if int && (int.perfect? || int.major? || (i == 7 && int.minor?))
+      if seventh?
+        [13, 11, 9, 7].each do |i|
+          int = interval(i)
+          return i if int && (int.perfect? || int.major? || (i == 7 && int.minor?))
+        end
       end
       nil
     end
@@ -167,7 +169,7 @@ module MusicTheory
       quality_s = case quality
         when :major then ''
         when :minor then minor_s
-        when :augmented then '+'
+        when :augmented then seventh? ? '' : '+'
         when :suspended then 'sus'
         when :diminished then (seventh && seventh.minor?) ? minor_s : 'º'
       end
@@ -183,11 +185,20 @@ module MusicTheory
       modifiers_s = ''
       intervals.each do |interval|
         n = interval.abs_simple_number
-        ignore_fifth = n == 5 && (interval.perfect? || (interval.diminished? && quality_s == 'º'))
+        if n == 5
+          ignore_fifth = interval.perfect? ||
+            (interval.diminished? && quality_s == 'º') ||
+            (interval.augmented? && quality_s == '+')
+        end
+
         unless [1, 3, 7].include?(n) || ignore_fifth
           if interval.major? or interval.perfect?
             if n > (highest_extension || 0)
-              modifiers_s << 'add' + interval.scale_shorthand
+              if n == 6
+                modifiers_s << interval.scale_shorthand
+              else
+                modifiers_s << 'add' + interval.scale_shorthand
+              end
             end
           else
             modifiers_s << interval.scale_shorthand
