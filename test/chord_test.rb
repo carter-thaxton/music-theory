@@ -107,6 +107,10 @@ class ChordTest < Test::Unit::TestCase
     c = Chord.parse('C69')
     assert_equal '1 3 5 6 9', c.intervals_s
     assert_equal 'C6add9', c.to_s
+
+    c = Chord.parse('C∆6')
+    assert_equal '1 3 5 6 7', c.intervals_s
+    assert_equal 'C∆6', c.to_s
   end
 
   def test_alt

@@ -193,12 +193,10 @@ module MusicTheory
 
         unless [1, 3, 7].include?(n) || ignore_fifth
           if interval.major? or interval.perfect?
-            if n > (highest_extension || 0)
-              if n == 6
-                modifiers_s << interval.scale_shorthand
-              else
-                modifiers_s << 'add' + interval.scale_shorthand
-              end
+            if n == 6
+              modifiers_s << interval.scale_shorthand
+            elsif n > (highest_extension || 0)
+              modifiers_s << 'add' + interval.scale_shorthand
             end
           else
             modifiers_s << interval.scale_shorthand
@@ -285,6 +283,7 @@ module MusicTheory
 
         quality = :major
         seventh = 'b7'
+        extension_modifiers = []
 
         quality = :minor if root_interval_minor
 
@@ -292,7 +291,7 @@ module MusicTheory
         when 'M', 'maj', 'Maj', '∆'
           quality = :major
           seventh = 'M7'
-          extension = 7 if quality_s == '∆'
+          extension_modifiers << seventh if quality_s == '∆'
         when 'm', '-'
           quality = :minor
           seventh = 'b7'
@@ -308,7 +307,6 @@ module MusicTheory
           seventh = 'bb7'
         end
 
-        extension_modifiers = []
         if extension
           case extension
           when 6
