@@ -341,7 +341,6 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal "I", Interval.unison.roman_numeral
     assert_equal "I", Interval.unison.roman_numeral(:major)
     assert_equal "i", Interval.unison.roman_numeral(:minor)
-    assert_raises { Interval.unison.roman_numeral(:junk) }
 
     assert_equal "ii", Interval.major(2).roman_numeral
     assert_equal "II", Interval.major(2).roman_numeral(:major)

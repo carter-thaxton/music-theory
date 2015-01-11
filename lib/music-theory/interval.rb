@@ -197,11 +197,10 @@ module MusicTheory
       end
 
       minor_chord = case chord_quality
-        when :major then false
-        when :minor then true
-        when :default, nil then not (perfect_number? || minor? || diminished?)
+        when :major, :perfect, :augmented then false
+        when :minor, :diminished then true
         else
-          raise ArgumentError, "Invalid chord_quality: #{chord_quality}"
+          not (perfect_number? || minor? || diminished?)
       end
 
       numeral = numeral.downcase if minor_chord
