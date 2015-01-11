@@ -91,6 +91,18 @@ class ChordTest < Test::Unit::TestCase
     assert c.dominant?
   end
 
+  def test_alt
+    c = Chord.parse('alt')
+    assert_equal '1 3 b5 b7 b9 #9 b13', c.intervals_s
+    assert_equal '7alt', c.to_s
+  end
+
+  def test_suspended
+    assert_equal '1 2 5', Chord.parse('sus2').intervals_s
+    assert_equal '1 4 5', Chord.parse('sus4').intervals_s
+    assert_equal '1 4 5', Chord.parse('sus').intervals_s
+  end
+
   def test_to_s
     assert_equal 'major', Chord.parse('').to_s
     assert_equal 'C', Chord.parse('C').to_s
