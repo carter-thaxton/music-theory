@@ -66,9 +66,9 @@ module MusicTheory
 
       if third && fifth
         return :major if third.major? && fifth.perfect?
-        return :minor if third.minor? && fifth.perfect?
         return :augmented if third.major? && fifth.augmented?
         return :diminished if third.minor? && fifth.diminished?
+        return :minor if third.minor?
       elsif third
         return :major if third.major?
         return :minor if third.minor?

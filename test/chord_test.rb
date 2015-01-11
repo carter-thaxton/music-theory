@@ -91,6 +91,14 @@ class ChordTest < Test::Unit::TestCase
     assert c.dominant?
   end
 
+  def test_to_s
+    assert_equal 'major', Chord.parse('').to_s
+    assert_equal 'C', Chord.parse('C').to_s
+    assert_equal 'Cm', Chord.parse('Cm').to_s
+    assert_equal 'Cm7b5', Chord.parse('Cm7b5').to_s
+    assert_equal 'Cm7b5', Chord.parse('Cø').to_s
+  end
+
   def test_sixth_chords
     c = Chord.parse('C6')
     assert_equal '1 3 5 6', c.intervals_s
@@ -113,20 +121,17 @@ class ChordTest < Test::Unit::TestCase
     assert_equal '1 4 5', Chord.parse('sus').intervals_s
   end
 
+  def test_minor_sharp_five
+    assert_equal :minor, Chord.parse('m7#5').quality
+  end
+
   def test_augmented
     assert_equal '1 3 #5', Chord.parse('+').intervals_s
     assert_equal '+', Chord.parse('+').to_s
     assert_equal '+6', Chord.parse('+6').to_s
     assert_equal '7#5', Chord.parse('+7').to_s
     assert_equal '7#5', Chord.parse('7#5').to_s
-  end
-
-  def test_to_s
-    assert_equal 'major', Chord.parse('').to_s
-    assert_equal 'C', Chord.parse('C').to_s
-    assert_equal 'Cm', Chord.parse('Cm').to_s
-    assert_equal 'Cm7b5', Chord.parse('Cm7b5').to_s
-    assert_equal 'Cm7b5', Chord.parse('Cø').to_s
+    assert_equal 'm7#5', Chord.parse('m7#5').to_s
   end
 
 end
