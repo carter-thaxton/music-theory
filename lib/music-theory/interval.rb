@@ -289,7 +289,9 @@ module MusicTheory
       end
     end
 
+    alias sharp augment
     alias augmented augment
+    alias flat diminish
     alias diminished diminish
 
     def inverse

@@ -28,6 +28,10 @@ class ChordTest < Test::Unit::TestCase
   end
 
   def test_alterations
+    assert_equal Chord.minor, Chord.major.flat(3)
+    assert_equal Chord.major, Chord.minor.sharp(3)
+    assert_equal Chord.diminished, Chord.minor.flat(5)
+    assert_equal Chord.augmented, Chord.major.sharp(5)
   end
 
   def test_parse_major

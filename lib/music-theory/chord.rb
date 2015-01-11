@@ -48,6 +48,30 @@ module MusicTheory
       end
     end
 
+    def alter(n)
+      existing_interval = interval(n)
+      if existing_interval
+        new_interval = yield existing_interval
+      else
+        new_interval = yield Interval.new(n)
+      end
+
+      new_intervals = intervals.clone
+      new_intervals.delete(existing_interval) if existing_interval
+      new_intervals << new_interval
+      new_intervals = new_intervals.sort_by &:number
+
+      Chord.new(new_intervals, root)
+    end
+
+    def flat(n)
+      alter(n) {|i| i.flat }
+    end
+
+    def sharp(n)
+      alter(n) {|i| i.sharp}
+    end
+
     def ==(chord)
       return false unless chord.is_a? Chord
       return false unless intervals == chord.intervals
