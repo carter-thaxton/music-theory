@@ -35,6 +35,11 @@ module MusicTheory
       !!interval(7)
     end
 
+    def sixth?
+      s = interval(6)
+      !seventh? && s && s.major?
+    end
+
     def major?
       quality == :major
     end
@@ -180,11 +185,14 @@ module MusicTheory
         elsif seventh.diminished? then 'b' * (seventh.quality_count - (diminished? ? 1 : 0)) + '7'
         elsif seventh.augmented? then '#' * seventh.quality_count + '7'
         end
+      elsif sixth?
+        '6'
       end
 
       modifiers_s = ''
       intervals.each do |interval|
-        n = interval.abs_simple_number
+        n = interval.number
+
         if n == 5
           ignore_fifth = interval.perfect? ||
             (interval.diminished? && quality_s == 'º') ||
@@ -194,7 +202,7 @@ module MusicTheory
         unless [1, 3, 7].include?(n) || ignore_fifth
           if interval.major? or interval.perfect?
             if n == 6
-              modifiers_s << interval.scale_shorthand
+              modifiers_s << 'add' + interval.scale_shorthand unless extension_s == '6'
             elsif n > (highest_extension || 0)
               modifiers_s << 'add' + interval.scale_shorthand
             end
