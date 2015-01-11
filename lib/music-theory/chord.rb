@@ -27,6 +27,10 @@ module MusicTheory
       i && (root + i)
     end
 
+    def root_interval?
+      root && root.is_a?(Interval)
+    end
+
     def seventh?
       !!interval(7)
     end
@@ -158,12 +162,14 @@ module MusicTheory
     def to_s
       seventh = interval(7)
 
+      minor_s = root_interval? ? '' : 'm'
+
       quality_s = case quality
         when :major then ''
-        when :minor then 'm'
+        when :minor then minor_s
         when :augmented then '+'
         when :suspended then 'sus'
-        when :diminished then (seventh && seventh.minor?) ? 'm' : 'º'
+        when :diminished then (seventh && seventh.minor?) ? minor_s : 'º'
       end
 
       extension_s = if seventh
@@ -180,7 +186,7 @@ module MusicTheory
         ignore_fifth = n == 5 && (interval.perfect? || (interval.diminished? && quality_s == 'º'))
         unless [1, 3, 7].include?(n) || ignore_fifth
           if interval.major? or interval.perfect?
-            if n > highest_extension || 0
+            if n > (highest_extension || 0)
               modifiers_s << 'add' + interval.scale_shorthand
             end
           else
@@ -207,7 +213,7 @@ module MusicTheory
     end
 
     def root_s
-      if root.respond_to? :roman_numeral
+      if root_interval?
         root.roman_numeral(quality)
       else
         root.to_s
