@@ -47,6 +47,10 @@ module MusicTheory
       quality == :diminished
     end
 
+    def suspended?
+      quality == :suspended
+    end
+
     def dominant?
       major? && interval(7) == Interval.minor(7)
     end
@@ -142,6 +146,10 @@ module MusicTheory
 
       def diminished(root=nil)
         Chord.new([Interval.unison, Interval.minor(3), Interval.diminished(5)], root)
+      end
+
+      def suspended(root=nil)
+        Chord.new([Interval.unison, Interval.perfect(4), Interval.perfect(5)], root)
       end
 
       def dominant(root=nil)

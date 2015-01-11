@@ -27,6 +27,7 @@ class ChordTest < Test::Unit::TestCase
     assert_equal :minor, Chord.minor.quality
     assert_equal :augmented, Chord.augmented.quality
     assert_equal :diminished, Chord.diminished.quality
+    assert_equal :suspended, Chord.suspended.quality
   end
 
   def test_helpers
