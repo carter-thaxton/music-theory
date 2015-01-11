@@ -51,12 +51,22 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.major, c
   end
 
-  # def test_minor
-  #   cm = Chord.parse('Cm')
-  #   assert_equal Note.C, cm.root
-  #   assert_equal 3, cm.length
-  #   assert_equal [Note.C, Note.Eb, Note.G], cm.notes
-  #   assert_equal :minor, cm.quality
-  # end
+  def test_parse_minor
+    cm = Chord.parse('Cm')
+    assert_equal Note.C, cm.root
+    assert_equal Chord.minor(Note.C), cm
+  end
+
+  def test_parse_dominant
+    c = Chord.parse('C7')
+    assert_equal Note.C, c.root
+    assert_equal Chord.dominant(Note.C), c
+  end
+
+  def test_parse_major_seventh
+    c = Chord.parse('C∆')
+    assert_equal Note.C, c.root
+    assert_equal Chord.major(Note.C).add(7), c
+  end
 
 end

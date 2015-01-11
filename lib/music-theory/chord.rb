@@ -163,6 +163,7 @@ module MusicTheory
         when 'M', 'maj', 'Maj', '∆'
           quality = :major
           seventh = 'M7'
+          extension = 7 if quality_s == '∆'
         when 'm', '-'
           quality = :minor
           seventh = 'b7'
@@ -170,8 +171,9 @@ module MusicTheory
           quality = :augmented
           seventh = 'b7'
         when 'ø', 'Ø', '0'
-          quality = :half_diminished
+          quality = :diminished
           seventh = 'b7'
+          extension = 7 unless extension
         when 'dim', 'o', 'º'
           quality = :diminished
           seventh = 'bb7'
@@ -203,10 +205,41 @@ module MusicTheory
           end
         end
 
-        d = { root_note: root_note, root_interval: root_interval, quality: quality, extension: extension, modifiers: modifiers, root_interval_minor: root_interval_minor }
-        puts d
+        result = Chord.send(quality, root_note || root_interval)
 
-        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], root_note || root_interval)
+        modifiers.each do |modifier|
+          m = /\A([a-zA-Z\#]+)(\d+)?\Z/.match modifier
+          raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless m
+
+          type = m[1]
+          number = m[2] && m[2].to_i
+
+          case type
+          when 's', '#'
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
+            result = result.sharp(number)
+          when 'b'
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
+            result = result.flat(number)
+          when 'add', 'Add'
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
+            result = result.add(number)
+          when 'sus', 'Sus'
+            number ||= 4
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless [2, 4].include? number
+            result = result.no(3).add(number)
+          when 'M', 'maj', 'Maj'
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}" if number && number != 7
+            result = result.add('M7')
+          when 'alt'
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}" if number
+            result = result.add('b9').add('#9').add('b5').add('b6').add('b7')
+          else
+            raise ArgumentError, "Invalid modifier for chord: #{modifier}"
+          end
+        end
+
+        result
       end
     end
   end
