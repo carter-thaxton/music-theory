@@ -27,7 +27,9 @@ class ChordTest < Test::Unit::TestCase
     assert_equal :minor, Chord.minor.quality
     assert_equal :augmented, Chord.augmented.quality
     assert_equal :diminished, Chord.diminished.quality
-    assert_equal :dominant, Chord.dominant.quality
+
+    assert_equal :major, Chord.dominant.quality
+    assert Chord.dominant.dominant?
   end
 
   def test_alterations

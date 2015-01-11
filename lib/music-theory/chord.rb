@@ -35,19 +35,12 @@ module MusicTheory
       third = interval(3)
       fourth = interval(4)
       fifth = interval(5)
-      seventh = interval(7)
 
       if third && fifth
+        return :major if third.major? && fifth.perfect?
+        return :minor if third.minor? && fifth.perfect?
         return :augmented if third.major? && fifth.augmented?
         return :diminished if third.minor? && fifth.diminished?
-        if seventh
-          return :major if third.major? && fifth.perfect? && seventh.major?
-          return :minor if third.minor? && fifth.perfect? && seventh.minor?
-          return :dominant if third.major? && fifth.perfect? && seventh.minor?
-        else
-          return :major if third.major? && fifth.perfect?
-          return :minor if third.minor? && fifth.perfect?
-        end
       elsif third
         return :major if third.major?
         return :minor if third.minor?
@@ -57,6 +50,10 @@ module MusicTheory
         return :augmented if fifth.augmented?
         return :diminished if fifth.diminished?
       end
+    end
+
+    def dominant?
+      quality == :major && interval(7) == Interval.minor(7)
     end
 
     def alter(n)
