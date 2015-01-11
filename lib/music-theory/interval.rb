@@ -72,6 +72,11 @@ module MusicTheory
       result
     end
 
+    def semitone_offset
+      return 0 if generic?
+      semitones - Interval.new(number, major_minor_number? ? :major : :perfect).semitones
+    end
+
     def generic?
       quality.nil?
     end

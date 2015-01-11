@@ -4,7 +4,7 @@ module MusicTheory
     attr_reader :intervals, :root
 
     def initialize(intervals, root=nil)
-      @intervals = intervals.compact.sort_by &:number
+      @intervals = intervals.compact.sort_by {|i| [i.number, i.semitone_offset]}
       @root = root
     end
 
@@ -76,8 +76,17 @@ module MusicTheory
       end
     end
 
+    def highest_extension
+      [13, 11, 9, 7].each do |i|
+        int = interval(i)
+        return i if int && (int.perfect? || int.major? || (i == 7 && int.minor?))
+      end
+      nil
+    end
+
     def alter(n)
       existing_interval = interval(n)
+
       if existing_interval
         new_interval = yield existing_interval
       else
@@ -114,10 +123,26 @@ module MusicTheory
     end
 
     def flat(i, n=1)
+      # special case for b9.  Don't replace #9
+      if i == 9
+        ninth = interval(9)
+        if ninth && ninth.augmented?
+          return add Interval.new(9, :major).flat(n)
+        end
+      end
+
       alter(i) {|interval| interval.flat(n) }
     end
 
     def sharp(i, n=1)
+      # special case for #9.  Don't replace b9
+      if i == 9
+        ninth = interval(9)
+        if ninth && (ninth.minor? or ninth.diminished?)
+          return add Interval.new(9, :major).sharp(n)
+        end
+      end
+
       alter(i) {|interval| interval.sharp(n) }
     end
 
@@ -128,6 +153,65 @@ module MusicTheory
         return false unless root == chord.root
       end
       true
+    end
+
+    def to_s
+      seventh = interval(7)
+
+      quality_s = case quality
+        when :major then ''
+        when :minor then 'm'
+        when :augmented then '+'
+        when :suspended then 'sus'
+        when :diminished then (seventh && seventh.minor?) ? 'm' : 'º'
+      end
+
+      extension_s = if seventh
+        if seventh.major? then '∆'
+        elsif seventh.minor? then highest_extension.to_s
+        elsif seventh.diminished? then 'b' * (seventh.quality_count - (diminished? ? 1 : 0)) + '7'
+        elsif seventh.augmented? then '#' * seventh.quality_count + '7'
+        end
+      end
+
+      modifiers_s = ''
+      intervals.each do |interval|
+        n = interval.abs_simple_number
+        ignore_fifth = n == 5 && (interval.perfect? || (interval.diminished? && quality_s == 'º'))
+        unless [1, 3, 7].include?(n) || ignore_fifth
+          if interval.major? or interval.perfect?
+            if n > highest_extension || 0
+              modifiers_s << 'add' + interval.scale_shorthand
+            end
+          else
+            modifiers_s << interval.scale_shorthand
+          end
+        end
+      end
+
+      if ['b5b9#9b13', 'b5b9#9b13', 'b9#9b13', 'b5b9#9'].include? modifiers_s
+        modifiers_s = 'alt'
+      end
+
+      result = "#{root_s}#{quality_s}#{extension_s}#{modifiers_s}"
+
+      if result.empty?
+        result = 'major'
+      end
+
+      result
+    end
+
+    def inspect
+      to_s
+    end
+
+    def root_s
+      if root.respond_to? :roman_numeral
+        root.roman_numeral(quality)
+      else
+        root.to_s
+      end
     end
 
     class << self
@@ -203,27 +287,28 @@ module MusicTheory
           seventh = 'bb7'
         end
 
+        extension_modifiers = []
         if extension
           case extension
           when 6
-            modifiers << 'add6'
+            extension_modifiers << 'add6'
           when 7
-            modifiers << seventh
+            extension_modifiers << seventh
           when 9
-            modifiers << seventh
-            modifiers << 'add9'
+            extension_modifiers << seventh
+            extension_modifiers << 'add9'
           when 11
-            modifiers << seventh
-            modifiers << 'add9'
-            modifiers << 'add11'
+            extension_modifiers << seventh
+            extension_modifiers << 'add9'
+            extension_modifiers << 'add11'
           when 13
-            modifiers << seventh
-            modifiers << 'add9'
-            modifiers << 'add11'
-            modifiers << 'add13'
+            extension_modifiers << seventh
+            extension_modifiers << 'add9'
+            extension_modifiers << 'add11'
+            extension_modifiers << 'add13'
           when 69
-            modifiers << 'add6'
-            modifiers << 'add9'
+            extension_modifiers << 'add6'
+            extension_modifiers << 'add9'
           else
             raise ArgumentError, "Invalid extension for chord: #{extension}"
           end
@@ -231,7 +316,7 @@ module MusicTheory
 
         result = Chord.send(quality, root_note || root_interval)
 
-        modifiers.each do |modifier|
+        (extension_modifiers + modifiers).each do |modifier|
           m = /\A([a-zA-Z\#]+)(\d+)?\Z/.match modifier
           raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless m
 
@@ -257,7 +342,8 @@ module MusicTheory
             result = result.add('M7')
           when 'alt'
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" if number
-            result = result.add('b9').add('#9').add('b5').add('b6').add('b7')
+            result = result.flat(9).sharp(9).flat(5).flat(13)
+            result = result.flat(7) unless result.seventh?
           else
             raise ArgumentError, "Invalid modifier for chord: #{modifier}"
           end

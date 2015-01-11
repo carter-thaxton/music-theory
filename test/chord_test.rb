@@ -91,4 +91,11 @@ class ChordTest < Test::Unit::TestCase
     assert c.dominant?
   end
 
+  def test_to_s
+    assert_equal 'major', Chord.parse('').to_s
+    assert_equal 'C', Chord.parse('C').to_s
+    assert_equal 'Cm7b5', Chord.parse('Cm7b5').to_s
+    assert_equal 'Cm7b5', Chord.parse('Cø').to_s
+  end
+
 end
