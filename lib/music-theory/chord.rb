@@ -93,12 +93,12 @@ module MusicTheory
       Chord.new(new_intervals, root)
     end
 
-    def flat(n)
-      alter(n) {|i| i.flat }
+    def flat(i, n=1)
+      alter(i) {|interval| interval.flat(n) }
     end
 
-    def sharp(n)
-      alter(n) {|i| i.sharp}
+    def sharp(i, n=1)
+      alter(i) {|interval| interval.sharp(n) }
     end
 
     def ==(chord)
@@ -215,12 +215,12 @@ module MusicTheory
           number = m[2] && m[2].to_i
 
           case type
-          when 's', '#'
+          when /\A[s#+]\Z/
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
-            result = result.sharp(number)
-          when 'b'
+            result = result.sharp(number, type.length)
+          when /\Ab+\Z/
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
-            result = result.flat(number)
+            result = result.flat(number, type.length)
           when 'add', 'Add'
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" unless number
             result = result.add(number)
