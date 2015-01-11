@@ -28,10 +28,53 @@ module MusicTheory
     end
 
     def quality
-      :major
+      third = interval(3)
+      fourth = interval(4)
+      fifth = interval(5)
+
+      if third && fifth
+        return :major if third.major? && fifth.perfect?
+        return :minor if third.minor? && fifth.perfect?
+        return :augmented if third.major? && fifth.augmented?
+        return :diminished if third.minor? && fifth.diminished?
+      elsif third
+        return :major if third.major?
+        return :minor if third.minor?
+      elsif fourth
+        return :suspended
+      elsif fifth
+        return :augmented if fifth.augmented?
+        return :diminished if fifth.diminished?
+      end
+    end
+
+    def ==(chord)
+      return false unless chord.is_a? Chord
+      return false unless intervals == chord.intervals
+      if root && chord.root
+        return false unless root == chord.root
+      end
+      true
     end
 
     class << self
+
+      def major(root=nil)
+        Chord.new([Interval.unison, Interval.major(3), Interval.perfect(5)], root)
+      end
+
+      def minor(root=nil)
+        Chord.new([Interval.unison, Interval.minor(3), Interval.perfect(5)], root)
+      end
+
+      def augmented(root=nil)
+        Chord.new([Interval.unison, Interval.major(3), Interval.augmented(5)], root)
+      end
+
+      def diminished(root=nil)
+        Chord.new([Interval.unison, Interval.minor(3), Interval.diminished(5)], root)
+      end
+
       def parse(str)
         regex = /\A
           \s*                                                 # ignore leading whitespace
