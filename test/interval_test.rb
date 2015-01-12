@@ -8,8 +8,8 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal 2, Interval.generic(2).number
     assert Interval.generic(2).generic?
     assert_equal Interval.generic(2), Interval.major(2)
-    assert_equal 1, Interval.generic(2).offset
-    assert_equal 0, Interval.generic(1).offset
+    assert_equal 1, Interval.generic(2).diatonic_offset
+    assert_equal 0, Interval.generic(1).diatonic_offset
   end
 
   def test_parse
@@ -91,13 +91,6 @@ class IntervalTest < Test::Unit::TestCase
     assert Interval.unison.up?
     assert !Interval.unison.down?
     assert Interval.octave.down.down?
-  end
-
-  def test_validations
-    assert_raises(Interval::InvalidIntervalError) { Interval.major(5) }
-    assert_raises(Interval::InvalidIntervalError) { Interval.perfect(3) }
-    assert_raises(Interval::InvalidIntervalError) { Interval.new(0) }
-    assert_raises(Interval::InvalidIntervalError) { Interval.new(2, :junk) }
   end
 
   def test_interval_strings

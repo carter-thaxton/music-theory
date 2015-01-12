@@ -1,33 +1,15 @@
 module MusicTheory
   class Interval
-    class InvalidIntervalError < ArgumentError; end
 
-    attr_reader :number, :quality, :quality_count
+    attr_reader :number, :offset
 
     QUALITIES = [:perfect, :major, :minor, :augmented, :diminished]
 
-    def initialize(number, quality=nil, quality_count=nil)
+    def initialize(number, offset=nil)
       @number = number.to_i
-      raise InvalidIntervalError, "number must be a non-zero integer" if @number == 0
-
-      if quality
-        raise InvalidIntervalError, "invalid quality: #{quality}" unless QUALITIES.include?(quality)
-        @quality = quality
-
-        case quality
-        when :major, :minor
-          raise InvalidIntervalError, "invalid interval: #{to_s}" unless major_minor_number?
-        when :perfect
-          raise InvalidIntervalError, "invalid interval: #{to_s}" unless perfect_number?
-        end
-
-        if quality == :diminished || quality == :augmented
-          @quality_count = quality_count || 1
-          raise InvalidIntervalError, "invalid quality_count: #{quality_count} for #{quality}" unless @quality_count > 0
-        else
-          @quality_count = 0
-        end
-      end
+      raise ArgumentError, "number must be a non-zero integer" if @number == 0
+      @generic = offset.nil?
+      @offset = offset.to_i
     end
 
     def ==(interval)
@@ -40,11 +22,11 @@ module MusicTheory
     end
 
     def semitones
-      raise InvalidIntervalError, "Cannot determine number of semitones for a generic interval" if generic?
+      raise ArgumentError, "Cannot determine number of semitones for a generic interval" if generic?
 
       result = case quality
         when :perfect, :major, :augmented
-          case abs_simple_number
+          case simple_number
             when 1 then 0 + quality_count
             when 2 then 2 + quality_count
             when 3 then 4 + quality_count
@@ -54,7 +36,7 @@ module MusicTheory
             when 7 then 11 + quality_count
           end
         when :minor, :diminished
-          case abs_simple_number
+          case simple_number
             when 1 then 0 - quality_count
             when 2 then 1 - quality_count
             when 3 then 3 - quality_count
@@ -72,13 +54,42 @@ module MusicTheory
       result
     end
 
-    def semitone_offset
-      return 0 if generic?
-      semitones - Interval.new(number, major_minor_number? ? :major : :perfect).semitones
+    def quality
+      return nil if generic?
+
+      if perfect_number?
+        if offset == 0
+          :perfect
+        elsif offset > 0
+          :augmented
+        else
+          :diminished
+        end
+      else
+        if offset == 0
+          :major
+        elsif offset == -1
+          :minor
+        elsif offset > 0
+          :augmented
+        else
+          :diminished
+        end
+      end
+    end
+
+    # if diminished or augmented, how diminished or augmented?
+    # 0 for generic, major, minor, perfect
+    def quality_count
+      case quality
+        when nil, :major, :minor, :perfect then 0
+        when :diminished then -offset - (perfect_number? ? 0 : 1)
+        when :augmented then offset
+      end
     end
 
     def generic?
-      quality.nil?
+      @generic
     end
 
     def specific?
@@ -106,7 +117,7 @@ module MusicTheory
     end
 
     def unison_or_octave?
-      abs_simple_number == 1
+      simple_number == 1
     end
 
     alias octave_or_unison? unison_or_octave?
@@ -136,11 +147,11 @@ module MusicTheory
     end
 
     def perfect_number?
-      [1,4,5].include? abs_simple_number
+      Interval.perfect_number? number
     end
 
     def major_minor_number?
-      [2,3,6,7].include? abs_simple_number
+      Interval.major_minor_number? number
     end
 
     def to_s
@@ -233,15 +244,15 @@ module MusicTheory
     end
 
     def simple
-      Interval.new(simple_number, quality, quality_count)
+      Interval.new(signed_simple_number, offset)
+    end
+
+    def signed_simple_number
+      down? ? -simple_number : simple_number
     end
 
     def simple_number
-      down? ? -abs_simple_number : abs_simple_number
-    end
-
-    def abs_simple_number
-      (number.abs - 1) % 7 + 1
+      Interval.simple_number number
     end
 
     def modulo_octave
@@ -253,7 +264,7 @@ module MusicTheory
       result
     end
 
-    def offset
+    def diatonic_offset
       down? ? number + 1 : number - 1
     end
 
@@ -269,69 +280,13 @@ module MusicTheory
     def augment(n=1)
       if n == 0
         self
-      elsif n < 0
-        diminish(-n)
-      elsif n > 1
-        result = self
-        n.times do
-          result = result.augment
-        end
-        result
       else
-        case quality
-        when :perfect, :major
-          Interval.new(number, :augmented, 1)
-        when :minor
-          Interval.new(number, :major)
-        when :diminished
-          q = quality_count - 1
-          if q == 0
-            if perfect_number?
-              Interval.new(number, :perfect)
-            else
-              Interval.new(number, :minor)
-            end
-          else
-            Interval.new(number, :diminished, q)
-          end
-        when :augmented
-          Interval.new(number, :augmented, quality_count + 1)
-        end
+        Interval.new(number, offset + n)
       end
     end
 
     def diminish(n=1)
-      if n == 0
-        self
-      elsif n < 0
-        augment(-n)
-      elsif n > 1
-        result = self
-        n.times do
-          result = result.diminish
-        end
-        result
-      else
-        case quality
-        when :perfect, :minor
-          Interval.new(number, :diminished, 1)
-        when :major
-          Interval.new(number, :minor)
-        when :diminished
-          Interval.new(number, :diminished, quality_count + 1)
-        when :augmented
-          q = quality_count - 1
-          if q == 0
-            if perfect_number?
-              Interval.new(number, :perfect)
-            else
-              Interval.new(number, :major)
-            end
-          else
-            Interval.new(number, :augmented, q)
-          end
-        end
-      end
+      augment(-n)
     end
 
     alias sharp augment
@@ -362,7 +317,7 @@ module MusicTheory
     end
 
     def -@
-      Interval.new(-number, quality, quality_count)
+      Interval.new(-number, offset)
     end
 
     def -(interval)
@@ -374,7 +329,7 @@ module MusicTheory
 
       interval = Scale.major[interval] if interval.is_a? Fixnum
 
-      n = interval.offset + self.offset
+      n = interval.diatonic_offset + self.diatonic_offset
       o = n < 0 || n == 0 && self.down? ? -1 : 1
       new_number = n + o
 
@@ -413,21 +368,64 @@ module MusicTheory
     end
 
     class << self
-      def zero_based(offset, quality=nil, quality_count=nil)
-        number = offset + (offset < 0 ? -1 : 1)
-        new(number, quality, quality_count)
+      def simple_number(n)
+        (n.abs - 1) % 7 + 1
       end
 
-      def generic(i); new(i); end
-      def unison; new(1, :perfect); end
-      def octave(n=1); zero_based(7*n, :perfect); end
-      def perfect(i); new(i, :perfect); end
-      def major(i); new(i, :major); end
-      def minor(i); new(i, :minor); end
-      def augmented(i, a=1); new(i, :augmented, a); end
-      def diminished(i, d=1); new(i, :diminished, d); end
-      def double_augmented(i); new(i, :augmented, 2); end
-      def double_diminished(i); new(i, :diminished, 2); end
+      def perfect_number?(n)
+        [1,4,5].include? simple_number(n)
+      end
+
+      def major_minor_number?(n)
+        !perfect_number?(n)
+      end
+
+      def zero_based(n, offset=nil)
+        number = n + (n < 0 ? -1 : 1)
+        new(number, offset)
+      end
+
+      def generic(i)
+        new(i)
+      end
+
+      def unison
+        new(1, 0)
+      end
+
+      def octave(n=1)
+        zero_based(7*n, 0)
+      end
+
+      def perfect(i)
+        new(i, 0)
+      end
+
+      def major(i)
+        new(i, 0)
+      end
+
+      def minor(i)
+        offset = major_minor_number?(i) ? -1 : 0
+        new(i, offset)
+      end
+
+      def augmented(i, a=1)
+        new(i, a)
+      end
+
+      def diminished(i, d=1)
+        d += 1 if major_minor_number?(i)
+        new(i, -d)
+      end
+
+      def double_augmented(i)
+        augmented(i, 2)
+      end
+
+      def double_diminished(i)
+        diminished(i, 2)
+      end
 
       def tritone(n=1)
         if n.even?
@@ -435,14 +433,14 @@ module MusicTheory
         else
           s = n < 0 ? -1 : 1
           i = s * ((n.abs / 2) * 7 + 3)
-          zero_based(i, :augmented)
+          zero_based(i, 1)
         end
       end
 
       def with_semitones(interval, semitones)
         interval = new(interval) if interval.is_a? Fixnum
 
-        basis = case interval.abs_simple_number
+        basis = case interval.simple_number
           when 1 then 0
           when 2 then 2
           when 3 then 4
@@ -456,31 +454,7 @@ module MusicTheory
         s = -s if interval.down?
         offset = s - basis
 
-        if interval.perfect_number?
-          if offset < 0
-            quality = :diminished
-            quality_count = -offset
-          elsif offset == 0
-            quality = :perfect
-          else
-            quality = :augmented
-            quality_count = offset
-          end
-        else
-          if offset < -1
-            quality = :diminished
-            quality_count = -offset - 1
-          elsif offset == -1
-            quality = :minor
-          elsif offset == 0
-            quality = :major
-          else
-            quality = :augmented
-            quality_count = offset
-          end
-        end
-
-        new(interval.number, quality, quality_count)
+        new(interval.number, offset)
       end
 
       def parse(str, generic_as_major=false)
@@ -499,29 +473,15 @@ module MusicTheory
           number = m[4].to_i
           number = -number if m[2] == '-'
 
-          perfect_number = [1,4,5].include?((number.abs - 1) % 7 + 1)
-
           if quality_s
-            quality_count = quality_s.length
-            quality = case quality_s[0]
-              when 'p', 'P', 'u', 'U' then :perfect
-              when 'm' then :minor
-              when 'M' then :major
-              when 'A', 's', '#' then :augmented
-              when 'd' then :diminished
-              when 'b'
-                if perfect_number
-                  :diminished
-                elsif quality_count == 1
-                  :minor
-                else
-                  quality_count -= 1
-                  :diminished
-                end
+            offset = case quality_s[0]
+              when 'p', 'P', 'u', 'U' then 0
+              when 'm' then -1
+              when 'M' then 0
+              when 'A', 's', '#' then quality_s.length
+              when 'd' then -quality_s.length - (major_minor_number?(number) ? 1 : 0)
+              when 'b' then -quality_s.length
             end
-          elsif generic_as_major
-            quality = perfect_number ? :perfect : :major
-            quality_count = 0
           end
 
         else
@@ -596,7 +556,9 @@ module MusicTheory
           end
         end
 
-        new(number, quality, quality_count)
+        offset = offset.to_i if generic_as_major
+
+        new(number, offset)
       end
     end
 

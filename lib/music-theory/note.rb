@@ -64,8 +64,8 @@ module MusicTheory
     def +(interval)
       interval = Scale.major[interval] if interval.is_a? Fixnum
 
-      idx = (diatonic_index + interval.offset) % 7
-      oct = (diatonic_index + interval.offset) / 7
+      idx = (diatonic_index + interval.diatonic_offset) % 7
+      oct = (diatonic_index + interval.diatonic_offset) / 7
       result = Note.new(idx, accidentals, octave ? octave + oct : nil)
 
       if interval.specific?

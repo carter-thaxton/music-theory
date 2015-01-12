@@ -4,7 +4,7 @@ module MusicTheory
     attr_reader :intervals, :root
 
     def initialize(intervals, root=nil)
-      @intervals = intervals.compact.sort_by {|i| [i.number, i.semitone_offset]}
+      @intervals = intervals.compact.sort_by {|i| [i.number, i.offset]}
       @root = root
     end
 
