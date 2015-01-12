@@ -225,11 +225,11 @@ module MusicTheory
         basis = case number
           when 1 then 0
           when 2 then 2
-          when 3 then minor_chord ? 4 : 3
+          when 3 then 4
           when 4 then 5
           when 5 then 7
-          when 6 then minor_chord ? 9 : 8
-          when 7 then minor_chord ? 11 : 10
+          when 6 then 9
+          when 7 then 11
         end
 
         accidentals = modulo_octave.semitones - basis
@@ -512,6 +512,14 @@ module MusicTheory
             number = 7
           else
             raise ArgumentError, "Cannot parse #{str} as an Interval"
+          end
+
+          offset = 0
+          if accidental
+            offset = case accidental[0]
+              when 's', '#' then accidental.length
+              when 'b' then -accidental.length
+            end
           end
         end
 
