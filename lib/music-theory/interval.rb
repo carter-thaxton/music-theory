@@ -492,67 +492,26 @@ module MusicTheory
           case roman_numeral
           when 'I', 'i'
             number = 1
-            quality = :perfect
           when 'ii', 'II'
             number = 2
-            quality = :major
           when 'iii'
             number = 3
-            quality = :major
           when 'III'
             number = 3
-            quality = :minor
           when 'iv', 'IV'
             number = 4
-            quality = :perfect
           when 'v', 'V'
             number = 5
-            quality = :perfect
           when 'vi'
             number = 6
-            quality = :major
           when 'VI'
             number = 6
-            quality = :minor
           when 'vii'
             number = 7
-            quality = :major
           when 'VII'
             number = 7
-            quality = :minor
           else
             raise ArgumentError, "Cannot parse #{str} as an Interval"
-          end
-
-          if accidental
-            case accidental[0]
-            when 's', '#'
-              case quality
-              when :major, :perfect
-                quality = :augmented
-                quality_count = accidental.length
-              when :minor
-                if accidental.length == 1
-                  quality = :major
-                else
-                  quality = :augmented
-                  quality_count = accidental.length - 1
-                end
-              end
-            when 'b'
-              case quality
-              when :major
-                if accidental.length == 1
-                  quality = :minor
-                else
-                  quality = :diminished
-                  quality_count = accidental.length - 1
-                end
-              when :minor, :perfect
-                quality = :diminished
-                quality_count = accidental.length
-              end
-            end
           end
         end
 
