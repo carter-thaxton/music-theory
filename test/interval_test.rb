@@ -225,30 +225,30 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def test_generic_inverse
-    assert_equal Interval.new(8), Interval.new(1).inverse
-    assert_equal Interval.new(7), Interval.new(2).inverse
-    assert_equal Interval.new(6), Interval.new(3).inverse
-    assert_equal Interval.new(5), Interval.new(4).inverse
-    assert_equal Interval.new(4), Interval.new(5).inverse
-    assert_equal Interval.new(3), Interval.new(6).inverse
-    assert_equal Interval.new(2), Interval.new(7).inverse
-    assert_equal Interval.new(1), Interval.new(8).inverse
+    assert_equal Interval.generic(8), Interval.generic(1).inverse
+    assert_equal Interval.generic(7), Interval.generic(2).inverse
+    assert_equal Interval.generic(6), Interval.generic(3).inverse
+    assert_equal Interval.generic(5), Interval.generic(4).inverse
+    assert_equal Interval.generic(4), Interval.generic(5).inverse
+    assert_equal Interval.generic(3), Interval.generic(6).inverse
+    assert_equal Interval.generic(2), Interval.generic(7).inverse
+    assert_equal Interval.generic(1), Interval.generic(8).inverse
   end
 
   def test_generic_compound_and_negative_inverse
-    assert_equal Interval.new(-8), Interval.new(-1).inverse
-    assert_equal Interval.new(-7), Interval.new(-2).inverse
-    assert_equal Interval.new(-6), Interval.new(-3).inverse
-    assert_equal Interval.new(-5), Interval.new(-4).inverse
-    assert_equal Interval.new(-4), Interval.new(-5).inverse
-    assert_equal Interval.new(-3), Interval.new(-6).inverse
-    assert_equal Interval.new(-2), Interval.new(-7).inverse
-    assert_equal Interval.new(-1), Interval.new(-8).inverse
+    assert_equal Interval.generic(-8), Interval.generic(-1).inverse
+    assert_equal Interval.generic(-7), Interval.generic(-2).inverse
+    assert_equal Interval.generic(-6), Interval.generic(-3).inverse
+    assert_equal Interval.generic(-5), Interval.generic(-4).inverse
+    assert_equal Interval.generic(-4), Interval.generic(-5).inverse
+    assert_equal Interval.generic(-3), Interval.generic(-6).inverse
+    assert_equal Interval.generic(-2), Interval.generic(-7).inverse
+    assert_equal Interval.generic(-1), Interval.generic(-8).inverse
 
-    assert_equal Interval.new(-2), Interval.new(9).inverse
-    assert_equal Interval.new(-3), Interval.new(10).inverse
-    assert_equal Interval.new(2), Interval.new(-9).inverse
-    assert_equal Interval.new(3), Interval.new(-10).inverse
+    assert_equal Interval.generic(-2), Interval.generic(9).inverse
+    assert_equal Interval.generic(-3), Interval.generic(10).inverse
+    assert_equal Interval.generic(2), Interval.generic(-9).inverse
+    assert_equal Interval.generic(3), Interval.generic(-10).inverse
   end
 
   def test_specific_inverse
@@ -294,20 +294,20 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def test_generic_interval_addition_and_subtraction
-    assert_equal Interval.new(5), Interval.new(3) + Interval.new(3)
-    assert_equal Interval.new(1), Interval.new(3) + Interval.new(-3)
-    assert_equal Interval.new(1), Interval.new(3) - Interval.new(3)
-    assert_equal Interval.octave, Interval.new(5) + Interval.new(4)
-    assert_equal Interval.new(5), Interval.new(4) + 1
-    assert_equal Interval.new(1), Interval.new(1) + 0
-    assert_equal Interval.new(-1), Interval.new(-1) + 0
-    assert_equal Interval.new(1), Interval.new(1) - 0
-    assert_equal Interval.new(-1), Interval.new(-1) - 0
-    assert_equal Interval.new(4), Interval.new(5) - 1
-    assert_equal Interval.new(-1), Interval.new(-3) + Interval.new(3)
-    assert_equal Interval.new(-2), Interval.new(-4) + Interval.new(3)
-    assert_equal Interval.new(2), Interval.new(-4) + Interval.new(5)
-    assert_equal Interval.new(2), Interval.new(-4) - Interval.new(-5)
+    assert_equal Interval.generic(5), Interval.generic(3) + Interval.generic(3)
+    assert_equal Interval.generic(1), Interval.generic(3) + Interval.generic(-3)
+    assert_equal Interval.generic(1), Interval.generic(3) - Interval.generic(3)
+    assert_equal Interval.octave, Interval.generic(5) + Interval.generic(4)
+    assert_equal Interval.generic(5), Interval.generic(4) + 1
+    assert_equal Interval.generic(1), Interval.generic(1) + 0
+    assert_equal Interval.generic(-1), Interval.generic(-1) + 0
+    assert_equal Interval.generic(1), Interval.generic(1) - 0
+    assert_equal Interval.generic(-1), Interval.generic(-1) - 0
+    assert_equal Interval.generic(4), Interval.generic(5) - 1
+    assert_equal Interval.generic(-1), Interval.generic(-3) + Interval.generic(3)
+    assert_equal Interval.generic(-2), Interval.generic(-4) + Interval.generic(3)
+    assert_equal Interval.generic(2), Interval.generic(-4) + Interval.generic(5)
+    assert_equal Interval.generic(2), Interval.generic(-4) - Interval.generic(-5)
   end
 
   def test_specific_interval_addition_and_subtraction

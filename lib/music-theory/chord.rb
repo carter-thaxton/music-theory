@@ -138,7 +138,7 @@ module MusicTheory
       if i == 9
         ninth = interval(9)
         if ninth && ninth.augmented?
-          return add Interval.new(9, :major).flat(n)
+          return add Interval.major(9).flat(n)
         end
       end
 
@@ -150,7 +150,7 @@ module MusicTheory
       if i == 9
         ninth = interval(9)
         if ninth && (ninth.minor? or ninth.diminished?)
-          return add Interval.new(9, :major).sharp(n)
+          return add Interval.major(9).sharp(n)
         end
       end
 
