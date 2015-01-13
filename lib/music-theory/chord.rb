@@ -176,12 +176,21 @@ module MusicTheory
         when :minor then minor_s
         when :augmented then seventh? ? '' : '+'
         when :suspended then 'sus'
-        when :diminished then (seventh && seventh.minor?) ? minor_s : 'º'
+        when :diminished
+          if seventh && seventh.minor?
+            if root_interval?
+              'ø'
+            else
+              minor_s
+            end
+          else
+            'º'
+          end
       end
 
       extension_s = if seventh
         if seventh.major? then '∆'
-        elsif seventh.minor? then highest_extension.to_s
+        elsif seventh.minor? then highest_extension.to_s unless (highest_extension == 7 && quality_s == 'ø')
         elsif seventh.diminished? then 'b' * (seventh.quality_count - (diminished? ? 1 : 0)) + '7'
         elsif seventh.augmented? then '#' * seventh.quality_count + '7'
         end
@@ -194,9 +203,7 @@ module MusicTheory
         n = interval.number
 
         if n == 5
-          ignore_fifth = interval.perfect? ||
-            (interval.diminished? && quality_s == 'º') ||
-            (interval.augmented? && quality_s == '+')
+          ignore_fifth = interval.perfect? || ['º', 'ø', '+'].include?(quality_s)
         end
 
         unless [1, 3, 7].include?(n) || ignore_fifth
@@ -218,8 +225,8 @@ module MusicTheory
 
       result = "#{quality_s}#{extension_s}#{modifiers_s}"
       result = "maj#{result}" if /\A[b#]/.match(result)
-      result = "maj" if result.empty?
-      "#{root}#{result}"
+      result = "maj" if result.empty? and !root
+      "#{root_s}#{result}"
     end
 
     def inspect
