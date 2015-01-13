@@ -44,6 +44,14 @@ module MusicTheory
       basis + accidentals
     end
 
+    def with_octave(octave)
+      Note.new(diatonic_index, accidentals, octave)
+    end
+
+    def without_octave
+      with_octave(nil)
+    end
+
     def ==(note)
       return false unless note.is_a? Note
       return false unless note.diatonic_index == self.diatonic_index && note.accidentals == self.accidentals

@@ -29,6 +29,9 @@ module MusicTheory
       @intervals = intervals.sort_by {|i| [i.number, i.offset]}
       @root = root || bass
       @bass = bass || root
+
+      @root = @root.without_octave if root_note?
+      @bass = @bass.without_octave if bass_note?
     end
 
     def length
@@ -73,6 +76,14 @@ module MusicTheory
       raise ArgumentError, "Cannot get note of a chord without a root" unless root
       i = interval(n)
       i && (root + i)
+    end
+
+    def root_note?
+      root && root.is_a?(Note)
+    end
+
+    def bass_note?
+      bass && bass.is_a?(Note)
     end
 
     def root_interval?

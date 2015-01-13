@@ -55,6 +55,7 @@ class ChordTest < Test::Unit::TestCase
     assert_equal 'C', Chord.from_notes([Note.C, Note.E, Note.G]).to_s
     assert_equal 'C7', Chord.from_notes([Note.C, Note.E, Note.G, Note.Bb]).to_s
     assert_equal 'C7#11', Chord.from_notes([Note.C, Note.E, Note.Fs, Note.G, Note.Bb]).to_s
+    assert_equal 'C', Chord.from_notes([Note.C(4), Note.E(5), Note.G(6)]).to_s
   end
 
   def test_with_root
