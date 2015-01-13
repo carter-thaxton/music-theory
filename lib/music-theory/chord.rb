@@ -38,11 +38,18 @@ module MusicTheory
       Chord.new(intervals, root)
     end
 
-    def reinterpret_root(new_root)
-      return move_root(new_root) unless root
-      diff = root - new_root
-      new_intervals = intervals.map {|i| i + diff}
+    def transpose_root(interval)
+      new_intervals = intervals.map {|i| i - interval}
+      new_root = root && (root + interval)
       Chord.new(new_intervals, new_root)
+    end
+
+    def reinterpret_root(new_root)
+      if root
+        transpose_root(new_root - root)
+      else
+        with_root(new_root)
+      end
     end
 
     def notes
