@@ -75,40 +75,54 @@ class ChordTest < Test::Unit::TestCase
     c = Chord.major(Note.C)
     assert_equal Note.C, c.root
     assert_equal Note.C, c.bass
+    assert_nil c.inversion
 
     c = Chord.major(Note.C).over(Note.E)
     assert_equal Note.C, c.root
     assert_equal Note.E, c.bass
+    assert_equal 1, c.inversion
 
     c = Chord.parse('C/E')
     assert_equal Note.C, c.root
     assert_equal Note.E, c.bass
     assert_equal 'C/E', c.to_s
+    assert_equal 1, c.inversion
 
     c = Chord.parse('IV/6')
     assert_equal Interval.perfect(4), c.root
     assert_equal Interval.major(3), c.bass
     assert_equal 'IV/6', c.to_s
+    assert_equal 1, c.inversion
 
     c = Chord.parse('IV/64')
     assert_equal Interval.perfect(4), c.root
     assert_equal Interval.perfect(5), c.bass
     assert_equal 'IV/64', c.to_s
+    assert_equal 2, c.inversion
 
     c = Chord.parse('IV7/65')
     assert_equal Interval.perfect(4), c.root
     assert_equal Interval.major(3), c.bass
     assert_equal 'IV7/65', c.to_s
+    assert_equal 1, c.inversion
 
     c = Chord.parse('IV7/43')
     assert_equal Interval.perfect(4), c.root
     assert_equal Interval.perfect(5), c.bass
     assert_equal 'IV7/43', c.to_s
+    assert_equal 2, c.inversion
 
     c = Chord.parse('IV7/42')
     assert_equal Interval.perfect(4), c.root
     assert_equal Interval.minor(7), c.bass
     assert_equal 'IV7/42', c.to_s
+    assert_equal 3, c.inversion
+
+    c = Chord.parse('C/F')
+    assert_equal Note.C, c.root
+    assert_equal Note.F, c.bass
+    assert_equal 'C/F', c.to_s
+    assert_nil c.inversion
   end
 
   def test_parse_major
