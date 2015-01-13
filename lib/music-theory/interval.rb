@@ -455,6 +455,7 @@ module MusicTheory
           # roman numeral like bVII
           accidental = m[6]
           roman_numeral = m[7]
+          offset = 0
 
           case roman_numeral
           when 'I', 'i'
@@ -477,13 +478,15 @@ module MusicTheory
             number = 7
           when 'VII'
             number = 7
+          when 'N'
+            number = 2
+            offset = -1
           else
             raise ArgumentError, "Cannot parse #{str} as an Interval"
           end
 
-          offset = 0
           if accidental
-            offset = case accidental[0]
+            offset += case accidental[0]
               when 's', '#' then accidental.length
               when 'b' then -accidental.length
             end

@@ -1,9 +1,9 @@
 module MusicTheory
   class Chord
 
-    attr_reader :intervals, :root
+    attr_reader :intervals, :root, :bass
 
-    def initialize(intervals, root=nil)
+    def initialize(intervals, root=nil, bass=nil)
       # normalize all intervals and use 9, 11, 13 when appropriate
       intervals = intervals.compact.map(&:modulo_octave)
 
@@ -27,28 +27,36 @@ module MusicTheory
       end
 
       @intervals = intervals.sort_by {|i| [i.number, i.offset]}
-      @root = root
+      @root = root || bass
+      @bass = bass || root
     end
 
     def length
       intervals.length
     end
 
-    def with_root(root)
-      Chord.new(intervals, root)
+    def with_root(root, bass=nil)
+      Chord.new(intervals, root, bass)
     end
+
+    def with_bass(bass)
+      Chord.new(intervals, root, bass)
+    end
+
+    alias over with_bass
 
     def transpose_root(interval)
       new_intervals = intervals.map {|i| i - interval}
       new_root = root && (root + interval)
-      Chord.new(new_intervals, new_root)
+      new_bass = bass && (bass + interval)
+      Chord.new(new_intervals, new_root, new_bass)
     end
 
-    def reinterpret_root(new_root)
+    def reinterpret_root(new_root, new_bass=nil)
       if root
         transpose_root(new_root - root)
       else
-        with_root(new_root)
+        with_root(new_root, new_bass)
       end
     end
 
@@ -69,6 +77,10 @@ module MusicTheory
 
     def root_interval?
       root && root.is_a?(Interval)
+    end
+
+    def bass_interval?
+      bass && bass.is_a?(Interval)
     end
 
     def rootless?
@@ -281,7 +293,8 @@ module MusicTheory
       result = "#{quality_s}#{extension_s}#{modifiers_s}"
       result = "maj#{result}" if /\A[b#]/.match(result)
       result = "maj" if result.empty? && !root && major?
-      "#{root_s}#{result}"
+
+      "#{root_s}#{result}#{bass_s}"
     end
 
     def inspect
@@ -293,6 +306,20 @@ module MusicTheory
         root.roman_numeral(quality)
       else
         root.to_s
+      end
+    end
+
+    def bass_s
+      if bass != root
+        if bass_interval?
+          case bass.number
+          when 3 then seventh? ? '/65' : '/6'
+          when 5 then seventh? ? '/43' : '/64'
+          when 7 then '/42'
+          end
+        else
+          "/#{bass}"
+        end
       end
     end
 
@@ -336,6 +363,10 @@ module MusicTheory
           (M|maj|Maj|∆|m|min|\-|\+|aug|0|ø|o|º|dim)?          # quality, e.g. maj
           (\d+)?                                              # extension, e.g. 7
           ((?:(?:\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*)*)    # modifiers, e.g. b5sus4
+          (?:\/(?:
+            ([a-gA-G][sb#]*)|                                 # bass of chord, e.g. Ab
+            (\d+)                                             # or figured bass notation
+          ))?
           \s*
         \Z/x
 
@@ -347,6 +378,8 @@ module MusicTheory
         quality_s = m[3]
         extension = m[4] && m[4].to_i
         modifiers = m[5].scan(/(?:\#|b|add|sus|Add|Sus|M|maj|Maj|alt)\d*/)
+        bass_note = m[6] && Note.parse(m[6])
+        bass_interval_s = m[7]
 
         quality = :major
         seventh = 'b7'
@@ -435,6 +468,14 @@ module MusicTheory
           end
         end
 
+        if bass_interval_s
+          bass_interval_number = parse_figured_bass(bass_interval_s)
+          bass_interval = result.interval(bass_interval_number)
+        end
+
+        bass = bass_note || bass_interval
+        result = result.over(bass) if bass
+
         result
       end
 
@@ -446,6 +487,18 @@ module MusicTheory
       def from_notes(notes, root=notes.first)
         intervals = notes.map {|n| n - root}
         new(intervals, root)
+      end
+
+      def parse_figured_bass(str)
+        s = str.to_s.gsub(/\D+/, '')
+        case s
+          when '7', '75', '753' then 1
+          when '6', '65', '653' then 3
+          when '64', '643', '43' then 5
+          when '642', '42', '2' then 7
+          else
+            raise ArgumentError, "Cannot parse #{str} as figured bass"
+        end
       end
 
     end
