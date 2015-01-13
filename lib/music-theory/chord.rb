@@ -219,7 +219,7 @@ module MusicTheory
         end
       end
 
-      if ['b5b9#9b13', 'b5b9#9b13', 'b9#9b13', 'b5b9#9'].include? modifiers_s
+      if ['b5b9#9b13', 'b9#9b13', '#9b13', 'b9b13', 'b5b9#9'].include? modifiers_s
         modifiers_s = 'alt'
       end
 
