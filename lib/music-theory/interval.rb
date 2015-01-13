@@ -22,16 +22,7 @@ module MusicTheory
     end
 
     def semitones
-      result = case simple_number
-        when 1 then 0
-        when 2 then 2
-        when 3 then 4
-        when 4 then 5
-        when 5 then 7
-        when 6 then 9
-        when 7 then 11
-      end
-
+      result = Interval.semitone_basis(simple_number)
       result += offset
       result = -result if down?
       result += octave_offset * 12
@@ -186,7 +177,7 @@ module MusicTheory
     def roman_numeral(chord_quality=nil)
       return modulo_octave.roman_numeral(chord_quality) if compound? or down?
 
-      numeral = case number
+      numeral = case simple_number
         when 1 then 'I'
         when 2 then 'II'
         when 3 then 'III'
@@ -206,17 +197,7 @@ module MusicTheory
       numeral = numeral.downcase if minor_chord
 
       if specific?
-        basis = case number
-          when 1 then 0
-          when 2 then 2
-          when 3 then 4
-          when 4 then 5
-          when 5 then 7
-          when 6 then 9
-          when 7 then 11
-        end
-
-        accidentals = modulo_octave.semitones - basis
+        accidentals = modulo_octave.semitones - Interval.semitone_basis(number)
         if accidentals < 0
           accidentals_s = 'b' * -accidentals
         else
@@ -427,6 +408,20 @@ module MusicTheory
         offset = semitones - interval.semitones
         offset = -offset if interval.down?
         new(interval.number, offset)
+      end
+
+      def semitone_basis(number)
+        case number
+          when 1 then 0
+          when 2 then 2
+          when 3 then 4
+          when 4 then 5
+          when 5 then 7
+          when 6 then 9
+          when 7 then 11
+          else
+            raise ArgumentError, "Cannot get the semitone basis for interval number: #{number}"
+        end
       end
 
       def parse(str, generic_as_major=false)
