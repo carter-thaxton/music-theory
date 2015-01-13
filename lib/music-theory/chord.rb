@@ -4,7 +4,27 @@ module MusicTheory
     attr_reader :intervals, :root
 
     def initialize(intervals, root=nil)
-      @intervals = intervals.compact.sort_by {|i| [i.number, i.offset]}
+      # normalize all intervals and use 9, 11, 13 when appropriate
+      intervals = intervals.compact.map(&:modulo_octave)
+
+      has_6 = intervals.any? {|i| i.number == 6}
+      has_7_or_higher = intervals.any? {|i| i.number >= 7}
+
+      intervals = intervals.map do |i|
+        add_octave = case i.number
+          when 2 then has_6 || has_7_or_higher
+          when 4 then has_6 || has_7_or_higher
+          when 6 then has_7_or_higher
+        end
+
+        if add_octave
+          i + Interval.octave
+        else
+          i
+        end
+      end
+
+      @intervals = intervals.sort_by {|i| [i.number, i.offset]}
       @root = root
     end
 
@@ -89,7 +109,7 @@ module MusicTheory
       if seventh?
         [13, 11, 9, 7].each do |i|
           int = interval(i)
-          return i if int && (int.perfect? || int.major? || (i == 7 && int.minor?))
+          return i if int && ((i == 7) || int.perfect? || int.major?)
         end
       end
       nil
@@ -189,7 +209,7 @@ module MusicTheory
       end
 
       extension_s = if seventh
-        if seventh.major? then '∆'
+        if seventh.major? then '∆' + (highest_extension && highest_extension > 7 ? highest_extension.to_s : '')
         elsif seventh.minor? then highest_extension.to_s unless (highest_extension == 7 && quality_s == 'ø')
         elsif seventh.diminished? then 'b' * (seventh.quality_count - (diminished? ? 1 : 0)) + '7'
         elsif seventh.augmented? then '#' * seventh.quality_count + '7'
@@ -370,7 +390,7 @@ module MusicTheory
             result = result.no(3).add(number)
           when 'M', 'maj', 'Maj'
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" if number && number != 7
-            result = result.add('M7')
+            result = result.add('M7') unless result.seventh?
           when 'alt'
             raise ArgumentError, "Invalid modifier for chord: #{modifier}" if number
             result = result.flat(9).sharp(9).flat(5).flat(13)
@@ -382,6 +402,12 @@ module MusicTheory
 
         result
       end
+
+      def parse_intervals(str, root=nil)
+        intervals = str.split.map{|s| Interval.parse(s, true)}
+        new(intervals, root)
+      end
+
     end
   end
 end
