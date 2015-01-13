@@ -53,6 +53,10 @@ module MusicTheory
       root && root.is_a?(Interval)
     end
 
+    def rootless?
+      !interval(1)
+    end
+
     def seventh?
       !!interval(7)
     end

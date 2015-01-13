@@ -47,6 +47,10 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.augmented, Chord.major.sharp(5)
   end
 
+  def test_rootless
+    assert Chord.major.no(1).rootless?
+  end
+
   def test_parse_major
     c = Chord.parse('C')
     assert_equal Note.C, c.root
