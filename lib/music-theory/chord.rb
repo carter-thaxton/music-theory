@@ -301,6 +301,32 @@ module MusicTheory
       to_s
     end
 
+    def inversion
+      if bass
+        if bass_interval?
+          case bass.number
+            when 3 then 1
+            when 5 then 2
+            when 7 then 3
+          end
+        else
+          case bass
+            when note(3) then 1
+            when note(5) then 2
+            when note(7) then 3
+          end
+        end
+      end
+    end
+
+    def figured_bass
+      case inversion
+        when 1 then seventh? ? '65' : '6'
+        when 2 then seventh? ? '43' : '64'
+        when 3 then '42'
+      end
+    end
+
     def root_s
       if root_interval?
         root.roman_numeral(quality)
@@ -311,15 +337,12 @@ module MusicTheory
 
     def bass_s
       if bass != root
-        if bass_interval?
-          case bass.number
-          when 3 then seventh? ? '/65' : '/6'
-          when 5 then seventh? ? '/43' : '/64'
-          when 7 then '/42'
-          end
+        s = if bass_interval?
+          figured_bass
         else
-          "/#{bass}"
+          bass.to_s
         end
+        "/#{s}" if s
       end
     end
 
@@ -471,6 +494,7 @@ module MusicTheory
         if bass_interval_s
           bass_interval_number = parse_figured_bass(bass_interval_s)
           bass_interval = result.interval(bass_interval_number)
+          raise ArgumentError, "Figured bass #{bass_interval_s} does not refer to a note in the chord: #{result}" unless bass_interval
         end
 
         bass = bass_note || bass_interval
