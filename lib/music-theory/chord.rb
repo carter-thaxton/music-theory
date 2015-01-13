@@ -34,6 +34,10 @@ module MusicTheory
       intervals.length
     end
 
+    def with_root(root)
+      Chord.new(intervals, root)
+    end
+
     def notes
       raise ArgumentError, "Cannot get notes of a chord without a root" unless root
       intervals.map{|i| root + i}
