@@ -38,6 +38,13 @@ module MusicTheory
       Chord.new(intervals, root)
     end
 
+    def reinterpret_root(new_root)
+      return move_root(new_root) unless root
+      diff = root - new_root
+      new_intervals = intervals.map {|i| i + diff}
+      Chord.new(new_intervals, new_root)
+    end
+
     def notes
       raise ArgumentError, "Cannot get notes of a chord without a root" unless root
       intervals.map{|i| root + i}
@@ -429,8 +436,7 @@ module MusicTheory
         new(intervals, root)
       end
 
-      def from_notes(notes)
-        root = notes.first
+      def from_notes(notes, root=notes.first)
         intervals = notes.map {|n| n - root}
         new(intervals, root)
       end

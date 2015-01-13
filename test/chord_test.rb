@@ -57,6 +57,17 @@ class ChordTest < Test::Unit::TestCase
     assert_equal 'C7#11', Chord.from_notes([Note.C, Note.E, Note.Fs, Note.G, Note.Bb]).to_s
   end
 
+  def test_with_root
+    assert_equal 'D', Chord.major(Note.C).with_root(Note.D).to_s
+  end
+
+  def test_reinterpret_root
+    e = Chord.from_notes([Note.E, Note.G, Note.C, Note.Bb, Note.D])
+    assert_equal 'Em7b5b13', e.to_s
+    c = e.reinterpret_root(Note.C)
+    assert_equal 'C9', c.to_s
+  end
+
   def test_parse_major
     c = Chord.parse('C')
     assert_equal Note.C, c.root
