@@ -229,7 +229,9 @@ module MusicTheory
         unless [1, 3, 7].include?(n) || ignore_fifth
           if interval.major? or interval.perfect?
             if n == 6
-              modifiers_s << 'add' + interval.scale_shorthand unless extension_s == '6'
+              modifiers_s << 'add6' unless extension_s == '6'
+            elsif n == 9 && extension_s == '6'
+              modifiers_s << '9'  # special case for 69, instead of 6add9
             elsif n > (highest_extension || 0)
               modifiers_s << 'add' + interval.scale_shorthand
             end
