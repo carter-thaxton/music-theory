@@ -22,33 +22,17 @@ module MusicTheory
     end
 
     def semitones
-      raise ArgumentError, "Cannot determine number of semitones for a generic interval" if generic?
-
-      result = case quality
-        when :perfect, :major, :augmented
-          case simple_number
-            when 1 then 0 + quality_count
-            when 2 then 2 + quality_count
-            when 3 then 4 + quality_count
-            when 4 then 5 + quality_count
-            when 5 then 7 + quality_count
-            when 6 then 9 + quality_count
-            when 7 then 11 + quality_count
-          end
-        when :minor, :diminished
-          case simple_number
-            when 1 then 0 - quality_count
-            when 2 then 1 - quality_count
-            when 3 then 3 - quality_count
-            when 4 then 5 - quality_count
-            when 5 then 7 - quality_count
-            when 6 then 8 - quality_count
-            when 7 then 10 - quality_count
-          end
+      result = case simple_number
+        when 1 then 0
+        when 2 then 2
+        when 3 then 4
+        when 4 then 5
+        when 5 then 7
+        when 6 then 9
+        when 7 then 11
       end
 
-      raise "Unhandled case" if result.nil?
-
+      result += offset
       result = -result if down?
       result += octave_offset * 12
       result
@@ -252,7 +236,7 @@ module MusicTheory
     end
 
     def simple_number
-      Interval.simple_number number
+      Interval.simple_number(number)
     end
 
     def modulo_octave
@@ -330,7 +314,7 @@ module MusicTheory
       interval = Scale.major[interval] if interval.is_a? Fixnum
 
       n = interval.diatonic_offset + self.diatonic_offset
-      o = n < 0 || n == 0 && self.down? ? -1 : 1
+      o = (n < 0 || n == 0 && self.down?) ? -1 : 1
       new_number = n + o
 
       if self.generic? or interval.generic?
@@ -439,21 +423,9 @@ module MusicTheory
 
       def with_semitones(interval, semitones)
         interval = new(interval) if interval.is_a? Fixnum
-
-        basis = case interval.simple_number
-          when 1 then 0
-          when 2 then 2
-          when 3 then 4
-          when 4 then 5
-          when 5 then 7
-          when 6 then 9
-          when 7 then 11
-        end
-
-        s = semitones - interval.octave_offset * 12
-        s = -s if interval.down?
-        offset = s - basis
-
+        interval = new(interval.number, 0) if interval.offset != 0
+        offset = semitones - interval.semitones
+        offset = -offset if interval.down?
         new(interval.number, offset)
       end
 
