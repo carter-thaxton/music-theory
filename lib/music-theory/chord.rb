@@ -425,6 +425,12 @@ module MusicTheory
         new(intervals, root)
       end
 
+      def from_notes(notes)
+        root = notes.first
+        intervals = notes.map {|n| n - root}
+        new(intervals, root)
+      end
+
     end
   end
 end
