@@ -212,6 +212,9 @@ class ChordTest < Test::Unit::TestCase
     assert_equal 'º', Chord.parse_intervals('1 b3 b5').to_s
     assert_equal 'º7', Chord.parse_intervals('1 b3 b5 bb7').to_s
     assert_equal 'm7b5', Chord.parse_intervals('1 b3 b5 b7').to_s
+    assert_equal 'ºb9', Chord.parse_intervals('1 b3 b5 b9').to_s
+    assert_equal 'º7b9', Chord.parse_intervals('1 b3 b5 bb7 b9').to_s
+    assert_equal 'm7b5b9', Chord.parse_intervals('1 b3 b5 b7 b9').to_s
 
     assert_equal '+', Chord.parse_intervals('1 3 #5').to_s
     assert_equal '7#5', Chord.parse_intervals('1 3 #5 b7').to_s

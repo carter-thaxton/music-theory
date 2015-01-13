@@ -14,7 +14,7 @@ module MusicTheory
 
       intervals = intervals.map do |i|
         add_octave = case i.number
-          when 2 then has_4 || has_6 || has_7_or_higher
+          when 2 then has_3 || has_4 || has_6 || has_7_or_higher
           when 4 then has_3 && (has_6 || has_7_or_higher)
           when 6 then has_7_or_higher
         end
