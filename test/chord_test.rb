@@ -140,4 +140,58 @@ class ChordTest < Test::Unit::TestCase
     assert_equal 'm7#5', Chord.parse('m7#5').to_s
   end
 
+  def test_all_chords_from_wikibook
+    # http://en.wikibooks.org/w/index.php?title=Music_Theory/Complete_List_of_Chord_Patterns
+    assert_equal 'maj', Chord.parse_intervals('1 3 5').to_s
+    assert_equal '∆', Chord.parse_intervals('1 3 5 7').to_s
+    assert_equal '∆9', Chord.parse_intervals('1 3 5 7 9').to_s
+    assert_equal '∆13', Chord.parse_intervals('1 3 5 7 9 11 13').to_s
+    assert_equal '∆13', Chord.parse_intervals('1 3 5 7 13').to_s
+    assert_equal '∆13', Chord.parse_intervals('1 3 7 13').to_s
+    assert_equal '69', Chord.parse_intervals('1 3 5 6 9').to_s
+    assert_equal '∆#11', Chord.parse_intervals('1 3 5 7 #11').to_s
+    assert_equal '∆9#11', Chord.parse_intervals('1 3 5 7 9 #11').to_s
+    assert_equal '∆13#11', Chord.parse_intervals('1 3 5 7 9 #11 13').to_s
+    assert_equal '∆b13', Chord.parse_intervals('1 3 5 7 b13').to_s
+    assert_equal '∆9b13', Chord.parse_intervals('1 3 5 7 9 b13').to_s
+
+    assert_equal '7', Chord.parse_intervals('1 3 5 b7').to_s
+    assert_equal '9', Chord.parse_intervals('1 3 5 b7 9').to_s
+    assert_equal '13', Chord.parse_intervals('1 3 5 b7 9 13').to_s
+    assert_equal '7#11', Chord.parse_intervals('1 3 5 b7 #11').to_s
+    assert_equal '9#11', Chord.parse_intervals('1 3 5 b7 9 #11').to_s
+
+    assert_equal '7b9', Chord.parse_intervals('1 3 5 b7 b9').to_s
+    assert_equal '7#9', Chord.parse_intervals('1 3 5 b7 #9').to_s
+    assert_equal '7b9#9', Chord.parse_intervals('1 3 5 b7 b9 #9').to_s
+    assert_equal '7alt', Chord.parse_intervals('1 3 5 b7 b9 #9 b13').to_s
+
+    assert_equal 'sus4', Chord.parse_intervals('1 4 5').to_s
+    assert_equal 'sus2', Chord.parse_intervals('1 2 5').to_s
+    assert_equal 'sus4add9', Chord.parse_intervals('1 2 4 5').to_s
+    assert_equal '∆sus4', Chord.parse_intervals('1 4 5 7').to_s
+    assert_equal '7sus4', Chord.parse_intervals('1 4 5 b7').to_s
+    assert_equal 'sus4b9', Chord.parse_intervals('1 4 5 b9').to_s
+
+    assert_equal 'm', Chord.parse_intervals('1 b3 5').to_s
+    assert_equal 'm7', Chord.parse_intervals('1 b3 5 b7').to_s
+    assert_equal 'm∆', Chord.parse_intervals('1 b3 5 7').to_s
+    assert_equal 'm∆9', Chord.parse_intervals('1 b3 5 7 9').to_s
+    assert_equal 'm∆9b13', Chord.parse_intervals('1 b3 5 7 9 b13').to_s
+    assert_equal 'm6', Chord.parse_intervals('1 b3 5 6').to_s
+    assert_equal 'm9', Chord.parse_intervals('1 b3 5 b7 9').to_s
+    assert_equal 'm11', Chord.parse_intervals('1 b3 5 b7 9 11').to_s
+    assert_equal 'm13', Chord.parse_intervals('1 b3 5 b7 9 11 13').to_s
+    assert_equal 'm13', Chord.parse_intervals('1 b3 5 b7 11 13').to_s
+    assert_equal 'm13', Chord.parse_intervals('1 b3 5 b7 13').to_s
+
+    assert_equal 'º', Chord.parse_intervals('1 b3 b5').to_s
+    assert_equal 'º7', Chord.parse_intervals('1 b3 b5 bb7').to_s
+    assert_equal 'm7b5', Chord.parse_intervals('1 b3 b5 b7').to_s
+
+    assert_equal '+', Chord.parse_intervals('1 3 #5').to_s
+    assert_equal '7#5', Chord.parse_intervals('1 3 #5 b7').to_s
+    assert_equal '5', Chord.parse_intervals('1 5').to_s
+  end
+
 end

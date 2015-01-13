@@ -7,13 +7,15 @@ module MusicTheory
       # normalize all intervals and use 9, 11, 13 when appropriate
       intervals = intervals.compact.map(&:modulo_octave)
 
+      has_3 = intervals.any? {|i| i.number == 3}
+      has_4 = intervals.any? {|i| i.number == 4}
       has_6 = intervals.any? {|i| i.number == 6}
       has_7_or_higher = intervals.any? {|i| i.number >= 7}
 
       intervals = intervals.map do |i|
         add_octave = case i.number
-          when 2 then has_6 || has_7_or_higher
-          when 4 then has_6 || has_7_or_higher
+          when 2 then has_4 || has_6 || has_7_or_higher
+          when 4 then has_3 && (has_6 || has_7_or_higher)
           when 6 then has_7_or_higher
         end
 
@@ -85,6 +87,7 @@ module MusicTheory
     end
 
     def quality
+      second = interval(2)
       third = interval(3)
       fourth = interval(4)
       fifth = interval(5)
@@ -97,11 +100,12 @@ module MusicTheory
       elsif third
         return :major if third.major?
         return :minor if third.minor?
-      elsif fourth
+      elsif second || fourth
         return :suspended
       elsif fifth
         return :augmented if fifth.augmented?
         return :diminished if fifth.diminished?
+        return :power if fifth.perfect?
       end
     end
 
@@ -195,7 +199,8 @@ module MusicTheory
         when :major then ''
         when :minor then minor_s
         when :augmented then seventh? ? '' : '+'
-        when :suspended then 'sus'
+        when :suspended then ''
+        when :power then '5'
         when :diminished
           if seventh && seventh.minor?
             if root_interval?
@@ -223,12 +228,18 @@ module MusicTheory
         n = interval.number
 
         if n == 5
-          ignore_fifth = interval.perfect? || ['º', 'ø', '+'].include?(quality_s)
+          ignore_fifth = ['º', 'ø', '+'].include?(quality_s) || interval.perfect?
         end
 
         unless [1, 3, 7].include?(n) || ignore_fifth
           if interval.major? or interval.perfect?
-            if n == 6
+            if n == 2 || n == 4
+              if quality == :suspended
+                modifiers_s << 'sus' + interval.scale_shorthand
+              else
+                modifiers_s << 'add' + interval.scale_shorthand
+              end
+            elsif n == 6
               modifiers_s << 'add6' unless extension_s == '6'
             elsif n == 9 && extension_s == '6'
               modifiers_s << '9'  # special case for 69, instead of 6add9
@@ -247,7 +258,7 @@ module MusicTheory
 
       result = "#{quality_s}#{extension_s}#{modifiers_s}"
       result = "maj#{result}" if /\A[b#]/.match(result)
-      result = "maj" if result.empty? and !root
+      result = "maj" if result.empty? && !root && major?
       "#{root_s}#{result}"
     end
 
