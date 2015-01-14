@@ -75,17 +75,20 @@ class ChordTest < Test::Unit::TestCase
   def test_with_bass
     c = Chord.major(Note.C)
     assert_equal Note.C, c.root
-    assert_equal Note.C, c.bass
+    assert_nil c.bass
+    assert_equal Note.C, c.bass_note
     assert_nil c.inversion
 
     c = Chord.major(Note.C).over(Note.E)
     assert_equal Note.C, c.root
-    assert_equal Note.E, c.bass
+    assert_equal Interval.major(3), c.bass
+    assert_equal Note.E, c.bass_note
     assert_equal 1, c.inversion
 
     c = Chord.parse('C/E')
     assert_equal Note.C, c.root
-    assert_equal Note.E, c.bass
+    assert_equal Interval.major(3), c.bass
+    assert_equal Note.E, c.bass_note
     assert_equal 'C/E', c.to_s
     assert_equal 1, c.inversion
 
@@ -121,8 +124,15 @@ class ChordTest < Test::Unit::TestCase
 
     c = Chord.parse('C/F')
     assert_equal Note.C, c.root
-    assert_equal Note.F, c.bass
+    assert_equal Interval.perfect(4), c.bass
+    assert_equal Note.F, c.bass_note
     assert_equal 'C/F', c.to_s
+    assert_nil c.inversion
+
+    c = c.with_root(nil)
+    assert_nil c.root
+    assert_equal Interval.perfect(4), c.bass
+    assert_equal 'maj/P4', c.to_s
     assert_nil c.inversion
   end
 

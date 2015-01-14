@@ -26,19 +26,24 @@ module MusicTheory
         end
       end
 
-      @intervals = intervals.sort_by {|i| [i.number, i.offset]}
-      @root = root || bass
-      @bass = bass || root
+      root = root.without_octave if root.is_a?(Note) && root.octave
 
-      @root = @root.without_octave if root_note?
-      @bass = @bass.without_octave if bass_note?
+      @intervals = intervals.sort_by {|i| [i.number, i.offset]}
+      @root = root
+
+      if bass
+        bass = bass - root if bass.is_a?(Note) && root.is_a?(Note)
+        bass = bass.modulo_octave
+        bass = nil if bass.unison?
+        @bass = bass
+      end
     end
 
     def length
       intervals.length
     end
 
-    def with_root(root, bass=nil)
+    def with_root(root)
       Chord.new(intervals, root, bass)
     end
 
@@ -78,20 +83,21 @@ module MusicTheory
       i && (root + i)
     end
 
+    def bass_note
+      raise ArgumentError, "Cannot get bass note of a chord without a root note" unless root_note?
+      if bass
+        root + bass
+      else
+        root
+      end
+    end
+
     def root_note?
       root && root.is_a?(Note)
     end
 
-    def bass_note?
-      bass && bass.is_a?(Note)
-    end
-
     def root_interval?
       root && root.is_a?(Interval)
-    end
-
-    def bass_interval?
-      bass && bass.is_a?(Interval)
     end
 
     def rootless?
@@ -314,18 +320,11 @@ module MusicTheory
 
     def inversion
       if bass
-        if bass_interval?
-          case bass.number
-            when 3 then 1
-            when 5 then 2
-            when 7 then 3
-          end
-        else
-          case bass
-            when note(3) then 1
-            when note(5) then 2
-            when note(7) then 3
-          end
+        case bass.number
+          when 1 then 0
+          when 3 then 1
+          when 5 then 2
+          when 7 then 3
         end
       end
     end
@@ -347,13 +346,13 @@ module MusicTheory
     end
 
     def bass_s
-      if bass != root
-        s = if bass_interval?
-          figured_bass
+      if bass && !bass.unison?
+        s = if root_note?
+          (root + bass).to_s
         else
-          bass.to_s
+          figured_bass || bass.shorthand
         end
-        "/#{s}" if s
+        "/#{s}"
       end
     end
 
