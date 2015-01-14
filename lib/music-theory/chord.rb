@@ -34,9 +34,8 @@ module MusicTheory
       if bass
         bass = bass - root if bass.is_a?(Note) && root.is_a?(Note)
         bass = bass.modulo_octave
-        bass = nil if bass.unison?
-        @bass = bass
       end
+      @bass = bass || Interval.unison
     end
 
     def length
@@ -56,15 +55,14 @@ module MusicTheory
     def transpose_root(interval)
       new_intervals = intervals.map {|i| i - interval}
       new_root = root && (root + interval)
-      new_bass = bass && (bass + interval)
-      Chord.new(new_intervals, new_root, new_bass)
+      Chord.new(new_intervals, new_root, bass)
     end
 
-    def reinterpret_root(new_root, new_bass=nil)
+    def reinterpret_root(new_root)
       if root
         transpose_root(new_root - root)
       else
-        with_root(new_root, new_bass)
+        with_root(new_root)
       end
     end
 
@@ -85,11 +83,7 @@ module MusicTheory
 
     def bass_note
       raise ArgumentError, "Cannot get bass note of a chord without a root note" unless root_note?
-      if bass
-        root + bass
-      else
-        root
-      end
+      root + bass
     end
 
     def root_note?
@@ -319,13 +313,11 @@ module MusicTheory
     end
 
     def inversion
-      if bass
-        case bass.number
-          when 1 then 0
-          when 3 then 1
-          when 5 then 2
-          when 7 then 3
-        end
+      case bass.number
+        when 1 then 0
+        when 3 then 1
+        when 5 then 2
+        when 7 then 3
       end
     end
 
@@ -346,7 +338,7 @@ module MusicTheory
     end
 
     def bass_s
-      if bass && !bass.unison?
+      unless bass.unison?
         s = if root_note?
           (root + bass).to_s
         else

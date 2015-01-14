@@ -75,9 +75,9 @@ class ChordTest < Test::Unit::TestCase
   def test_with_bass
     c = Chord.major(Note.C)
     assert_equal Note.C, c.root
-    assert_nil c.bass
+    assert_equal Interval.unison, c.bass
     assert_equal Note.C, c.bass_note
-    assert_nil c.inversion
+    assert_equal 0, c.inversion
 
     c = Chord.major(Note.C).over(Note.E)
     assert_equal Note.C, c.root
