@@ -1,5 +1,6 @@
 require 'music-theory/version'
 require 'music-theory/interval'
 require 'music-theory/note'
+require 'music-theory/intervals'
 require 'music-theory/scale'
 require 'music-theory/chord'

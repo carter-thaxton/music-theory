@@ -1,10 +1,11 @@
 module MusicTheory
   class Scale
+    include Intervals
 
     attr_reader :intervals, :root
 
     def initialize(intervals, root=nil)
-      @intervals = intervals
+      @intervals = intervals.sort_by {|i| [i.number, i.offset]}
       @root = root
     end
 
@@ -14,6 +15,10 @@ module MusicTheory
 
     def without_root
       Scale.new(intervals)
+    end
+
+    def with_intervals(intervals)
+      Scale.new(intervals, root)
     end
 
     def interval(i)

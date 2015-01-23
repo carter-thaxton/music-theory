@@ -74,4 +74,9 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal alt.semitones, mm_alt.semitones
   end
 
+  def test_alter_scales
+    assert_equal Scale.harmonic_minor, Scale.natural_minor.sharp(7)
+    assert_equal Scale.melodic_minor, Scale.major.flat(3)
+  end
+
 end
