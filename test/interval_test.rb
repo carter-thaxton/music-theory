@@ -217,6 +217,16 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.minor(3), Interval.major(3).augment(3).diminish(4)
   end
 
+  def test_sharp_flat_natural
+    assert_equal Interval.major(3), Interval.natural(3)
+    assert_equal Interval.minor(3), Interval.flat(3)
+    assert_equal Interval.augmented(3), Interval.sharp(3)
+
+    assert_equal Interval.perfect(4), Interval.natural(4)
+    assert_equal Interval.diminished(4), Interval.flat(4)
+    assert_equal Interval.augmented(4), Interval.sharp(4)
+  end
+
   def test_generic_inverse
     assert_equal Interval.generic(8), Interval.generic(1).inverse
     assert_equal Interval.generic(7), Interval.generic(2).inverse

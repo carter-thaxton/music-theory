@@ -375,6 +375,18 @@ module MusicTheory
         new(i, offset)
       end
 
+      def natural(i)
+        new(i, 0)
+      end
+
+      def sharp(i, n=1)
+        new(i, n)
+      end
+
+      def flat(i, n=1)
+        new(i, -n)
+      end
+
       def augmented(i, a=1)
         new(i, a)
       end
