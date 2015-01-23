@@ -120,6 +120,7 @@ module MusicTheory
         :major, :minor, :harmonic_minor, :melodic_minor,
         :dorian, :phrygian, :lydian, :mixolydian, :locrian,
         :dorian_b2, :lydian_augmented, :lydian_dominant, :mixolydian_b6, :locrian_2, :alt,
+        :locrian_6, :ionian_augmented, :romanian, :phrygian_dominant, :lydian_2, :ultralocrian,
         :major_pentatonic, :minor_pentatonic, :whole_half_diminished, :half_whole_diminished, :whole_tone,
       ]
 
@@ -136,6 +137,9 @@ module MusicTheory
         nil
       end
 
+      #
+      # Common scales
+      #
       def major(root=nil)
         Scale.parse("1 2 3 4 5 6 7", root)
       end
@@ -155,6 +159,10 @@ module MusicTheory
         Scale.parse("1 2 b3 4 5 6 7", root)
       end
 
+
+      #
+      # Modes of major
+      #
       def dorian(root=nil)
         Scale.major(root).rotate(1)
       end
@@ -175,6 +183,10 @@ module MusicTheory
         Scale.major(root).rotate(6)
       end
 
+
+      #
+      # Modes of melodic minor
+      #
       def dorian_b2(root=nil)
         Scale.melodic_minor(root).rotate(1)
       end
@@ -202,6 +214,40 @@ module MusicTheory
 
       alias altered alt
 
+
+      #
+      # Modes of harmonic minor
+      #
+      def locrian_6(root=nil)
+        Scale.harmonic_minor(root).rotate(1)
+      end
+
+      def ionian_augmented(root=nil)
+        Scale.harmonic_minor(root).rotate(2)
+      end
+
+      def romanian(root=nil)
+        Scale.harmonic_minor(root).rotate(3)
+      end
+
+      alias misheberakh romanian
+
+      def phrygian_dominant(root=nil)
+        Scale.harmonic_minor(root).rotate(4)
+      end
+
+      def lydian_2(root=nil)
+        Scale.harmonic_minor(root).rotate(5)
+      end
+
+      def ultralocrian(root=nil)
+        Scale.harmonic_minor(root).rotate(5)
+      end
+
+
+      #
+      # Other scales
+      #
       def major_pentatonic(root=nil)
         Scale.parse("1 2 3 5 6", root)
       end
