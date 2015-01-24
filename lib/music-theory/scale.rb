@@ -246,7 +246,7 @@ module MusicTheory
       end
 
       def ultralocrian(root=nil)
-        Scale.harmonic_minor(root).rotate(5)
+        Scale.harmonic_minor(root).rotate(6)
       end
 
 
