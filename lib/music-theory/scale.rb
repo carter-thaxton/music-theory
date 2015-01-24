@@ -127,6 +127,7 @@ module MusicTheory
         :dorian_b2, :lydian_augmented, :lydian_dominant, :mixolydian_b6, :locrian_2, :alt,
         :locrian_6, :ionian_augmented, :romanian, :phrygian_dominant, :lydian_2, :ultralocrian,
         :major_pentatonic, :minor_pentatonic, :whole_half_diminished, :half_whole_diminished, :whole_tone,
+        :double_harmonic_minor
       ]
 
       def parse(str, root=nil)
@@ -274,6 +275,11 @@ module MusicTheory
       def whole_tone(root=nil)
         Scale.parse("1 2 3 #4 #5 #6", root)
       end
+
+      def double_harmonic_minor(root=nil)
+        Scale.parse('1 b2 3 4 5 b6 bb7', root)
+      end
+
     end
 
   end
