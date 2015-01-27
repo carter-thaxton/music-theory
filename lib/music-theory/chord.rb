@@ -179,6 +179,14 @@ module MusicTheory
       true
     end
 
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      [intervals, root, bass].hash
+    end
+
     def to_s
       seventh = interval(7)
 

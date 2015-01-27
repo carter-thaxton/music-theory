@@ -120,6 +120,14 @@ module MusicTheory
       true
     end
 
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      [intervals, root].hash
+    end
+
     class << self
       COMMON_SCALES = [
         :major, :minor, :harmonic_minor, :melodic_minor,

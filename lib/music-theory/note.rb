@@ -61,6 +61,14 @@ module MusicTheory
       true
     end
 
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      [diatonic_index, accidentals, octave].hash
+    end
+
     def +(interval)
       interval = Scale.major[interval] if interval.is_a? Fixnum
 

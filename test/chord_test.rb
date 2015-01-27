@@ -20,6 +20,7 @@ class ChordTest < Test::Unit::TestCase
     assert_not_equal Chord.major, Chord.minor
     assert_equal Chord.dominant, Chord.major.add('b7')
     assert_equal Chord.dominant.flat(9), Chord.major.add('b7').add('b9')
+    assert_equal [Chord.major], [Chord.major, Chord.major].uniq
   end
 
   def test_no_duplicates
