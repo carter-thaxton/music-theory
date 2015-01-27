@@ -21,6 +21,14 @@ module MusicTheory
       true
     end
 
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      [number, offset].hash
+    end
+
     def semitones
       result = Interval.semitone_basis(simple_number)
       result += offset

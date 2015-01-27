@@ -22,6 +22,11 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.dominant.flat(9), Chord.major.add('b7').add('b9')
   end
 
+  def test_no_duplicates
+    assert_equal Chord.parse_intervals('1 3 5'), Chord.parse_intervals('1 1 3 5')
+    assert_equal Chord.parse_intervals('1 3 5 9'), Chord.parse_intervals('1 2 3 5 9')
+  end
+
   def test_quality
     assert_equal :major, Chord.major.quality
     assert_equal :minor, Chord.minor.quality

@@ -6,7 +6,7 @@ module MusicTheory
 
     def initialize(intervals, root=nil, bass=nil)
       # normalize all intervals and use 9, 11, 13 when appropriate
-      intervals = intervals.compact.map(&:modulo_octave)
+      intervals = intervals.compact.map(&:modulo_octave).uniq
 
       has_3 = intervals.any? {|i| i.number == 3}
       has_4 = intervals.any? {|i| i.number == 4}
