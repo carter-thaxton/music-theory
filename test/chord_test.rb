@@ -20,6 +20,10 @@ class ChordTest < Test::Unit::TestCase
     assert_not_equal Chord.major, Chord.minor
     assert_equal Chord.dominant, Chord.major.add('b7')
     assert_equal Chord.dominant.flat(9), Chord.major.add('b7').add('b9')
+    assert Chord.major.eql?(Chord.major)
+    assert Chord.major(Note.C).eql?(Chord.major(Note.C))
+    assert !Chord.major(Note.C).eql?(Chord.major)
+    assert !Chord.major.eql?(Chord.major(Note.C))
     assert_equal [Chord.major], [Chord.major, Chord.major].uniq
   end
 

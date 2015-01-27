@@ -77,6 +77,10 @@ class ScaleTest < Test::Unit::TestCase
   def test_equality
     assert_equal Scale.major, Scale.major
     assert_not_equal Scale.major, Scale.natural_minor
+    assert Scale.major.eql?(Scale.major)
+    assert Scale.major(Note.C).eql?(Scale.major(Note.C))
+    assert !Scale.major(Note.C).eql?(Scale.major)
+    assert !Scale.major.eql?(Scale.major(Note.C))
     assert_equal [Scale.major], [Scale.major, Scale.major].uniq
   end
 

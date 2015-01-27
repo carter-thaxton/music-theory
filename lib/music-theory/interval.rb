@@ -16,13 +16,14 @@ module MusicTheory
       return false unless interval.is_a? Interval
       return false unless interval.number == self.number
       if interval.specific? && self.specific?
-        return false unless interval.quality == self.quality && interval.quality_count == self.quality_count
+        return false unless interval.offset == self.offset
       end
       true
     end
 
     def eql?(other)
-      self == other
+      return false unless self == other
+      other.generic? == self.generic? && other.offset == self.offset
     end
 
     def hash

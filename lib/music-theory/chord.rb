@@ -180,7 +180,7 @@ module MusicTheory
     end
 
     def eql?(other)
-      self == other
+      self == other && other.root == self.root
     end
 
     def hash

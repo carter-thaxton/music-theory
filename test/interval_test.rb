@@ -12,6 +12,19 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal 0, Interval.generic(1).diatonic_offset
   end
 
+  def test_equality
+    assert_equal Interval.generic(2), Interval.generic(2)
+    assert_equal Interval.generic(2), Interval.major(2)
+    assert_equal Interval.major(2), Interval.generic(2)
+    assert_not_equal Interval.generic(2), Interval.generic(3)
+    assert_not_equal Interval.major(2), Interval.minor(2)
+
+    assert Interval.generic(2).eql?(Interval.generic(2))
+    assert Interval.major(2).eql?(Interval.major(2))
+    assert !Interval.major(2).eql?(Interval.generic(2))
+    assert !Interval.generic(2).eql?(Interval.major(2))
+  end
+
   def test_parse
     assert_equal Interval.perfect(5), Interval.parse("P5")
     assert_equal Interval.perfect(-5), Interval.parse("-P5")

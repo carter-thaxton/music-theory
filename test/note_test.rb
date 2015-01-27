@@ -38,6 +38,10 @@ class NoteTest < Test::Unit::TestCase
     assert_equal Note.C(4), Note.C
     assert_equal Note.C(5), Note.C(4) + Interval.octave
     assert_not_equal Note.C(5), Note.C(4) + Interval.octave(2)
+    assert Note.C.eql?(Note.C)
+    assert Note.C(4).eql?(Note.C(4))
+    assert !Note.C.eql?(Note.C(4))
+    assert !Note.C(4).eql?(Note.C)
     assert_equal [Note.C], [Note.C, Note.C].uniq
   end
 

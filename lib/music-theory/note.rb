@@ -62,7 +62,7 @@ module MusicTheory
     end
 
     def eql?(other)
-      self == other
+      self == other && other.octave == self.octave
     end
 
     def hash
