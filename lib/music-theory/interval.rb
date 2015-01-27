@@ -27,7 +27,7 @@ module MusicTheory
     end
 
     def hash
-      [number, offset].hash
+      [number, offset, generic?].hash
     end
 
     def semitones

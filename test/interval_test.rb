@@ -23,6 +23,7 @@ class IntervalTest < Test::Unit::TestCase
     assert Interval.major(2).eql?(Interval.major(2))
     assert !Interval.major(2).eql?(Interval.generic(2))
     assert !Interval.generic(2).eql?(Interval.major(2))
+    assert_not_equal Interval.generic(2).hash, Interval.major(2).hash
   end
 
   def test_parse
