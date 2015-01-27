@@ -11,13 +11,14 @@ module MusicTheory
       has_3 = intervals.any? {|i| i.number == 3}
       has_4 = intervals.any? {|i| i.number == 4}
       has_6 = intervals.any? {|i| i.number == 6}
-      has_7_or_higher = intervals.any? {|i| i.number >= 7}
+      has_7 = intervals.any? {|i| i.number == 7}
+      has_b7 = intervals.any? {|i| i.number == 7 && i.flat?}
 
       intervals = intervals.map do |i|
         add_octave = case i.number
-          when 2 then has_3 || has_4 || has_6 || has_7_or_higher
-          when 4 then has_3 && (has_6 || has_7_or_higher)
-          when 6 then has_7_or_higher
+          when 2 then has_3 || has_4 || has_6 || has_b7
+          when 4 then has_3 && (has_6 || has_7) || (has_7 && i.sharp?)
+          when 6 then has_7
         end
 
         if add_octave

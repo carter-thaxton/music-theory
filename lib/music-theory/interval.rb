@@ -121,6 +121,14 @@ module MusicTheory
       quality == :diminished
     end
 
+    def flat?
+      offset < 0
+    end
+
+    def sharp?
+      offset > 0
+    end
+
     def perfect_number?
       Interval.perfect_number? number
     end

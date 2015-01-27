@@ -62,16 +62,33 @@ class ChordTest < Test::Unit::TestCase
     assert_equal 'D', Chord.major(Note.C).with_root(Note.D).to_s
   end
 
-  def test_transpose_and_reinterpret_root
+  def test_transpose_root
     c = Chord.parse('C∆')
-
     assert_equal 'C∆', c.transpose_root(Interval.unison).to_s
     assert_equal 'Am9', c.transpose_root(Interval.minor(-3)).to_s
+  end
 
-    assert_equal 'C∆', c.reinterpret_root(Note.C).to_s
+  def test_reinterpret_root
+    c = Chord.parse('C')
+    assert_equal 'C', c.reinterpret_root(Note.C).to_s
     assert_equal 'Emb6', c.reinterpret_root(Note.E).to_s
-
     assert_equal 'Bb69#4', c.reinterpret_root(Note.Bb).to_s
+    assert_equal 'F∆sus2', c.reinterpret_root(Note.F).to_s
+    assert_equal 'F#m7b5b9', c.reinterpret_root(Note.Fs).to_s
+
+    c = Chord.parse('C7')
+    assert_equal 'C7', c.reinterpret_root(Note.C).to_s
+    assert_equal 'Eºb6', c.reinterpret_root(Note.E).to_s
+    assert_equal 'Bb69#4', c.reinterpret_root(Note.Bb).to_s
+    assert_equal 'F∆9sus4', c.reinterpret_root(Note.F).to_s
+    assert_equal 'F#7b4b5b9', c.reinterpret_root(Note.Fs).to_s
+
+    c = Chord.parse('C7add13')
+    assert_equal 'C13', c.reinterpret_root(Note.C).to_s
+    assert_equal 'Eºb6add11', c.reinterpret_root(Note.E).to_s
+    assert_equal 'Bb∆13#11', c.reinterpret_root(Note.Bb).to_s
+    assert_equal 'F∆11', c.reinterpret_root(Note.F).to_s
+    assert_equal 'F#m7b5b9b11', c.reinterpret_root(Note.Fs).to_s
   end
 
   def test_with_bass
