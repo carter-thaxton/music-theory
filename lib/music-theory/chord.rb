@@ -208,7 +208,7 @@ module MusicTheory
         elsif seventh.augmented? then '#' * seventh.quality_count + '7'
         end
       elsif sixth?
-        '6'
+        interval(9) ? '69' : '6'
       end
 
       modifiers_s = ''
@@ -228,9 +228,9 @@ module MusicTheory
                 modifiers_s << 'add' + interval.scale_shorthand
               end
             elsif n == 6
-              modifiers_s << 'add6' unless extension_s == '6'
-            elsif n == 9 && extension_s == '6'
-              modifiers_s << '9'  # special case for 69, instead of 6add9
+              modifiers_s << 'add6' unless extension_s.start_with?('6')
+            elsif n == 9 && extension_s == '69'
+              # already handled 9 as 69
             elsif n > (highest_extension || 0)
               modifiers_s << 'add' + interval.scale_shorthand
             end

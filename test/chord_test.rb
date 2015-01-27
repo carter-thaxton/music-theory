@@ -70,6 +70,8 @@ class ChordTest < Test::Unit::TestCase
 
     assert_equal 'C∆', c.reinterpret_root(Note.C).to_s
     assert_equal 'Emb6', c.reinterpret_root(Note.E).to_s
+
+    assert_equal 'Bb69#4', c.reinterpret_root(Note.Bb).to_s
   end
 
   def test_with_bass
