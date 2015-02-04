@@ -21,11 +21,7 @@ module MusicTheory
           when 6 then has_7
         end
 
-        if add_octave
-          i + Interval.octave
-        else
-          i
-        end
+        add_octave ? i + Interval.octave : i
       end
 
       root = root.without_octave if root.is_a?(Note) && root.octave
