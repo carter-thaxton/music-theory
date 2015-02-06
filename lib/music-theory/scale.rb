@@ -130,7 +130,8 @@ module MusicTheory
 
     class << self
       COMMON_SCALES = [
-        :major, :minor, :harmonic_minor, :melodic_minor,
+        :chromatic, :flat_chromatic,
+        :major, :natural_minor, :harmonic_minor, :melodic_minor,
         :dorian, :phrygian, :lydian, :mixolydian, :locrian,
         :dorian_b2, :lydian_augmented, :lydian_dominant, :mixolydian_b6, :locrian_2, :alt,
         :locrian_6, :ionian_augmented, :romanian, :phrygian_dominant, :lydian_2, :ultralocrian,
@@ -154,6 +155,18 @@ module MusicTheory
       #
       # Common scales
       #
+      def chromatic(root=nil)
+        Scale.parse("1 #1 2 #2 3 4 #4 5 #5 6 #6 7")
+      end
+
+      def flat_chromatic(root=nil)
+        Scale.parse("1 b2 2 b3 3 4 b5 5 b6 6 b7 7")
+      end
+
+      alias sharp_chromatic chromatic
+      alias ascending_chromatic sharp_chromatic
+      alias descending_chromatic flat_chromatic
+
       def major(root=nil)
         Scale.parse("1 2 3 4 5 6 7", root)
       end

@@ -28,6 +28,40 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal Interval.minor(7), s[6]
   end
 
+  def test_chromatic_scale
+    s = Scale.chromatic
+    assert_equal 12, s.length
+    assert_equal Interval.unison, s[0]
+    assert_equal Interval.sharp(1), s[1]
+    assert_equal Interval.major(2), s[2]
+    assert_equal Interval.sharp(2), s[3]
+    assert_equal Interval.major(3), s[4]
+    assert_equal Interval.perfect(4), s[5]
+    assert_equal Interval.sharp(4), s[6]
+    assert_equal Interval.perfect(5), s[7]
+    assert_equal Interval.sharp(5), s[8]
+    assert_equal Interval.major(6), s[9]
+    assert_equal Interval.sharp(6), s[10]
+    assert_equal Interval.major(7), s[11]
+  end
+
+  def test_flat_chromatic_scale
+    s = Scale.flat_chromatic
+    assert_equal 12, s.length
+    assert_equal Interval.unison, s[0]
+    assert_equal Interval.flat(2), s[1]
+    assert_equal Interval.major(2), s[2]
+    assert_equal Interval.flat(3), s[3]
+    assert_equal Interval.major(3), s[4]
+    assert_equal Interval.perfect(4), s[5]
+    assert_equal Interval.flat(5), s[6]
+    assert_equal Interval.perfect(5), s[7]
+    assert_equal Interval.flat(6), s[8]
+    assert_equal Interval.major(6), s[9]
+    assert_equal Interval.flat(7), s[10]
+    assert_equal Interval.major(7), s[11]
+  end
+
   def test_interval
     assert_equal Interval.unison, Scale.major.interval(1)
     assert_equal Interval.major(2), Scale.major.interval(2)
