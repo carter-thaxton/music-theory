@@ -1,5 +1,6 @@
 module MusicTheory
   class Interval
+    include Comparable
 
     attr_reader :number, :offset
 
@@ -10,16 +11,6 @@ module MusicTheory
       raise ArgumentError, "number must be a non-zero integer" if @number == 0
       @generic = offset.nil?
       @offset = offset.to_i
-    end
-
-    def ==(interval)
-      interval = Interval.generic(interval.to_i) if interval.is_a? Numeric
-      return false unless interval.is_a? Interval
-      return false unless interval.number == self.number
-      if interval.specific? && self.specific?
-        return false unless interval.offset == self.offset
-      end
-      true
     end
 
     def eql?(other)
@@ -38,22 +29,6 @@ module MusicTheory
         result = self.offset <=> interval.offset
       end
       result
-    end
-
-    def <(interval)
-      (self <=> interval) < 0
-    end
-
-    def >(interval)
-      (self <=> interval) > 0
-    end
-
-    def <=(interval)
-      (self <=> interval) <= 0
-    end
-
-    def >=(interval)
-      (self <=> interval) >= 0
     end
 
     def semitones
