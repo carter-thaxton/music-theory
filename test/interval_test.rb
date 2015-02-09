@@ -18,12 +18,32 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.major(2), Interval.generic(2)
     assert_not_equal Interval.generic(2), Interval.generic(3)
     assert_not_equal Interval.major(2), Interval.minor(2)
+    assert_equal Interval.generic(2), 2
+    assert_equal Interval.major(2), 2
+    assert_not_equal Interval.generic(2), 3
+    assert_not_equal Interval.diminished(3), 2
 
     assert Interval.generic(2).eql?(Interval.generic(2))
     assert Interval.major(2).eql?(Interval.major(2))
     assert !Interval.major(2).eql?(Interval.generic(2))
     assert !Interval.generic(2).eql?(Interval.major(2))
     assert_not_equal Interval.generic(2).hash, Interval.major(2).hash
+  end
+
+  def test_inequality
+    assert Interval.generic(3) > Interval.generic(2)
+    assert Interval.generic(3) >= Interval.generic(3)
+    assert Interval.generic(3) <= Interval.generic(3)
+    assert !(Interval.generic(3) < Interval.generic(2))
+
+    assert Interval.major(2) < Interval.generic(3)
+    assert Interval.major(3) > Interval.generic(2)
+    assert Interval.major(2) >= Interval.generic(2)
+    assert Interval.major(2) <= Interval.generic(2)
+
+    assert Interval.major(2) < 3
+    assert Interval.major(3) <= 3
+    assert !(Interval.major(3) < 2)
   end
 
   def test_parse

@@ -13,6 +13,7 @@ module MusicTheory
     end
 
     def ==(interval)
+      interval = Interval.generic(interval) if interval.is_a? Fixnum
       return false unless interval.is_a? Interval
       return false unless interval.number == self.number
       if interval.specific? && self.specific?
@@ -28,6 +29,31 @@ module MusicTheory
 
     def hash
       [number, offset, generic?].hash
+    end
+
+    def <=>(interval)
+      interval = Interval.generic(interval) if interval.is_a? Fixnum
+      result = self.number <=> interval.number
+      if result == 0 && self.specific? && interval.specific?
+        result = self.offset <=> interval.offset
+      end
+      result
+    end
+
+    def <(interval)
+      (self <=> interval) < 0
+    end
+
+    def >(interval)
+      (self <=> interval) > 0
+    end
+
+    def <=(interval)
+      (self <=> interval) <= 0
+    end
+
+    def >=(interval)
+      (self <=> interval) >= 0
     end
 
     def semitones
