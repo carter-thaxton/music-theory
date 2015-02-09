@@ -13,7 +13,7 @@ module MusicTheory
     end
 
     def ==(interval)
-      interval = Interval.generic(interval) if interval.is_a? Fixnum
+      interval = Interval.generic(interval.to_i) if interval.is_a? Numeric
       return false unless interval.is_a? Interval
       return false unless interval.number == self.number
       if interval.specific? && self.specific?
@@ -32,7 +32,7 @@ module MusicTheory
     end
 
     def <=>(interval)
-      interval = Interval.generic(interval) if interval.is_a? Fixnum
+      interval = Interval.generic(interval.to_i) if interval.is_a? Numeric
       result = self.number <=> interval.number
       if result == 0 && self.specific? && interval.specific?
         result = self.offset <=> interval.offset
@@ -335,7 +335,7 @@ module MusicTheory
     def +(interval)
       return interval + self if interval.is_a? Note
 
-      interval = Scale.major[interval] if interval.is_a? Fixnum
+      interval = Scale.major[interval.to_i] if interval.is_a? Numeric
 
       n = interval.diatonic_offset + self.diatonic_offset
       o = (n < 0 || n == 0 && self.down?) ? -1 : 1
@@ -458,7 +458,7 @@ module MusicTheory
       end
 
       def with_semitones(interval, semitones)
-        interval = new(interval) if interval.is_a? Fixnum
+        interval = new(interval.to_i) if interval.is_a? Numeric
         interval = new(interval.number, 0) if interval.offset != 0
         offset = semitones - interval.semitones
         offset = -offset if interval.down?

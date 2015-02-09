@@ -70,7 +70,7 @@ module MusicTheory
     end
 
     def +(interval)
-      interval = Scale.major[interval] if interval.is_a? Fixnum
+      interval = Scale.major[interval.to_i] if interval.is_a? Numeric
 
       idx = (diatonic_index + interval.diatonic_offset) % 7
       oct = (diatonic_index + interval.diatonic_offset) / 7

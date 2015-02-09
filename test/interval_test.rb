@@ -44,6 +44,8 @@ class IntervalTest < Test::Unit::TestCase
     assert Interval.major(2) < 3
     assert Interval.major(3) <= 3
     assert !(Interval.major(3) < 2)
+    assert Interval.major(2) < 3.0
+    assert Interval.major(2.1) < 3
   end
 
   def test_parse
