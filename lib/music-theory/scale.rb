@@ -237,7 +237,7 @@ module MusicTheory
       end
 
       def alt(root=nil)
-        # Same as melodic_minor.rotate(6), but uses enharmonic spellings #2 and 3, instead of b3 and b4
+        # Same as melodic_minor.rotate(6), but uses enharmonic spellings #2, 3, #4, instead of b3, b4, b5
         Scale.parse("1 b2 #2 3 #4 b6 b7", root)
       end
 
