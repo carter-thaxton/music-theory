@@ -171,6 +171,8 @@ module MusicTheory
         Scale.parse("1 2 3 4 5 6 7", root)
       end
 
+      alias ionian major
+
       def natural_minor(root=nil)
         Scale.parse("1 2 b3 4 5 b6 b7", root)
       end

@@ -116,6 +116,7 @@ class ScaleTest < Test::Unit::TestCase
     assert !Scale.major(Note.C).eql?(Scale.major)
     assert !Scale.major.eql?(Scale.major(Note.C))
     assert_equal [Scale.major], [Scale.major, Scale.major].uniq
+    assert_equal Scale.major, Scale.ionian
   end
 
   def test_alter_scales
