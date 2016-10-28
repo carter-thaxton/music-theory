@@ -2,7 +2,7 @@ module MusicTheory
   class << Scale
     COMMON_SCALES = [
       :chromatic, :flat_chromatic,
-      :major, :natural_minor, :harmonic_minor, :melodic_minor,
+      :major, :natural_minor, :harmonic_minor, :melodic_minor, :harmonic_major,
       :dorian, :phrygian, :lydian, :mixolydian, :locrian,
       :dorian_b2, :lydian_augmented, :lydian_dominant, :mixolydian_b6, :locrian_2, :alt,
       :locrian_6, :ionian_augmented, :romanian, :phrygian_dominant, :lydian_2, :ultralocrian,
@@ -57,6 +57,10 @@ module MusicTheory
 
     def melodic_minor(root=nil)
       Scale.parse("1 2 b3 4 5 6 7", root)
+    end
+
+    def harmonic_major(root=nil)
+      Scale.parse("1 2 3 4 5 b6 7", root)
     end
 
 
