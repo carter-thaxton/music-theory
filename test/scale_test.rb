@@ -74,6 +74,7 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal Note.A, s[0]
     assert_equal Note.B, s[1]
     assert_equal Note.Cs, s[2]
+    assert_equal s.notes, [Note.A, Note.B, Note.Cs, Note.D, Note.E, Note.Fs, Note.Gs]
   end
 
   def test_rotate

@@ -34,14 +34,18 @@ module MusicTheory
     def note(i)
       raise ArgumentError, "Cannot get note for scale without a root" unless root
 
-      if i.respond_to? :each
+      if i == :all
+        intervals.map{|i| (i + root)}
+      elsif i.respond_to? :each
         i.map{|j| interval(j) + root}
       else
         interval(i) + root
       end
     end
 
-    alias notes note
+    def notes(i=:all)
+      note(i)
+    end
 
     def zero_based_interval(i)
       d = i % length
@@ -81,7 +85,7 @@ module MusicTheory
 
     def notes_s
       raise ArgumentError, "Cannot get notes_s unless it has a root" unless root
-      intervals.map{|i| (root + i).to_s}.join(' ')
+      notes.map(&:to_s).join(' ')
     end
 
     def intervals_s
