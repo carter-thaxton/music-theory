@@ -178,5 +178,15 @@ module MusicTheory
       Scale.parse('1 b2 3 4 5 b6 bb7', root)
     end
 
+    def major_sixth_diminished(root=nil)
+      Scale.parse("1 2 3 4 5 b6 6 7")
+    end
+
+    def minor_sixth_diminished(root=nil)
+      Scale.parse("1 2 b3 4 5 b6 6 7")
+    end
+
+    alias sixth_diminished major_sixth_diminished
+
   end
 end
