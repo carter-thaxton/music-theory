@@ -94,7 +94,9 @@ module MusicTheory
     end
 
     def -(n)
-      if n.is_a? Note
+      if n.respond_to?(:root)
+        self - n.root
+      elsif n.is_a? Note
         n.measure_to self
       else
         self + -n
