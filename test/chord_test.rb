@@ -158,6 +158,44 @@ class ChordTest < Test::Unit::TestCase
     assert_equal 'D∆13#11', c.reinterpret_root(Note.E).to_s
   end
 
+  def test_relative_to
+    c = Chord.parse('C∆')
+    assert_equal 'bVI∆', c.relative_to(Note.E).to_s
+    assert_equal 'V∆', c.relative_to(Note.F).to_s
+    assert_equal 'V∆', c.relative_to(Chord.major(Note.F)).to_s
+    assert_equal 'V∆', c.relative_to(Scale.major(Note.F)).to_s
+    assert_equal 'I∆', c.relative_to(Interval.unison).to_s
+    assert_equal 'V∆', c.relative_to(Interval.perfect(4)).to_s
+    assert_equal 'bVII∆', c.relative_to(Interval.major(2)).to_s
+
+    c = Chord.parse('∆')
+    assert_equal 'E∆', c.relative_to(Note.E).to_s
+    assert_equal 'F∆', c.relative_to(Note.F).to_s
+    assert_equal 'F∆', c.relative_to(Chord.major(Note.F)).to_s
+    assert_equal 'F∆', c.relative_to(Scale.major(Note.F)).to_s
+    assert_equal 'I∆', c.relative_to(Interval.unison).to_s
+    assert_equal 'V∆', c.relative_to(Interval.perfect(4)).to_s
+    assert_equal 'bVII∆', c.relative_to(Interval.major(2)).to_s
+
+    c = Chord.parse('I∆')
+    assert_equal 'E∆', c.relative_to(Note.E).to_s
+    assert_equal 'F∆', c.relative_to(Note.F).to_s
+    assert_equal 'F∆', c.relative_to(Chord.major(Note.F)).to_s
+    assert_equal 'F∆', c.relative_to(Scale.major(Note.F)).to_s
+    assert_equal 'I∆', c.relative_to(Interval.unison).to_s
+    assert_equal 'V∆', c.relative_to(Interval.perfect(4)).to_s
+    assert_equal 'bVII∆', c.relative_to(Interval.major(2)).to_s
+
+    c = Chord.parse('IV∆')
+    assert_equal 'A∆', c.relative_to(Note.E).to_s
+    assert_equal 'Bb∆', c.relative_to(Note.F).to_s
+    assert_equal 'Bb∆', c.relative_to(Chord.major(Note.F)).to_s
+    assert_equal 'Bb∆', c.relative_to(Scale.major(Note.F)).to_s
+    assert_equal 'IV∆', c.relative_to(Interval.unison).to_s
+    assert_equal 'I∆', c.relative_to(Interval.perfect(4)).to_s
+    assert_equal 'bIII∆', c.relative_to(Interval.major(2)).to_s
+  end
+
   def test_with_bass
     c = Chord.major(Note.C)
     assert_equal Note.C, c.root

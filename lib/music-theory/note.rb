@@ -69,6 +69,15 @@ module MusicTheory
       [diatonic_index, accidentals, octave].hash
     end
 
+    # these make the algebra with intervals work out nicely
+    def +@
+      self
+    end
+
+    def -@
+      self
+    end
+
     def +(interval)
       interval = Scale.major[interval.to_i] if interval.is_a? Numeric
 

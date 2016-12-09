@@ -85,6 +85,41 @@ module MusicTheory
       end
     end
 
+    # offset may be an interval, note, chord, scale
+    def relative_to(offset)
+      if offset.nil?
+        self
+      elsif offset.respond_to?(:root)
+        relative_to(offset.root)
+      elsif root_note? && offset.is_a?(Interval)
+        with_root(-offset)
+      elsif root
+        with_root(root - offset)
+      else
+        with_root(-offset)
+      end
+    end
+
+    def +@
+      self
+    end
+
+    def -@
+      if root_interval?
+        with_root(-root)
+      else
+        self
+      end
+    end
+
+    def +(i)
+      transpose(i)
+    end
+
+    def -(i)
+      transpose(-i)
+    end
+
     def notes
       raise ArgumentError, "Cannot get notes of a chord without a root" unless root
       intervals.map{|i| root + i}
