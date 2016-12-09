@@ -54,17 +54,34 @@ module MusicTheory
 
     alias over with_bass
 
-    def transpose_root(interval)
-      new_intervals = intervals.map {|i| i - interval}
-      new_root = root && (root + interval)
-      Chord.new(new_intervals, new_root, bass)
+    def transpose(interval_or_note)
+      if root && (root.is_a?(Interval) || interval_or_note.is_a?(Interval))
+        new_root = root + interval_or_note
+      else
+        new_root = interval_or_note
+      end
+      with_root(new_root)
     end
 
-    def reinterpret_root(new_root)
-      if root
-        transpose_root(new_root - root)
+    def reinterpret_root(interval_or_note)
+      if interval_or_note.is_a?(Interval)
+        interval = interval_or_note
+        new_intervals = intervals.map {|i| i - interval}
+        if root
+          new_root = root + interval
+        else
+          new_root = interval
+        end
+        Chord.new(new_intervals, new_root, bass)
       else
-        with_root(new_root)
+        note = interval_or_note
+        if root_note?
+          reinterpret_root(note - root)
+        elsif root_interval?
+          with_root(note).reinterpret_root(note + root)
+        else
+          with_root(note)
+        end
       end
     end
 
@@ -97,7 +114,7 @@ module MusicTheory
     end
 
     def rootless?
-      !interval(1)
+      interval(1) != Interval.unison
     end
 
     def seventh?
