@@ -302,7 +302,7 @@ module MusicTheory
       end
 
       result = "#{quality_s}#{extension_s}#{modifiers_s}"
-      result = "maj#{result}" if /\A[b#]/.match(result)
+      result = "maj#{result}" if /\A[b#]/.match(result) && !minor?
       result = "maj" if result.empty? && !root && major?
 
       "#{root_s}#{result}#{bass_s}"
