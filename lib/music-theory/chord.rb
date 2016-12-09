@@ -117,7 +117,7 @@ module MusicTheory
     end
 
     def -(i)
-      transpose(-i)
+      self + -i
     end
 
     def notes

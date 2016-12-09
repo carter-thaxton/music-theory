@@ -79,8 +79,11 @@ module MusicTheory
     end
 
     def +(interval)
+      raise "Cannot add a note to another note" if interval.is_a?(Note)
       interval = Scale.major[interval.to_i] if interval.is_a? Numeric
-      raise "Cannot add note to #{interval.class}" unless interval.is_a?(Interval)
+
+      # Try the other way around, if not an interval
+      return interval + self if !interval.is_a?(Interval)
 
       idx = (diatonic_index + interval.diatonic_offset) % 7
       oct = (diatonic_index + interval.diatonic_offset) / 7
@@ -95,9 +98,7 @@ module MusicTheory
     end
 
     def -(n)
-      if n.respond_to?(:root)
-        self - n.root
-      elsif n.is_a? Note
+      if n.is_a? Note
         n.measure_to self
       else
         self + -n

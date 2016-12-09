@@ -92,4 +92,15 @@ class NoteTest < Test::Unit::TestCase
     assert_equal Interval.octave(-1), Note.C(5).measure_to(Note.C(4))
   end
 
+  def test_other_addition
+    assert_equal Scale.major(Note.C), Scale.major + Note.C
+    assert_equal Scale.major(Note.C), Scale.major - Note.C
+    assert_equal Scale.major(Note.C), Note.C + Scale.major
+
+    assert_equal Chord.major(Note.C), Chord.major + Note.C
+    assert_equal Chord.major(Note.C), Chord.major - Note.C
+    assert_equal Chord.major(Note.C), Note.C + Chord.major
+    assert_equal Chord.major(Note.C), Note.C - Chord.major
+  end
+
 end
