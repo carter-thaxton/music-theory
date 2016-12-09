@@ -117,7 +117,11 @@ module MusicTheory
     end
 
     def -(i)
-      self + -i
+      if i.respond_to?(:root) && i.root && root
+        root - i.root
+      else
+        self + -i
+      end
     end
 
     def notes
