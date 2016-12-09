@@ -80,6 +80,7 @@ module MusicTheory
 
     def +(interval)
       interval = Scale.major[interval.to_i] if interval.is_a? Numeric
+      raise "Cannot add note to #{interval.class}" unless interval.is_a?(Interval)
 
       idx = (diatonic_index + interval.diatonic_offset) % 7
       oct = (diatonic_index + interval.diatonic_offset) / 7

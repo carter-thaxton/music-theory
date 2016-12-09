@@ -86,7 +86,7 @@ class ScaleTest < Test::Unit::TestCase
   def test_transpose
     assert_equal Note.A.major, Note.C.major.transpose(Interval.minor(-3))
     assert_equal Note.A.major, Note.C.major - Interval.minor(3)
-    assert_raises { Scale.major + Interval.major(3) }
+    assert_equal "1 2 3 4 5 6 7", (Scale.major + Interval.major(3)).intervals_s
   end
 
   def test_name

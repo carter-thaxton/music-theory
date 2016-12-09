@@ -103,8 +103,11 @@ module MusicTheory
     end
 
     def transpose(interval)
-      raise ArgumentError, "Cannot transpose scale unless unless it has a root" unless root
-      Scale.new(intervals, root + interval)
+      if root
+        Scale.new(intervals, root + interval)
+      else
+        Scale.new(intervals, interval)
+      end
     end
 
     def +(interval)
