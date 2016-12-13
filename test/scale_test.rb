@@ -125,4 +125,9 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal Scale.melodic_minor, Scale.major.flat(3)
   end
 
+  def test_subtract_scales
+    assert_equal Interval.major(3), Scale.major(Note.E) - Scale.major(Note.C)
+    assert_equal Interval.major(3), Scale.major(Note.E) - Note.C
+  end
+
 end

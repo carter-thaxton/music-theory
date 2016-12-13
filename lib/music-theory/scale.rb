@@ -110,12 +110,18 @@ module MusicTheory
       end
     end
 
-    def +(interval)
-      transpose(interval)
+    def +(i)
+      transpose(i)
     end
 
-    def -(interval)
-      self + -interval
+    def -(i)
+      if i.is_a?(Note) && root
+        root - i
+      elsif i.respond_to?(:root) && i.root && root
+        root - i.root
+      else
+        self + -i
+      end
     end
 
     def ==(scale)
