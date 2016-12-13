@@ -15,4 +15,4 @@ task :console do
   IRB.start
 end
 
-task :default => :test
+task :default => :console
