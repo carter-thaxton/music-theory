@@ -121,31 +121,31 @@ module MusicTheory
     end
 
     class << self
-      def C (octave=nil); Note.new(0,  0, octave) end
+      def  C(octave=nil); Note.new(0,  0, octave) end
       def Cb(octave=nil); Note.new(0, -1, octave) end
       def Cs(octave=nil); Note.new(0, +1, octave) end
 
-      def D (octave=nil); Note.new(1,  0, octave) end
+      def  D(octave=nil); Note.new(1,  0, octave) end
       def Db(octave=nil); Note.new(1, -1, octave) end
       def Ds(octave=nil); Note.new(1, +1, octave) end
 
-      def E (octave=nil); Note.new(2,  0, octave) end
+      def  E(octave=nil); Note.new(2,  0, octave) end
       def Eb(octave=nil); Note.new(2, -1, octave) end
       def Es(octave=nil); Note.new(2, +1, octave) end
 
-      def F (octave=nil); Note.new(3,  0, octave) end
+      def  F(octave=nil); Note.new(3,  0, octave) end
       def Fb(octave=nil); Note.new(3, -1, octave) end
       def Fs(octave=nil); Note.new(3, +1, octave) end
 
-      def G (octave=nil); Note.new(4,  0, octave) end
+      def  G(octave=nil); Note.new(4,  0, octave) end
       def Gb(octave=nil); Note.new(4, -1, octave) end
       def Gs(octave=nil); Note.new(4, +1, octave) end
 
-      def A (octave=nil); Note.new(5,  0, octave) end
+      def  A(octave=nil); Note.new(5,  0, octave) end
       def Ab(octave=nil); Note.new(5, -1, octave) end
       def As(octave=nil); Note.new(5, +1, octave) end
 
-      def B (octave=nil); Note.new(6,  0, octave) end
+      def  B(octave=nil); Note.new(6,  0, octave) end
       def Bb(octave=nil); Note.new(6, -1, octave) end
       def Bs(octave=nil); Note.new(6, +1, octave) end
 

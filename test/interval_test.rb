@@ -158,7 +158,7 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal 0, Interval.unison.semitones
 
     assert_equal 12, Interval.octave.semitones
-    assert_equal -12, Interval.octave(-1).semitones
+    assert_equal (-12), Interval.octave(-1).semitones
 
     assert_equal 1, Interval.minor(2).semitones
     assert_equal 2, Interval.major(2).semitones
@@ -175,8 +175,8 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal 13, Interval.minor(9).semitones
     assert_equal 14, Interval.major(9).semitones
 
-    assert_equal -13, Interval.minor(-9).semitones
-    assert_equal -14, Interval.major(-9).semitones
+    assert_equal (-13), Interval.minor(-9).semitones
+    assert_equal (-14), Interval.major(-9).semitones
   end
 
   def test_augmented
@@ -210,7 +210,7 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def test_double_diminished
-    assert_equal -1, Interval.double_diminished(2).semitones
+    assert_equal (-1), Interval.double_diminished(2).semitones
     assert_equal 1, Interval.double_diminished(3).semitones
     assert_equal 3, Interval.double_diminished(4).semitones
     assert_equal 5, Interval.double_diminished(5).semitones
@@ -222,13 +222,13 @@ class IntervalTest < Test::Unit::TestCase
 
   def test_special_unisons
     assert_equal 1, Interval.augmented(1).semitones
-    assert_equal -1, Interval.diminished(1).semitones
-    assert_equal -1, Interval.augmented(-1).semitones
+    assert_equal (-1), Interval.diminished(1).semitones
+    assert_equal (-1), Interval.augmented(-1).semitones
     assert_equal 1, Interval.diminished(-1).semitones
 
     assert_equal 2, Interval.double_augmented(1).semitones
-    assert_equal -2, Interval.double_diminished(1).semitones
-    assert_equal -2, Interval.double_augmented(-1).semitones
+    assert_equal (-2), Interval.double_diminished(1).semitones
+    assert_equal (-2), Interval.double_augmented(-1).semitones
     assert_equal 2, Interval.double_diminished(-1).semitones
 
     assert_equal Interval.diminished(-1), Interval.diminished(-1)

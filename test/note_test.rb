@@ -15,7 +15,7 @@ class NoteTest < Test::Unit::TestCase
 
     bb = Note.Bb
     assert_equal 6, bb.diatonic_index
-    assert_equal -1, bb.accidentals
+    assert_equal (-1), bb.accidentals
   end
 
   def test_parse
@@ -51,7 +51,7 @@ class NoteTest < Test::Unit::TestCase
     assert_equal 1, Note.Db.chromatic_index
     assert_equal 1, Note.C.sharp.chromatic_index
     assert_equal 2, Note.C.sharp(2).chromatic_index
-    assert_equal -1, Note.C.flat.chromatic_index
+    assert_equal (-1), Note.C.flat.chromatic_index
     assert_equal 11, Note.B.chromatic_index
     assert_equal 12, Note.B.sharp.chromatic_index
     assert_equal 13, Note.B.sharp(2).chromatic_index
